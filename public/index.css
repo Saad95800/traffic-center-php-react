@@ -1,0 +1,167 @@
+.navbar-app{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 120px;
+    height: 100%;
+    background-color: #1c2d79;
+    transition: left 0.5s;
+}
+body{
+    background-color: #f9f9ff;
+}
+.navbar-item, .logo-item{
+    width: 100%;
+    height: 110px;
+    cursor: pointer;
+    padding: 10px;
+}
+.navbar-item:hover{
+    background-color: #384ca5;
+}
+.display-flex-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.logo-img{
+    color: #fff;
+    font-style: oblique;
+    font-size: 20px;
+    font-weight: bold;
+    width: 100px !important;
+    height: 100px !important;
+    border: 1px solid #fff;
+    border-radius: 60px;
+    text-align: center;
+}
+a:hover{
+    text-decoration: none;
+}
+.list-journey-img{
+    background:url(./img/truck2.png) 0px 0px no-repeat;
+}
+.add-journey-img{
+    background:url(./img/truck-plus.png) 0px 0px no-repeat;
+}
+.logout-img{
+    background:url(./img/logout.png) 0px 0px no-repeat;
+}
+.size50{
+    width: 50px;
+    height: 50px;
+}
+.vitrine-item{
+    margin-bottom: 50px;
+}
+.logout{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+}
+.mgtop50{
+    margin-top: 50px;
+}
+.container-list-journey{
+    padding: 5px;
+    width: 95%;
+    /* border: 1px solid lightgrey; */
+}
+.line-journey{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    /* border: 1px solid blue; */
+    padding: 15px;
+    background-color: #e8f0ff;
+}
+.little-square{
+    width: 9%;
+    display: inline-block;
+    height: 35px;
+    border: 1px solid #dfdfdf;
+    background-color: #00de00;
+    cursor: pointer;
+    /* margin: 0px 1px 0px 1px; */
+}
+.little-square:hover{
+    background-color: #00de0059;
+}
+.container-list-journey-page{
+    margin-left: 120px;
+}
+.block-line-squares{
+    width: 100%;
+    height: 33.3%;
+}
+.img-front-truck{
+    background:url(./img/front-truck.png) 0px 0px no-repeat;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.logo-green-point{
+    background:url(./img/green-point.png) 0px 0px no-repeat;
+}
+.logo-green-arrow{
+    background:url(./img/green-arrow.png) 0px 0px no-repeat;
+}
+.logo-clock{
+    background:url(./img/logo-clock.png) 0px 0px no-repeat;
+}
+.logo-date{
+    background:url(./img/logo-date.png) 0px 0px no-repeat;
+}
+.height50p{
+    height: 50%;
+}
+.text-v-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.fontwb{
+    font-weight: bold;
+}
+.colorblue{
+    color: #5b95e2
+}
+.height100{
+    height: 100%;
+}
+.width100{
+    width: 100%;
+}
+
+@media screen and (max-width: 450px) {
+    .nav-mobile{
+        width: 70px;
+        height: 70px;
+        background-color: #1c2d795c !important;
+        cursor: pointer;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        z-index: 1;
+        background: url(./img/button-menu.png) 10px 10px no-repeat;
+    }
+    .navbar-app{
+        left: -120px;
+    }
+    .little-square{
+        /* width: 13px; */
+        display: inline-block;
+        /* height: 17px; */
+    }
+    .container-list-journey-page{
+        margin-left: 0px !important;
+    }
+    .line-journey>div.col-md-2{
+        border-bottom: 1px solid grey;
+        min-height: 100px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .line-journey>div.col-md-8{
+        padding-top: 15px;
+    }
+}

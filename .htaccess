@@ -1,0 +1,20 @@
+Options -Indexes
+
+Options +FollowSymlinks
+RewriteEngine on
+# RewriteBase /public/
+############################## News HTaccess
+
+# LOGIN
+RewriteRule ^$ index.php?controller=homeController&method=indexaction [L]
+RewriteRule ^app$ index.php?controller=appController&method=indexaction [L]
+RewriteRule ^add-journey$ index.php?controller=appController&method=indexaction [L]
+RewriteRule ^logout$ index.php?controller=appController&method=indexaction [L]
+RewriteRule ^get-journey-list$ index.php?controller=appController&method=getJourneyListAjax [L]
+
+# ACCUEIL
+#RewriteRule ^home$ index.php?controller=AccueilController&method=indexAction [L]
+#RewriteRule ^home/([a-zA-Z0-9=_]+)$ index.php?controller=AccueilController&method=$1action [L]
+#RewriteRule ^home/([a-zA-Z0-9=_]+)/([a-zA-Z0-9=\-]+)$ index.php?controller=AccueilController&method=$1action&param1=$2 [L]
+#RewriteRule ^home/([a-zA-Z0-9=_]+)/([0-9\-]+)/([0-9\-]*)$ index.php?controller=AccueilController&method=$1action&param1=$2&param2=$3 [L]
+#RewriteRule ^home/([a-zA-Z0-9=_]+)/([0-9\-]+)/([0-9\-]*)/([0-9\-]*)$ index.php?controller=AccueilController&method=$1action&param1=$2&param2=$3&param3=$4 [L]
