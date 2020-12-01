@@ -1,0 +1,7 @@
+conf
+vendor
+node_modules
+logs
+.idea
+public/uploads
+.vscode
