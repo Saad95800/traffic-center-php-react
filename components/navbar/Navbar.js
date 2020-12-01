@@ -7,10 +7,14 @@ export default class NavBar extends Component {
 
     super(props);
 
-    this.state = {
-      menuHidden: false
+    let hidden = false;
+    if(screen.width < 450){
+      hidden = true;
     }
-
+    this.state = {
+      menuHidden: hidden
+    }
+console.log(screen.width);
   }
 
   viewMenu(){
@@ -32,7 +36,7 @@ export default class NavBar extends Component {
 
     return (
       <div>
-        <nav className="nav-mobile" onClick={this.viewMenu.bind(this)}></nav>
+        <div className="nav-mobile" onClick={this.viewMenu.bind(this)}></div>
         <nav className="navbar-app" style={{left: cssNavbar}}>
             <NavItem
                             url={'/app'}

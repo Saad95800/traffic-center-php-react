@@ -34,13 +34,9 @@ export default class JourneyList extends Component {
         }
 
     render() {
-        let journeys = this.state.journeys.map((journey, index) => {
-
-          let date_departure = getDate(journey.date_departure)
-          console.log(date_departure);
-          
-          let date_arrival_expected = getHour(journey.date_arrival_expected)
-          console.log(date_arrival_expected);
+          let journeys = this.state.journeys.map((journey, index) => {
+            let date_departure = getDate(journey.date_departure)
+            let date_arrival_expected = getHour(journey.date_arrival_expected)
             return <div className="row line-journey">
                     <div className="col-md-2" style={{borderRight: '1px solid grey'}}>
                       <div className="height50p row">
