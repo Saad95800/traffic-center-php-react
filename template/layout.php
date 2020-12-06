@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Grayscale - Start Bootstrap Theme</title>
@@ -15,6 +15,8 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="<?= URLROOT ?>/public/css/styles.css" rel="stylesheet" />
     <link rel="stylesheet" href="<?= URLROOT ?>/public/index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <title>Document</title>
 </head>
 <body id="page-top">

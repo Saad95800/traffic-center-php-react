@@ -3,11 +3,16 @@
 namespace App\Controller;
 use lib\Controller;
 use App\Model\JourneyManager;
+use App\Controller\AuthenticationController;
 
 class AppController extends Controller {
 
     public function indexaction(){
 
+        // $auth = new AuthenticationController();
+        // if(!$auth->is_connected()){
+        //     header('location: /');
+        // }
         $display['content'] = $this->_view->render( 'app.php' , []);
 
         include VIEW . 'layout.php';

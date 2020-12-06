@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import {timeConverter, getDate, getHour} from './../functions';
+import {getDate, getHour} from './../functions';
+import Journey from './Journey';
 
 export default class JourneyList extends Component {
 
@@ -58,57 +59,7 @@ export default class JourneyList extends Component {
                         <div className="col-10"><span className="fontwb">Heure de départ prévue: </span><span className="fontwb colorblue">{date_arrival_expected}</span></div>
                       </div>
                     </div>
-                    <div className="col-md-8">
-                      <div className="display-flex-center height100">
-                        <div className="row width100" style={{minHeight: '100px'}}>
-                          <div className="col-7" style={{marginRight: '-16px', height: '130px'}}>
-                            <div className="block-line-squares">
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                            </div>
-                            <div className="block-line-squares">
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                            </div>
-                            <div className="block-line-squares">
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                              <div className="little-square"></div>
-                            </div>
-                          </div>
-                          <div className="col-3">
-                            <img src="http://traffic-center.local/public/img/front-truck.png" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
+                    <Journey key={index} id_journey={journey.id_journey} spaces={journey.spaces}/>
                    </div>
         })
         return (

@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const NODE_ENV = 'production';
+const NODE_ENV = 'development';
 
 const common = {
     nodeEnv: new webpack.DefinePlugin({

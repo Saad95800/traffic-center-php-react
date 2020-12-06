@@ -14,7 +14,7 @@ export default class NavBar extends Component {
     this.state = {
       menuHidden: hidden
     }
-console.log(screen.width);
+    
   }
 
   viewMenu(){
