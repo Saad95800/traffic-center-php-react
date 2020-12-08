@@ -21,6 +21,6 @@
 </head>
 <body id="page-top">
     <main id="main"><?php echo $display['content']; ?></main>
-    <script src="<?= URLROOT ?>/public/client.js"></script>
+    
 </body>
 </html>

@@ -152,6 +152,21 @@ a:hover{
     color: blue;
     cursor: pointer;
 }
+#message-flash{
+    width: 100%; 
+    background-color: #00ba62;
+    color: white;
+    position: fixed;
+    top: 0px;
+    z-index: 2;
+    text-align: center;
+    transition: height 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+  }
 @media screen and (max-width: 450px) {
     .nav-mobile{
         width: 70px;
@@ -183,5 +198,8 @@ a:hover{
     }
     .line-journey>div.col-md-8{
         padding-top: 15px;
+    }
+    #popup-connexion{
+        margin-top: 70px;
     }
 }

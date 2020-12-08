@@ -30,6 +30,37 @@ function timeConverter(UNIX_timestamp){
     return time;
   }
 
+  function checkPassword(pwd){
+    let error = false;
+    let msg = '';
+    let csp = ['À','Á','Â','Ã','Ä',',','Å','Æ','Ç','È','É','Ê','Ë','Ì','Í','Î','Ï','Ð','Ñ','Ò','Ó','Ô','Õ','Ö','Ø','Œ','Š','þ','Ù','Ú','Û','Ü','Ý','Ÿ','à','á','â','ã','ä','å','æ','ç','è','é','ê','ë','ì','í','î','ï','ð','ñ','ò','ó','ô','õ','ö','ø','œ','š','Þ','ù','ú','û','ü','ý','ÿ','¢','ß','¥','£','™','©','®','ª','×','÷','±','²','³','¼','½','¾','µ','¿','¶','·','¸','º','°','¯','§','…','¤','¦','≠','¬','ˆ','¨','‰'];
+    if(typeof pwd == 'string'){
+      if(pwd.length > 5){
+        for (let cs of csp){
+          if(pwd.indexOf(cs) != -1){
+            error = true;
+            msg = 'Les caractères spéciaux sont interdits';
+            break;
+          }
+        }        
+      }else{
+        error = true;
+        msg = 'Le mot de passe doit faire au moins 6 caratères';  
+      }
+
+    }else{
+      error = true;
+      msg = 'Le format du mot de passe est incorrect';
+    }
+    if(error == true){
+      return [false, msg];
+    }
+    return true;
+  }
+
   export {
-    timeConverter, getDate, getHour
+    timeConverter, 
+    getDate, 
+    getHour, 
+    checkPassword
 };

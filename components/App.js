@@ -6,6 +6,23 @@ import Logout from './log/Logout';
 import AddJourney from './journey/AddJourney';
 import JourneyList from './journey/JourneyList.js';
 
+let styles = {
+  mfs: {
+    width: '100%', 
+    height: '0px', 
+    backgroundColor: '#00ba62', 
+    color: 'white',
+    position: 'fixed',
+    top: '0px',
+    zIndex: '2',
+    textAlign: 'center',
+    transition: 'height 0.5s',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold'
+  }
+}
 
 export default class App extends Component {
   
@@ -23,15 +40,15 @@ export default class App extends Component {
       <div>
       <BrowserRouter>
             <div className="">
-                <div id="message-flash"></div>
+                <div id="message-flash" style={styles.mfs}></div>
                 
                 <div className="container-app">
                 
-                  <AnimatedSwitch
+                  {/* <AnimatedSwitch
                     atEnter={{ opacity: 0 }}
                     atLeave={{ opacity: 0 }}
                     atActive={{ opacity: 1 }}
-                    className="switch-wrapper">
+                    className="switch-wrapper"> */}
                           <Route 
                             path="/app"
                             data={data}
@@ -42,12 +59,12 @@ export default class App extends Component {
                             data={data}
                             render={(props) => { return <AddJourney {...props}/>}} 
                           />
-                          <Route 
+                          {/* <Route 
                             path="/logout"
                             data={data}
                             render={(props) => { return <Logout {...props}/>}} 
-                          />
-                  </AnimatedSwitch>
+                          /> */}
+                  {/* </AnimatedSwitch> */}
                 </div>
                 <Route 
                   render={ (props) => { return <NavBar {...props}/>} }

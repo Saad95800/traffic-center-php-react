@@ -86,5 +86,72 @@ module.exports = [
         externals: {
             jquery: 'jQuery'
           }
+    },
+    ///////////////////////////// Second file output
+    {
+        // client side rendering
+        target: 'web',
+        entry: {
+            client: './vitrine.js'
+        },
+        output: {
+            path: path.resolve(__dirname, './public/vitrine'),
+            filename: '[name].js',
+            publicPath: common.publicPath
+        },
+        watch: true,
+        mode: NODE_ENV,
+        plugins: [
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery"
+              })
+          ],
+        resolve: common.resolve,
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                "@babel/preset-env","@babel/preset-react"
+                            ]
+                        },
+                    },
+                },
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader'],
+                },
+                { 
+                    test: require.resolve('jquery'), 
+                    use: [{
+                        loader: 'expose-loader',
+                        options: '$'
+                    }]
+                },
+                {
+                    test: /\.(pdf|jpe)$/i,
+                    use: [
+                      {
+                        loader: 'file-loader',
+                      },
+                    ],
+                }
+            ]
+        },
+        devtool: 'source-map',
+        devServer: {
+            contentBase: common.path,
+            publicPath: common.publicPath,
+            open: true,
+            historyApiFallback: true
+        },
+        externals: {
+            jquery: 'jQuery'
+          }      
     }
 ];

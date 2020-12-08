@@ -40,6 +40,7 @@
         <!-- Core theme JS-->
         <script src="<?= URLROOT ?>/public/js/scripts.js"></script>
         <script>
+
             document.getElementById('btn-connexion').addEventListener('click', function(e){
                 e.preventDefault();
                 displayPopupConnexion();
@@ -50,21 +51,15 @@
                 displayPopupConnexion();
             });
 
+            document.getElementById('popup-connexion').addEventListener('click', function(e){
+                e.stopPropagation();
+            });
+
             function displayPopupConnexion(){
                 document.getElementById('black-screen').style.display = "flex";
                 document.getElementById('popup-connexion').style.display = "flex";
             }
 
-            document.getElementById('popup-connexion').addEventListener('click', function(e){
-                e.stopPropagation();
-            });
-
-            document.getElementById('black-screen').addEventListener('click', function(e){
-                hidePopupConnexion();
-            });
-
-
-
             function hidePopupConnexion(){
                 document.getElementById('black-screen').style.display = "none";
                 document.getElementById('popup-connexion').style.display = "none";    
@@ -74,4 +69,6 @@
                 document.getElementById('black-screen').style.display = "none";
                 document.getElementById('popup-connexion').style.display = "none";    
             }
+
         </script>
+        <script src="<?= URLROOT ?>/public/vitrine/client.js"></script>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import NavItem from './NavItem';
+import axios from 'axios';
 
 export default class NavBar extends Component {
 
@@ -25,6 +26,33 @@ export default class NavBar extends Component {
         menuHidden: false
       })
     }
+  }
+
+  logout(e){
+    e.preventDefault();
+
+    axios({
+      method: 'post',
+      url: '/logout',
+      responseType: 'json',
+      data: {}
+    })
+    .then((response) => {
+      console.log(response);
+      if(response.statusText == 'OK'){
+        window.localStorage.setItem('id_company', '');
+        window.localStorage.setItem('date_connexion', '');
+        document.location.href="/";
+      }else{
+        this.viewMessageFlash('Erreur lors de la tentative de déconnexion', true);
+      }
+
+    })
+    .catch( (error) => {
+      console.log(error);
+      this.viewMessageFlash('Erreur lors de la déconnexion', true);
+    });
+
   }
 
   render() {
@@ -59,13 +87,22 @@ export default class NavBar extends Component {
                             text=""
                             imgClassName="size50 add-journey-img"
                           />
-            <NavItem
+            {/* <NavItem
                             url={'/logout'}
                             class="display-flex-center navbar-item logout"
                             namelink="Se déconnecter"
                             text=""
                             imgClassName="size50 logout-img"
-                          />
+                          /> */}
+            <div className="display-flex-center navbar-item logout">
+                <a href="/logout" onClick={this.logout.bind(this)}>
+                  <div className="display-flex-center">
+                    <div className="size50 logout-img" style={{textAlign: 'center'}}></div>
+                    <span style={{textAlign: 'center', fontSize: '16px', color: '#fff'}}>Se déconnecter</span>
+                  </div> 
+                </a>
+            </div>
+
         </nav>
       </div>
     );
