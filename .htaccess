@@ -2,7 +2,7 @@ Options -Indexes
 
 Options +FollowSymlinks
 RewriteEngine on
-Header always set Referrer-Policy "unsafe-url"
+
 # RewriteBase /public/
 ############################## News HTaccess
 
@@ -14,6 +14,8 @@ RewriteRule ^logout$ index.php?controller=authenticationController&method=logout
 RewriteRule ^get-journey-list$ index.php?controller=appController&method=getJourneyListAjax [L]
 RewriteRule ^save-company-ajax$ index.php?controller=appController&method=saveCompanyAjax [L]
 RewriteRule ^connect-company-ajax$ index.php?controller=authenticationController&method=connectUserAjax [L]
+RewriteRule ^get-company-ajax$ index.php?controller=appController&method=getCompanyAjax [L]
+RewriteRule ^save-journey-ajax$ index.php?controller=appController&method=saveJourneyAjax [L]
 
 # ACCUEIL
 #RewriteRule ^home$ index.php?controller=AccueilController&method=indexAction [L]

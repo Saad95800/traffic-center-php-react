@@ -13,9 +13,42 @@ export default class NavBar extends Component {
       hidden = true;
     }
     this.state = {
-      menuHidden: hidden
+      menuHidden: hidden,
+      companyName: ''
     }
     
+  }
+
+  componentDidMount(){
+    let id_company = localStorage.getItem('id_company');
+    let formData = new FormData();
+    formData.append('id_company', id_company);
+    
+    axios({
+      method: 'POST',
+      url: '/get-company-ajax',
+      responseType: 'json',
+      data: formData
+    })
+    .then((response) => {
+
+      console.log(response);
+      if(response.statusText == 'OK'){
+        if(response.data.error == true){
+          this.viewMessageFlash('Erreur lors de l\'affichage des données', true);
+        }else{
+          this.setState({companyName: response.data.name_company})
+        }
+      }else{
+        this.viewMessageFlash('Erreur lors de l\'affichage des données', true);
+      }
+
+
+    })
+    .catch( (error) => {
+      console.log(error);
+    });
+
   }
 
   viewMenu(){
@@ -32,9 +65,12 @@ export default class NavBar extends Component {
     e.preventDefault();
 
     axios({
-      method: 'post',
+      method: 'POST',
       url: '/logout',
       responseType: 'json',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
       data: {}
     })
     .then((response) => {
@@ -61,6 +97,17 @@ export default class NavBar extends Component {
     if(this.state.menuHidden === false){
       cssNavbar = '0px';
     }
+    let add_journey = '';
+
+    if(localStorage.getItem('id_company') == 1){
+      add_journey = <NavItem
+                            url={'/add-journey'}
+                            class="display-flex-center navbar-item add-journey"
+                            namelink="Ajouter un trajet"
+                            text=""
+                            imgClassName="size50 add-journey-img"
+                          />      
+    }
 
     return (
       <div>
@@ -70,7 +117,7 @@ export default class NavBar extends Component {
                             url={'/app'}
                             class="display-flex-center logo-item vitrine-item"
                             namelink=""
-                            text="Traffic Center"
+                            text={this.state.companyName}
                             imgClassName="size50 logo-img display-flex-center"
                           />
             <NavItem
@@ -80,13 +127,7 @@ export default class NavBar extends Component {
                             text=""
                             imgClassName="size50 list-journey-img"
                           />
-            <NavItem
-                            url={'/add-journey'}
-                            class="display-flex-center navbar-item add-journey"
-                            namelink="Ajouter un trajet"
-                            text=""
-                            imgClassName="size50 add-journey-img"
-                          />
+            {add_journey}
             {/* <NavItem
                             url={'/logout'}
                             class="display-flex-center navbar-item logout"

@@ -36,11 +36,14 @@ export default class ConnexionSystem extends Component {
         password1: '',
         password2: '',
         siretLogin: '',
-        passwordLogin: ''
+        passwordLogin: '',
+        displayMessageFlash: 'none'
       }
+
       if(screen.width < 450){
         styles.mfs.top = '73px'
       }
+      
     }
 
     componentDidMount(){
@@ -84,10 +87,17 @@ export default class ConnexionSystem extends Component {
     submitSignupForm(e){
         e.preventDefault()
 
+        let formData = new FormData();
+            formData.append('email', this.state.email);
+            formData.append('telephone', this.state.phone_number);
+            formData.append('company_name', this.state.companyName);
+            formData.append('siret', this.state.siret);
+            formData.append('password', this.state.password1);
+
         if(this.state.email != '' &&
-        this.state.siret != '' &&
-        this.state.password1  != '' &&
-        this.state.password2  != '' ){
+           this.state.siret != '' &&
+           this.state.password1  != '' &&
+           this.state.password2  != '' ){
           if(this.state.password1 == this.state.password2){
             let res = checkPassword(this.state.password1);
             if(Array.isArray(res)){
@@ -96,16 +106,13 @@ export default class ConnexionSystem extends Component {
                 console.log('save company ajax');
 
               axios({
-                method: 'post',
+                method: 'POST',
                 url: '/save-company-ajax',
                 responseType: 'json',
-                data: JSON.stringify({
-                       email: this.state.email, 
-                       telephone: this.state.phone_number, 
-                       company_name: this.state.companyName, 
-                       siret: this.state.siret, 
-                       password: this.state.password1 
-                    })
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: formData
               })
               .then((response) => {
                 console.log(response);
@@ -141,20 +148,22 @@ export default class ConnexionSystem extends Component {
       
       e.preventDefault()
 
-      console.log("login submit");
+
       if(this.state.siretLogin != '' &&
       this.state.passwordLogin  != ''){
 
-            console.log('connect company ajax');
+            let formData = new FormData();
+            formData.append('siret', this.state.siretLogin);
+            formData.append('password', this.state.passwordLogin);
 
             axios({
-              method: 'post',
+              method: 'POST',
               url: '/connect-company-ajax',
               responseType: 'json',
-              data: JSON.stringify({
-                     siret: this.state.siretLogin,
-                     password: this.state.passwordLogin
-                  })
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              data: formData
             })
             .then((response) => {
               console.log(response);

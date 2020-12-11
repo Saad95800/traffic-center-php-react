@@ -14,12 +14,6 @@ class AuthenticationController extends Controller {
 
     public function connectUserAjax(){
 
-        $data = null;
-        foreach($_POST as $key => $val){
-            $_POST = json_decode($key, true);
-            break;
-        }
-
         if(empty($_POST)){
             echo json_encode([
                 'error' => true,

@@ -10,33 +10,122 @@ export default class Journey extends Component {
     }
 
     changeAvailability(index){
+      if(this.props.page == 'add-journey'){
+
+      
         let newSpaces = this.state.spaces;
         if(newSpaces[index].is_empty == 1){
+          
+          // console.log(newSpaces[index+1].is_empty +' - '+ newSpaces[index+11+1].is_empty +' - '+ newSpaces[index+22+1].is_empty)
+
+          if(index == 10 || index == 21 || index == 32){
             newSpaces[index].is_empty = 0;
+          }else{
+
+            if(index >= 0 && index <=10){ // On a cliqué sur la ligne 1
+              if( (newSpaces[index+1].is_empty == 0 && 
+                newSpaces[index+11+1].is_empty == 0 && 
+                newSpaces[index+22+1].is_empty == 0) ){
+  
+                  newSpaces[index].is_empty = 0;
+  
+              }
+            }
+            if(index >= 11 && index <=21){ // On a cliqué sur la ligne 2
+              if( (newSpaces[index+1].is_empty == 0 && 
+                newSpaces[index+11+1].is_empty == 0 && 
+                newSpaces[index-11+1].is_empty == 0) ){
+  
+                  newSpaces[index].is_empty = 0;
+  
+              }   
+            }
+            if(index >= 22 && index <=32){ // On a cliqué sur la ligne 3
+              if( (newSpaces[index+1].is_empty == 0 && 
+                newSpaces[index-11+1].is_empty == 0 && 
+                newSpaces[index-22+1].is_empty == 0) ){
+  
+                  newSpaces[index].is_empty = 0;
+  
+              }    
+            }
+      
+          }
+
+
         }else{
-            newSpaces[index].is_empty = 1
+
+          if(index == 0 || index == 11 || index == 22){
+            newSpaces[index].is_empty = 1;
+          }else{
+          if(index >= 0 && index <=10){ // On a cliqué sur la ligne 1
+            if( (newSpaces[index-1].is_empty == 1 && 
+              newSpaces[index+11-1].is_empty == 1 && 
+              newSpaces[index+22-1].is_empty == 1) ){
+
+                newSpaces[index].is_empty = 1;
+
+            }
+          }
+          if(index >= 11 && index <=21){ // On a cliqué sur la ligne 2
+            if( (newSpaces[index-1].is_empty == 1 && 
+              newSpaces[index+11-1].is_empty == 1 && 
+              newSpaces[index-11-1].is_empty == 1) ){
+
+                newSpaces[index].is_empty = 1;
+
+            }   
+          }
+          if(index >= 22 && index <=32){ // On a cliqué sur la ligne 3
+            if( (newSpaces[index-1].is_empty == 1 && 
+              newSpaces[index-11-1].is_empty == 1 && 
+              newSpaces[index-22-1].is_empty == 1) ){
+
+                newSpaces[index].is_empty = 1;
+
+            }    
+          }
+        }
+
         }
         this.setState({spaces: newSpaces})
+
+        this.props.updateSpaces(newSpaces);
+
+      }
     }
 
     render() {
 
         let spaces = this.state.spaces;
-        spaces.map( (space, index) => {
+        // console.log(spaces.length);
+        if(spaces.length != 0){
+          spaces.map( (space, index) => {
             if(space.is_empty == 1){
                 space.color = '#00de00';
             }else{
                 space.color = '#ff5e5e';
             }
-        });
-        console.log(spaces);
-        console.log(spaces[0]);
-        console.log(spaces[0].color);
+          });
+        }else{
+          let j = 1;
+          let k = 1;
+          for(let i = 0; i < 33; i++){
+            spaces[i] = {color: '#00de00', is_empty: 1, row: j, position: k, id_space: null}
+            k++;
+            if(i == 10 || i == 21){
+              j++;
+              k = 1;
+            }
+          }
+        }
+
+        // console.log(spaces);
         return (
-            <div className="col-md-8">
+            <div className="col-md-12">
                       <div className="display-flex-center height100">
                         <div className="row width100" style={{minHeight: '100px'}}>
-                          <div className="col-7" style={{marginRight: '-16px', height: '130px'}}>
+                          <div className="col-sm-7 col-xs-12" style={{marginRight: '-16px', height: '130px'}}>
                             <div className="block-line-squares">
                               <div className="little-square" onClick={() => {this.changeAvailability(0)}} style={{backgroundColor: spaces[0].color}}></div>
                               <div className="little-square" onClick={() => {this.changeAvailability(1)}} style={{backgroundColor: spaces[1].color}}></div>
@@ -77,7 +166,7 @@ export default class Journey extends Component {
                               <div className="little-square" onClick={() => {this.changeAvailability(32)}} style={{backgroundColor: spaces[32].color}}></div>
                             </div>
                           </div>
-                          <div className="col-3">
+                          <div className="col-3 d-none d-sm-block">
                             <img src="http://traffic-center.local/public/img/front-truck.png" />
                           </div>
                         </div>

@@ -103,4 +103,19 @@ class CompanyManager extends Model {
         return false;
     }
 
+    public function getCompanyById($id_company){
+
+        $sql = "SELECT * FROM company WHERE id_company = :id_company";
+
+        $req = $this->dbh->prepare($sql);
+        $req->bindValue(':id_company', htmlentities($id_company));
+        $req->execute();
+        $company = $req->fetch(\PDO::FETCH_OBJ);
+        if ($company) {
+            return $company;
+        }
+        return false;
+
+    }
+
 }

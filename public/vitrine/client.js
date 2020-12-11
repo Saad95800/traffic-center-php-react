@@ -361,7 +361,8 @@ var ConnexionSystem = /*#__PURE__*/function (_Component) {
       password1: '',
       password2: '',
       siretLogin: '',
-      passwordLogin: ''
+      passwordLogin: '',
+      displayMessageFlash: 'none'
     };
 
     if (screen.width < 450) {
@@ -429,6 +430,12 @@ var ConnexionSystem = /*#__PURE__*/function (_Component) {
       var _this3 = this;
 
       e.preventDefault();
+      var formData = new FormData();
+      formData.append('email', this.state.email);
+      formData.append('telephone', this.state.phone_number);
+      formData.append('company_name', this.state.companyName);
+      formData.append('siret', this.state.siret);
+      formData.append('password', this.state.password1);
 
       if (this.state.email != '' && this.state.siret != '' && this.state.password1 != '' && this.state.password2 != '') {
         if (this.state.password1 == this.state.password2) {
@@ -439,16 +446,13 @@ var ConnexionSystem = /*#__PURE__*/function (_Component) {
           } else {
             console.log('save company ajax');
             axios__WEBPACK_IMPORTED_MODULE_1___default()({
-              method: 'post',
+              method: 'POST',
               url: '/save-company-ajax',
               responseType: 'json',
-              data: JSON.stringify({
-                email: this.state.email,
-                telephone: this.state.phone_number,
-                company_name: this.state.companyName,
-                siret: this.state.siret,
-                password: this.state.password1
-              })
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              data: formData
             }).then(function (response) {
               console.log(response);
 
@@ -485,18 +489,19 @@ var ConnexionSystem = /*#__PURE__*/function (_Component) {
       var _this4 = this;
 
       e.preventDefault();
-      console.log("login submit");
 
       if (this.state.siretLogin != '' && this.state.passwordLogin != '') {
-        console.log('connect company ajax');
+        var formData = new FormData();
+        formData.append('siret', this.state.siretLogin);
+        formData.append('password', this.state.passwordLogin);
         axios__WEBPACK_IMPORTED_MODULE_1___default()({
-          method: 'post',
+          method: 'POST',
           url: '/connect-company-ajax',
           responseType: 'json',
-          data: JSON.stringify({
-            siret: this.state.siretLogin,
-            password: this.state.passwordLogin
-          })
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: formData
         }).then(function (response) {
           console.log(response);
 
