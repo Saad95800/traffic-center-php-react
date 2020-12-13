@@ -43,6 +43,10 @@ export default class AddJourney extends Component {
     //   this.setState(data);
     // }
 
+    // componentDidMount(){
+    //   this.props.hideMenu()
+    // }
+
     saveJourney(e){
 
       e.preventDefault();
@@ -113,7 +117,7 @@ export default class AddJourney extends Component {
       // }
 
         return (
-          <div className="display-flex-center">
+          <div className="display-flex-center" style={{marginBottom: '100px'}}>
             <h1 className="mgtop50">Ajouter un trajet</h1>
             <div className="form-container" style={{minWidth: '70%'}}>
               <form method="POST" encType="multipart/form-data">
@@ -144,7 +148,9 @@ export default class AddJourney extends Component {
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
                   <Journey spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}/>
                 </div>
-                <button type="submit" onClick={this.saveJourney.bind(this)} className="btn btn-primary">Enregistrer</button>
+                <div className="display-flex-center">
+                  <button type="submit" onClick={this.saveJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
+                </div>
               </form>
             </div>
           </div>

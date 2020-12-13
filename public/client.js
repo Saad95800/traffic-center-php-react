@@ -424,7 +424,8 @@ var App = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
     _this.state = {
-      displayMessageFlash: 'none'
+      displayMessageFlash: 'none',
+      menuHidden: false
     };
     return _this;
   }
@@ -455,6 +456,14 @@ var App = /*#__PURE__*/function (_Component) {
       });
       var mf = document.querySelector("#message-flash");
       mf.style.height = '0px';
+    }
+  }, {
+    key: "hideMenu",
+    value: function hideMenu() {
+      console.log('click hide menu');
+      this.setState({
+        menuHidden: true
+      });
     }
   }, {
     key: "render",
@@ -491,20 +500,29 @@ var App = /*#__PURE__*/function (_Component) {
         path: "/app",
         data: data,
         render: function render(props) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_JourneyList_js__WEBPACK_IMPORTED_MODULE_6__["default"], props);
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_JourneyList_js__WEBPACK_IMPORTED_MODULE_6__["default"], _extends({}, props, {
+            hideMenu: function hideMenu() {
+              _this2.hideMenu();
+            }
+          }));
         }
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
         path: "/add-journey",
         data: data,
         render: function render(props) {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_AddJourney__WEBPACK_IMPORTED_MODULE_5__["default"], _extends({}, props, {
+            hideMenu: function hideMenu() {
+              _this2.hideMenu();
+            },
             viewMessageFlash: _this2.viewMessageFlash.bind(_this2),
             hideMessageFlash: _this2.hideMessageFlash.bind(_this2)
           }));
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
         render: function render(props) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_navbar_Navbar__WEBPACK_IMPORTED_MODULE_3__["default"], props);
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_navbar_Navbar__WEBPACK_IMPORTED_MODULE_3__["default"], _extends({}, props, {
+            menuHidden: _this2.state.menuHidden
+          }));
         }
       }))));
     }
@@ -701,6 +719,9 @@ var AddJourney = /*#__PURE__*/function (_Component) {
   // updateDate(data){
   //   this.setState(data);
   // }
+  // componentDidMount(){
+  //   this.props.hideMenu()
+  // }
 
 
   _createClass(AddJourney, [{
@@ -778,7 +799,10 @@ var AddJourney = /*#__PURE__*/function (_Component) {
 
 
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "display-flex-center"
+        className: "display-flex-center",
+        style: {
+          marginBottom: '100px'
+        }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", {
         className: "mgtop50"
       }, "Ajouter un trajet"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -867,11 +891,16 @@ var AddJourney = /*#__PURE__*/function (_Component) {
         spaces: this.state.spaces,
         page: "add-journey",
         updateSpaces: this.updateSpaces.bind(this)
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "display-flex-center"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit",
         onClick: this.saveJourney.bind(this),
-        className: "btn btn-primary"
-      }, "Enregistrer"))));
+        className: "btn btn-primary",
+        style: {
+          backgroundColor: '#6475a1'
+        }
+      }, "Enregistrer")))));
     }
   }]);
 
@@ -1405,6 +1434,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
+      this.props.hideMenu();
       var data = {};
       axios__WEBPACK_IMPORTED_MODULE_1___default()({
         method: 'POST',
@@ -1415,16 +1445,12 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         },
         data: data
       }).then(function (response) {
-        console.log(response);
-
         if (response.statusText == 'OK') {
           if (response.data.error == true) {
-            if (response.data.error_code == 1) {
-              _this2.viewMessageFlash(response.data.msg, true); // document.location.href="/app";
-
-            } else {
-              _this2.viewMessageFlash(response.data.msg, true);
-            }
+            if (response.data.error_code == 1) {// this.viewMessageFlash(response.data.msg, true);
+              // document.location.href="/app";
+            } else {// this.viewMessageFlash(response.data.msg, true);
+              }
           } else {
             _this2.setState({
               journeys: response.data
@@ -1748,7 +1774,7 @@ var NavBar = /*#__PURE__*/function (_Component) {
     }
 
     _this.state = {
-      menuHidden: hidden,
+      menuHidden: _this.props.menuHidden,
       companyName: ''
     };
     return _this;

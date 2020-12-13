@@ -17,6 +17,8 @@ export default class JourneyList extends Component {
 
     componentDidMount(){
 
+        this.props.hideMenu()
+
         let data = {};
 
           axios({
@@ -30,14 +32,13 @@ export default class JourneyList extends Component {
           })
           .then((response) => {
 
-            console.log(response);
             if(response.statusText == 'OK'){
               if(response.data.error == true){
                 if(response.data.error_code == 1){
-                  this.viewMessageFlash(response.data.msg, true);
+                  // this.viewMessageFlash(response.data.msg, true);
                   // document.location.href="/app";
                 }else{
-                  this.viewMessageFlash(response.data.msg, true);
+                  // this.viewMessageFlash(response.data.msg, true);
                 }
 
               }else{

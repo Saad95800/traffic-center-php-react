@@ -29,7 +29,8 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      displayMessageFlash: 'none'
+      displayMessageFlash: 'none',
+      menuHidden: false
     }
   }
 
@@ -50,6 +51,11 @@ export default class App extends Component {
       this.setState({displayMessageFlash: 'none'})
       let mf = document.querySelector("#message-flash");
       mf.style.height = '0px'
+  }
+
+  hideMenu(){
+    console.log('click hide menu')
+    this.setState({menuHidden: true})
   }
 
   render() {
@@ -78,12 +84,12 @@ export default class App extends Component {
                           <Route 
                             path="/app"
                             data={data}
-                            render={(props) => { return <JourneyList {...props}/>}} 
+                            render={(props) => { return <JourneyList {...props} hideMenu={() => {this.hideMenu()}}/>}} 
                           />
                           <Route 
                             path="/add-journey"
                             data={data}
-                            render={(props) => { return <AddJourney {...props} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
+                            render={(props) => { return <AddJourney {...props} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
                           />
                           {/* <Route 
                             path="/logout"
@@ -93,7 +99,7 @@ export default class App extends Component {
                   {/* </AnimatedSwitch> */}
                 </div>
                 <Route 
-                  render={ (props) => { return <NavBar {...props}/>} }
+                  render={ (props) => { return <NavBar {...props} menuHidden={this.state.menuHidden}/>} }
                 />
             </div>
       </BrowserRouter>

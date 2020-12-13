@@ -13,7 +13,7 @@ export default class NavBar extends Component {
       hidden = true;
     }
     this.state = {
-      menuHidden: hidden,
+      menuHidden: this.props.menuHidden,
       companyName: ''
     }
     
