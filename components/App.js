@@ -4,6 +4,7 @@ import { AnimatedSwitch } from 'react-router-transition';
 import NavBar from './navbar/Navbar';
 import Logout from './log/Logout';
 import AddJourney from './journey/AddJourney';
+import EditJourney from './journey/EditJourney';
 import JourneyList from './journey/JourneyList.js';
 
 let styles = {
@@ -90,6 +91,11 @@ export default class App extends Component {
                             path="/add-journey"
                             data={data}
                             render={(props) => { return <AddJourney {...props} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
+                          />
+                          <Route 
+                            path="/journey/edit/:id_journey"
+                            data={data}
+                            render={(props) => { return <EditJourney {...props} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
                           />
                           {/* <Route 
                             path="/logout"

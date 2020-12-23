@@ -1,177 +1,249 @@
 import React, { Component } from 'react';
+import $ from 'jQuery';
 
 export default class Journey extends Component {
 
     constructor(props){
       super(props);
       this.state = {
-          spaces: this.props.spaces
+          spaces: [],
+          dropSpaceZone: null
       }
+      this.draggedElement = null;
+      
     }
 
-    changeAvailability(index){
-      if(this.props.page == 'add-journey'){
+    componentDidMount(){
+      let self = this
+      $(document).on('click', '.btn-delete-line', function(){
+        $(this).parent().remove()
 
-      
-        let newSpaces = this.state.spaces;
-        if(newSpaces[index].is_empty == 1){
-          
-          // console.log(newSpaces[index+1].is_empty +' - '+ newSpaces[index+11+1].is_empty +' - '+ newSpaces[index+22+1].is_empty)
+        $("#drop-spaces-zone").css('display', 'inline-block')
+        // if($("#drop-spaces-zone").length == 0){
+        //   console.log(self.dropSpaceZone)
+        //   console.log(self.dropSpaceZone.cloneNode(true))
+        //   let newElement = self.dropSpaceZone.cloneNode(true)
+        //   newElement.setAttribute('id', 'drop-spaces-zone')
+        //   document.querySelector("#block-spaces").appendChild(newElement)
+        //   $("#drop-spaces-zone").css('width', '63px')
+        //   $("#drop-spaces-zone").find(".btn-delete-line").css('display', 'none')
+        //   self.initDropZone($("#drop-spaces-zone"))
+        //   $('.btn-delete-line').each(function(){
+        //     $(this).css('width', $(this).parent().css('width'))
+        //     $(this).css('display', 'inline-block')
+        //   })
+        //   $("#drop-spaces-zone").append('<span class="btn-delete-line" style="display:none;"></span>')          
+        // }
 
-          if(index == 10 || index == 21 || index == 32){
-            newSpaces[index].is_empty = 0;
-          }else{
+      })
+      let element1 = document .getElementById("space-draggable-horizontal-80-120")
+      let element2 = document .getElementById("space-draggable-vertical-80-120")
+      let element3 = document .getElementById("space-draggable-horizontal-100-120")
+      let element4 = document .getElementById("space-draggable-vertical-100-120")
+      this.initDraggable(element1)
+      this.initDraggable(element2)
+      this.initDraggable(element3)
+      this.initDraggable(element4)
+      let element5 = document.getElementById("drop-spaces-zone")
+      this.initDropZone(element5)
+      // this.dropSpaceZone = element5.cloneNode(true)
+    }
 
-            if(index >= 0 && index <=10){ // On a cliqué sur la ligne 1
-              if( (newSpaces[index+1].is_empty == 0 && 
-                newSpaces[index+11+1].is_empty == 0 && 
-                newSpaces[index+22+1].is_empty == 0) ){
-  
-                  newSpaces[index].is_empty = 0;
-  
+    initDraggable(draggable) {
+      draggable.addEventListener("dragstart", (e) => {this.draggedElement = e.target});
+      draggable.addEventListener("drag", () => {});
+      draggable.addEventListener("dragend", () => {});
+      draggable.setAttribute("draggable", "true");
+  }
+
+    initDropZone(dropZone) {
+      dropZone.addEventListener("dragenter", this.dragenter.bind(this));
+      dropZone.addEventListener("dragover", this.dragover.bind(this));
+      dropZone.addEventListener("dragleave", this.dragleave.bind(this));
+      dropZone.addEventListener("drop", this.dropElement.bind(this));
+    }
+
+    deleteDropZone(dropZone){
+      dropZone.removeEventListener("dragenter", this.dragenter.bind(this))
+      dropZone.removeEventListener("dragover", this.dragover.bind(this))
+      dropZone.removeEventListener("dragleave", this.dragleave.bind(this))
+      dropZone.removeEventListener("drop", this.dropElement.bind(this))
+    }
+
+    dragenter(e){
+      e.preventDefault()
+    }
+
+    dragover(e){
+      e.preventDefault()
+    }
+
+    dragleave(e){
+      e.preventDefault()
+    }
+
+    dropElement(ev){
+
+      // let dropSpacesZone = document.querySelector("#drop-spaces-zone")
+      let spacesDraggable = $("#drop-spaces-zone").find('.space-draggable')
+      let nbrSpaceDraggable = $("#drop-spaces-zone").find('.space-draggable').length
+      console.log(nbrSpaceDraggable)
+      let validLine = false
+        ev.preventDefault();
+        if(nbrSpaceDraggable < 3){
+          if(nbrSpaceDraggable == 0){ // Si la dropzone est vide on autorise le drop
+            ev.target.appendChild(this.draggedElement.cloneNode(true))
+          }else if(nbrSpaceDraggable == 1){ // Si il n'y a qu'un seul élément dans la dropzone, on autorise le drop
+            if($(spacesDraggable[0]).data('position') == 'vertical' || $(spacesDraggable[0]).data('size') == '100-120'){ // Si on a que un élément qui est vertical on valide la ligne
+              validLine = true
+            }
+            ev.target.appendChild(this.draggedElement.cloneNode(true))
+          }else if(nbrSpaceDraggable == 2){ // Si il y a 2 éléments dans la dropzone
+            let two80120Horizontal = true
+            spacesDraggable.each(function(){
+              if($(this).data('size') != '80-120' && $(this).data('position') != 'horizontal'){
+                two80120Horizontal = false
               }
+            })
+            if(two80120Horizontal){ // Si on a 2 éléments horizontaux validLine = true
+              validLine = true
             }
-            if(index >= 11 && index <=21){ // On a cliqué sur la ligne 2
-              if( (newSpaces[index+1].is_empty == 0 && 
-                newSpaces[index+11+1].is_empty == 0 && 
-                newSpaces[index-11+1].is_empty == 0) ){
-  
-                  newSpaces[index].is_empty = 0;
-  
-              }   
-            }
-            if(index >= 22 && index <=32){ // On a cliqué sur la ligne 3
-              if( (newSpaces[index+1].is_empty == 0 && 
-                newSpaces[index-11+1].is_empty == 0 && 
-                newSpaces[index-22+1].is_empty == 0) ){
-  
-                  newSpaces[index].is_empty = 0;
-  
-              }    
-            }
+              let hundred = false
+              let positionOk = true
+              spacesDraggable.each(function(){
+                if($(this).data('size') == '100-120'){ // Si un des 2 élément est 100/120 on interdit le drop
+                  hundred = true
+                }
+                if($(this).data('position') == 'vertical'){ // Si un des éléments est vertical on interdit le drop
+                  positionOk = false
+                }
+              })
+              if(hundred == false && positionOk == true && this.draggedElement.getAttribute('data-size') == '80-120'){ // Si les 2 éléments sont horizontaux et 80/120 et que l'élément à placer est 80/120 on autorise le drop
+                ev.target.appendChild(this.draggedElement.cloneNode(true));
+              }
+          }
+        }
+        // Si ce drop est le dernier possible, on valide la ligne de drop
+        if(validLine){
+          this.validLine(ev)
+        }
+
+    }
+
+    cleanLine(e){
+      e.preventDefault()
+      $("#drop-spaces-zone").find('.space-draggable').each(function(){
+        $(this).remove()
+      })
+    }
+
+    validLine(e){
+      e.preventDefault()
+
+      if($('#drop-spaces-zone').find('.space-draggable').length > 0){
+        let newElement = document.querySelector("#drop-spaces-zone").cloneNode(true)
+        let html = ''
+        let i = 1
+        $(".drop-spaces-zone").each(function(){
+          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+i+'" style="border: 3px solid grey;"></span>'+$(this).html()+'</div>'
+          i++
+        })
+        $("#block-spaces").html(html)
+        newElement.innerHTML = ''
+        this.initDropZone(newElement)
+
+        let withSpaces = this.calculSpacesWidth()
+        console.log("width spaces = "+withSpaces)
+        
+        document.querySelector("#block-spaces").appendChild(newElement)
+        newElement.setAttribute('id', 'drop-spaces-zone')
+        $("#drop-spaces-zone").css('width', '63px')
+        $('.btn-delete-line').each(function(){
+          $(this).css('width', $(this).parent().css('width'))
+          $(this).css('display', 'inline-block')
+        })
+        $("#drop-spaces-zone").append('<span class="btn-delete-line" style="display:none;"></span>')
       
-          }
-
-
-        }else{
-
-          if(index == 0 || index == 11 || index == 22){
-            newSpaces[index].is_empty = 1;
-          }else{
-          if(index >= 0 && index <=10){ // On a cliqué sur la ligne 1
-            if( (newSpaces[index-1].is_empty == 1 && 
-              newSpaces[index+11-1].is_empty == 1 && 
-              newSpaces[index+22-1].is_empty == 1) ){
-
-                newSpaces[index].is_empty = 1;
-
-            }
-          }
-          if(index >= 11 && index <=21){ // On a cliqué sur la ligne 2
-            if( (newSpaces[index-1].is_empty == 1 && 
-              newSpaces[index+11-1].is_empty == 1 && 
-              newSpaces[index-11-1].is_empty == 1) ){
-
-                newSpaces[index].is_empty = 1;
-
-            }   
-          }
-          if(index >= 22 && index <=32){ // On a cliqué sur la ligne 3
-            if( (newSpaces[index-1].is_empty == 1 && 
-              newSpaces[index-11-1].is_empty == 1 && 
-              newSpaces[index-22-1].is_empty == 1) ){
-
-                newSpaces[index].is_empty = 1;
-
-            }    
-          }
+        if(withSpaces > 12.110){
+          $("#drop-spaces-zone").css('display', 'none')
         }
-
-        }
-        this.setState({spaces: newSpaces})
-
-        this.props.updateSpaces(newSpaces);
 
       }
+
+    }
+
+    calculSpacesWidth(){
+      let withSpaces = 0
+      $(".drop-spaces-zone").each(function(){
+        console.log($(this).css('width'))
+        switch($(this).css('width')){
+          case '51px':
+            withSpaces += 1
+            break;
+          case '63px':
+            withSpaces += 1.2
+            break;
+          case '44px':
+            withSpaces += 0.8
+            break;
+          default:
+            break;
+        }
+      })
+      return withSpaces
     }
 
     render() {
-
-        let spaces = this.state.spaces;
-        // console.log(spaces.length);
-        if(spaces.length != 0){
-          spaces.map( (space, index) => {
-            if(space.is_empty == 1){
-                space.color = '#00de00';
-            }else{
-                space.color = '#ff5e5e';
-            }
-          });
-        }else{
-          let j = 1;
-          let k = 1;
-          for(let i = 0; i < 33; i++){
-            spaces[i] = {color: '#00de00', is_empty: 1, row: j, position: k, id_space: null}
-            k++;
-            if(i == 10 || i == 21){
-              j++;
-              k = 1;
-            }
-          }
-        }
-
-        // console.log(spaces);
         return (
-            <div className="col-md-12">
-                      <div className="display-flex-center height100">
-                        <div className="row width100" style={{minHeight: '100px'}}>
-                          <div className="col-sm-7 col-xs-12" style={{marginRight: '-16px', height: '130px'}}>
-                            <div className="block-line-squares">
-                              <div className="little-square" onClick={() => {this.changeAvailability(0)}} style={{backgroundColor: spaces[0].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(1)}} style={{backgroundColor: spaces[1].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(2)}} style={{backgroundColor: spaces[2].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(3)}} style={{backgroundColor: spaces[3].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(4)}} style={{backgroundColor: spaces[4].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(5)}} style={{backgroundColor: spaces[5].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(6)}} style={{backgroundColor: spaces[6].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(7)}} style={{backgroundColor: spaces[7].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(8)}} style={{backgroundColor: spaces[8].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(9)}} style={{backgroundColor: spaces[9].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(10)}} style={{backgroundColor: spaces[10].color}}></div>
-                            </div>
-                            <div className="block-line-squares">
-                              <div className="little-square" onClick={() => {this.changeAvailability(11)}} style={{backgroundColor: spaces[11].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(12)}} style={{backgroundColor: spaces[12].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(13)}} style={{backgroundColor: spaces[13].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(14)}} style={{backgroundColor: spaces[14].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(15)}} style={{backgroundColor: spaces[15].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(16)}} style={{backgroundColor: spaces[16].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(17)}} style={{backgroundColor: spaces[17].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(18)}} style={{backgroundColor: spaces[18].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(19)}} style={{backgroundColor: spaces[19].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(20)}} style={{backgroundColor: spaces[20].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(21)}} style={{backgroundColor: spaces[21].color}}></div>
-                            </div>
-                            <div className="block-line-squares">
-                              <div className="little-square" onClick={() => {this.changeAvailability(22)}} style={{backgroundColor: spaces[22].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(23)}} style={{backgroundColor: spaces[23].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(24)}} style={{backgroundColor: spaces[24].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(25)}} style={{backgroundColor: spaces[25].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(26)}} style={{backgroundColor: spaces[26].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(27)}} style={{backgroundColor: spaces[27].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(28)}} style={{backgroundColor: spaces[28].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(29)}} style={{backgroundColor: spaces[29].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(30)}} style={{backgroundColor: spaces[30].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(31)}} style={{backgroundColor: spaces[31].color}}></div>
-                              <div className="little-square" onClick={() => {this.changeAvailability(32)}} style={{backgroundColor: spaces[32].color}}></div>
-                            </div>
-                          </div>
-                          <div className="col-3 d-none d-sm-block">
-                            <img src="http://traffic-center.local/public/img/front-truck.png" />
-                          </div>
-                        </div>
+            <div className="col-12">
+              <div className="row" style={{border: "3px solid black", minHeight: "130px"}}>
+                <div className="col-6" style={{border: "3px solid black"}}>
+                  <div className="text-center">Palettes 80/120</div>
+                  <div className="row" style={{height: "100%"}}>
+                    <div className="col-6">
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                        <div className="space-draggable space-draggable-horizontal-80-120" id="space-draggable-horizontal-80-120" data-size="80-120" data-position="horizontal" draggable="true"></div>
                       </div>
                     </div>
+                    <div className="col-6">
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                        <div className="space-draggable space-draggable-vertical-80-120" id="space-draggable-vertical-80-120" data-size="80-120" data-position="vertical" draggable="true"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-6" style={{border: "3px solid black"}}>
+                  <div className="text-center">Palettes 100/120</div>
+                  <div className="row" style={{height: "100%"}}>
+                    <div className="col-6">
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                        <div className="space-draggable space-draggable-horizontal-100-120" id="space-draggable-horizontal-100-120" data-size="100-120" data-position="horizontal"></div>
+                      </div>
+                    </div>
+                    <div className="col-6">
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                        <div className="space-draggable space-draggable-vertical-100-120" id="space-draggable-vertical-100-120" data-size="100-120" data-position="vertical"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <a href="" onClick={(e) => {this.cleanLine(e)}} style={{display: 'inline-block', marginTop: '15px'}}>Vider la ligne</a>
+              <a href="" onClick={(e) => {this.validLine(e)}} style={{display: 'inline-block', marginTop: '15px'}}>Valider la ligne</a>
+              <div className="display-flex-center height100">
+                <div className="flex-row width100" style={{minHeight: '100px'}}>
+                  <div className="block-spaces" id="block-spaces" style={{marginRight: '-16px', height: '130px'}}>
+                    <div className="drop-spaces-zone" id="drop-spaces-zone">
+                      <span className="btn-delete-line"></span>
+                    </div>
+                  </div>
+                  <div className="col-3 d-none d-sm-block" style={{flex: 2}}>
+                    <img src="http://traffic-center.local/public/img/front-truck.png" />
+                  </div>
+                </div>
+              </div>
+              
+            </div>
         );
       }
   

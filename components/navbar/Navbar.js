@@ -11,9 +11,11 @@ export default class NavBar extends Component {
     let hidden = false;
     if(screen.width < 450){
       hidden = true;
+    }else{
+      hidden = this.props.menuHidden;
     }
     this.state = {
-      menuHidden: this.props.menuHidden,
+      menuHidden: hidden,
       companyName: ''
     }
     
