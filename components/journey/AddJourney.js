@@ -100,6 +100,10 @@ export default class AddJourney extends Component {
 
     }
 
+    viewMessageFlash(msg, error){
+      this.props.viewMessageFlash(msg, error);
+    }
+
     updateSpaces(newSpaces){
       this.setState({spaces: newSpaces})
     }
@@ -146,7 +150,7 @@ export default class AddJourney extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
-                  <Journey spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}/>
+                  <Journey spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}  viewMessageFlash={this.viewMessageFlash.bind(this)}/>
                 </div>
                 <div className="display-flex-center">
                   <button type="submit" onClick={this.saveJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
