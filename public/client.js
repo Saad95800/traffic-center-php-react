@@ -150,201 +150,6 @@ module.exports = function(module) {
 
 /***/ }),
 
-/***/ "../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js":
-/*!*************************************************!*\
-  !*** (webpack)/node_modules/process/browser.js ***!
-  \*************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
 /***/ "./components/App.js":
 /*!***************************!*\
   !*** ./components/App.js ***!
@@ -663,6 +468,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -685,7 +492,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
- // import DateTimePicker from './DateTimePicker';
+
 
 
 
@@ -701,52 +508,47 @@ var AddJourney = /*#__PURE__*/function (_Component) {
 
     _classCallCheck(this, AddJourney);
 
-    _this = _super.call(this, props); // let today = new Date();
-
+    _this = _super.call(this, props);
     _this.state = {
       delivery_company: localStorage.getItem('id_company'),
       departure: '',
       arrival: '',
       date_departure: '',
+      date_arrival: '',
       time_departure: '',
       spaces: [],
-      redirect: null // showPickyDateTime: false,
-      // date: today.getDate(),
-      // month: today.getMonth(),
-      // year: today.getFullYear(),
-      // hour: today.getHours(),
-      // minute: today.getMinutes(),
-      // second: today.getSeconds(),
-      // meridiem: 'PM'
-
+      redirect: null,
+      nbStopOver: 0
     };
     return _this;
-  } // showDatePicker(e){
-  //   e.stopPropagation();
-  //   if(this.state.showPickyDateTime == false){
-  //     this.setState({showPickyDateTime: true})
-  //   }
-  // }
-  // hideDatePicker(){
-  //   this.setState({showPickyDateTime: false})
-  // }
-  // updateDate(data){
-  //   this.setState(data);
-  // }
-  // componentDidMount(){
-  //   this.props.hideMenu()
-  // }
-
+  }
 
   _createClass(AddJourney, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.setState({
+        nbStopOver: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".block-stop-over").length
+      });
+      var self = this;
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(document).on('click', '.btn-delete-stop-over', function () {
+        // self.setState({nbStopOver: $(".block-stop-over").length})
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).parent().remove();
+        self.setState({
+          nbStopOver: self.state.nbStopOver - 1
+        });
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#block-stop-over-" + (self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block");
+        self.state.nbStopOver - 1;
+        console.log('stop over removed');
+      });
+    }
+  }, {
     key: "saveJourney",
     value: function saveJourney(e) {
       var _this2 = this;
 
       e.preventDefault();
 
-      if (this.state.delivery_company == '' || this.state.departure == '' || this.state.arrival == '' || this.state.date_departure == '' || this.state.time_departure == '') {
-        console.log('here');
+      if (this.state.delivery_company == '' || this.state.departure == '' || this.state.arrival == '' || this.state.date_departure == '' || this.state.date_arrival == '' || this.state.time_departure == '') {
         this.props.viewMessageFlash('Tout les champs doivent être remplis', true);
         return;
       }
@@ -756,8 +558,18 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       formData.append('departure', this.state.departure);
       formData.append('arrival', this.state.arrival);
       formData.append('date_departure', this.state.date_departure);
+      formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
       formData.append('spaces', JSON.stringify(this.state.spaces));
+
+      if (jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".stop-over-input").length > 0) {
+        var i = 0;
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".stop-over-input").each(function () {
+          formData.append('stop-over-' + i, jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).val());
+          i++;
+        });
+      }
+
       axios__WEBPACK_IMPORTED_MODULE_3___default()({
         method: 'POST',
         url: '/save-journey-ajax',
@@ -786,7 +598,7 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       })["catch"](function (error) {
         console.log(error);
 
-        _this2.props.viewMessageFlash('Erreur lors de l\'ajout', true);
+        _this2.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
       });
     }
   }, {
@@ -802,6 +614,19 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       });
     }
   }, {
+    key: "addStopover",
+    value: function addStopover(e) {
+      console.log("add stop over");
+      e.preventDefault();
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".btn-delete-stop-over").each(function () {
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).css('display', 'none');
+      });
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
+      this.setState({
+        nbStopOver: this.state.nbStopOver + 1
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this3 = this;
@@ -810,12 +635,7 @@ var AddJourney = /*#__PURE__*/function (_Component) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Redirect"], {
           to: this.state.redirect
         });
-      } // let date_picker = this.state.date + '/' + this.state.month + '/' + this.state.year
-      // let datepicker = '';
-      // if(this.state.showPickyDateTime){
-      //   datepicker = <DateTimePicker showPickyDateTime={this.state.showPickyDateTime} hideDatePicker={this.hideDatePicker.bind(this)} updateDate={this.updateDate.bind(this)}/>
-      // }
-
+      }
 
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center",
@@ -860,7 +680,22 @@ var AddJourney = /*#__PURE__*/function (_Component) {
           });
         },
         placeholder: "Ex : Marseille"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "",
+        onClick: function onClick(e) {
+          _this3.addStopover(e);
+        },
+        style: {
+          display: 'inline-block',
+          marginLeft: '10px'
+        }
+      }, "Ajouter une escale")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group",
+        id: "container-stop-over",
+        style: {
+          paddingLeft: '30px'
+        }
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "arrival"
@@ -900,6 +735,20 @@ var AddJourney = /*#__PURE__*/function (_Component) {
         onChange: function onChange() {
           _this3.setState({
             time_departure: document.querySelector('#time-departure').value
+          });
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group",
+        id: "container-picky-date-time"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "hour-departure"
+      }, "Date d'arriv\xE9e"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "date",
+        className: "form-control",
+        id: "date-arrival",
+        onChange: function onChange() {
+          _this3.setState({
+            date_arrival: document.querySelector('#date-arrival').value
           });
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -931,6 +780,128 @@ var AddJourney = /*#__PURE__*/function (_Component) {
 
 /***/ }),
 
+/***/ "./components/journey/Dragbox.js":
+/*!***************************************!*\
+  !*** ./components/journey/Dragbox.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Dragbox; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+var Dragbox = /*#__PURE__*/function (_Component) {
+  _inherits(Dragbox, _Component);
+
+  var _super = _createSuper(Dragbox);
+
+  function Dragbox(props) {
+    var _this;
+
+    _classCallCheck(this, Dragbox);
+
+    _this = _super.call(this, props);
+    _this.state = {
+      isMoving: false,
+      top: 0,
+      left: 0,
+      originTop: 0,
+      originLeft: 0,
+      clickTop: 0,
+      clickLeft: 0,
+      zIndex: 1
+    };
+    _this.handleStartMove = _this.handleStartMove.bind(_assertThisInitialized(_this));
+    _this.handleMouseMove = _this.handleMouseMove.bind(_assertThisInitialized(_this));
+    _this.handleEndMove = _this.handleEndMove.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(Dragbox, [{
+    key: "handleStartMove",
+    value: function handleStartMove(e) {
+      console.log("start");
+      this.setState({
+        isMoving: true,
+        originTop: this.state.top,
+        originLeft: this.state.left,
+        clickTop: this.props.clickTop,
+        clickLeft: this.props.clickLeft,
+        zIndex: 2
+      });
+    }
+  }, {
+    key: "handleMouseMove",
+    value: function handleMouseMove(e) {
+      if (this.state.isMoving) {
+        console.log("move");
+        e.preventDefault();
+        this.setState({
+          top: this.state.originTop + (e.clientY - this.state.clickTop),
+          left: this.state.originLeft + (e.clientX - this.state.clickLeft)
+        });
+      }
+    }
+  }, {
+    key: "handleEndMove",
+    value: function handleEndMove() {
+      console.log("end");
+      this.setState({
+        isMoving: false,
+        zIndex: 1
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dragbox",
+        onMouseDown: this.handleStartMove,
+        onMouseMove: this.handleMouseMove,
+        onMouseUp: this.handleEndMove,
+        onMouseLeave: this.handleEndMove,
+        style: {
+          top: "".concat(this.state.top, "px"),
+          left: "".concat(this.state.left, "px"),
+          zIndex: "".concat(this.state.zIndex)
+        }
+      }, "Dragbox #", this.props.number);
+    }
+  }]);
+
+  return Dragbox;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+
+
+/***/ }),
+
 /***/ "./components/journey/EditJourney.js":
 /*!*******************************************!*\
   !*** ./components/journey/EditJourney.js ***!
@@ -947,7 +918,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_5__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -974,32 +951,188 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
+
 var EditJourney = /*#__PURE__*/function (_Component) {
   _inherits(EditJourney, _Component);
 
   var _super = _createSuper(EditJourney);
 
   function EditJourney(props) {
+    var _this$state;
+
     var _this;
 
     _classCallCheck(this, EditJourney);
 
     _this = _super.call(this, props);
-    _this.state = {
-      redirect: false
-    };
+    _this.state = (_this$state = {
+      redirect: false,
+      delivery_company: localStorage.getItem('id_company'),
+      departure: '',
+      arrival: '',
+      date_departure: '',
+      date_arrival: '',
+      time_departure: ''
+    }, _defineProperty(_this$state, "date_arrival", ''), _defineProperty(_this$state, "spaces", []), _defineProperty(_this$state, "nbStopOver", 0), _this$state);
+    _this.id_journey = null;
     return _this;
   }
 
   _createClass(EditJourney, [{
-    key: "saveJourney",
-    value: function saveJourney(e) {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var data = {};
+      var id_journey = document.location.href.split('/')[5];
+      this.id_journey = id_journey;
+      axios__WEBPACK_IMPORTED_MODULE_3___default()({
+        method: 'POST',
+        url: '/get-journey/' + id_journey,
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: data
+      }).then(function (response) {
+        console.log(response);
+
+        if (response.statusText == 'OK') {
+          if (response.data.error == true) {
+            _this2.viewMessageFlash('Erreur lors de la récupération des données', true);
+          } else {
+            _this2.setState({
+              journey: response.data,
+              departure: response.data.departure.charAt(0).toUpperCase() + response.data.departure.slice(1),
+              arrival: response.data.arrival.charAt(0).toUpperCase() + response.data.arrival.slice(1),
+              date_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
+              time_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("HH:mm"),
+              date_arrival: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
+              spaces: response.data.spaces,
+              stopovers: response.data.stopovers
+            });
+
+            var _self = _this2;
+            response.data.stopovers.map(function (stopover, index) {
+              jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + stopover.nb_stopover + '"><label for="stop-over-' + stopover.nb_stopover + '">Escale ' + (parseInt(stopover.nb_stopover) + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="' + stopover.city + '" class="form-control stop-over-input" id="stop-over-' + stopover.nb_stopover + '" placeholder="Ex : Marseille" /></div>');
+
+              _self.setState({
+                nbStopOver: _this2.state.nbStopOver + 1
+              });
+            });
+            jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
+              console.log(jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().attr('id'));
+              console.log("block-stop-over-" + (_self.state.nbStopOver - 1));
+
+              if (jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().attr('id') != "block-stop-over-" + (_self.state.nbStopOver - 1)) {
+                jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
+              }
+            });
+          }
+        } else {
+          _this2.viewMessageFlash('Erreur lors de la récupération des données', true);
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      var self = this;
+      jQuery__WEBPACK_IMPORTED_MODULE_5___default()(document).on('click', '.btn-delete-stop-over', function () {
+        // self.setState({nbStopOver: $(".block-stop-over").length})
+        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().remove();
+        self.setState({
+          nbStopOver: self.state.nbStopOver - 1
+        });
+        jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#block-stop-over-" + (self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block");
+        self.state.nbStopOver - 1;
+        console.log('stop over removed');
+      });
+    }
+  }, {
+    key: "updateJourney",
+    value: function updateJourney(e) {
+      var _this3 = this;
+
       e.preventDefault();
+
+      if (this.state.delivery_company == '' || this.state.departure == '' || this.state.arrival == '' || this.state.date_departure == '' || this.state.date_arrival == '' || this.state.time_departure == '') {
+        this.props.viewMessageFlash('Tout les champs doivent être remplis', true);
+        return;
+      }
+
+      var formData = new FormData();
+      formData.append('delivery_company', this.state.delivery_company);
+      formData.append('departure', this.state.departure);
+      formData.append('arrival', this.state.arrival);
+      formData.append('date_departure', this.state.date_departure);
+      formData.append('date_arrival', this.state.date_arrival);
+      formData.append('time_departure', this.state.time_departure);
+      formData.append('spaces', JSON.stringify(this.state.spaces));
+      formData.append('id_journey', this.id_journey);
+
+      if (jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".stop-over-input").length > 0) {
+        var i = 0;
+        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".stop-over-input").each(function () {
+          formData.append('stop-over-' + i, jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).val());
+          i++;
+        });
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_3___default()({
+        method: 'POST',
+        url: '/update-journey-ajax',
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: formData
+      }).then(function (response) {
+        console.log(response);
+
+        if (response.statusText == 'OK') {
+          if (response.data.error == true) {
+            _this3.props.viewMessageFlash(response.data.msg, true);
+          } else {
+            _this3.props.viewMessageFlash(response.data.msg, false, false);
+
+            _this3.setState({
+              redirect: '/app'
+            }); // document.location.href="/app";
+
+          }
+        } else {
+          _this3.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+        }
+      })["catch"](function (error) {
+        console.log(error);
+
+        _this3.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+      });
+    }
+  }, {
+    key: "updateSpaces",
+    value: function updateSpaces(newSpaces) {
+      this.setState({
+        spaces: newSpaces
+      });
+    }
+  }, {
+    key: "addStopover",
+    value: function addStopover(e) {
+      console.log("add stop over");
+      e.preventDefault();
+      jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
+        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
+      });
+      jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
+      this.setState({
+        nbStopOver: this.state.nbStopOver + 1
+      });
     }
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this4 = this;
 
       if (this.state.redirect) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Redirect"], {
@@ -1030,7 +1163,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         className: "form-control",
         id: "select-delivery-company",
         onChange: function onChange() {
-          _this2.setState({
+          _this4.setState({
             delivery_company: document.querySelector('#select-delivery-company').value
           });
         }
@@ -1044,13 +1177,29 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         type: "text",
         className: "form-control",
         id: "departure",
+        value: this.state.departure,
         onChange: function onChange() {
-          _this2.setState({
+          _this4.setState({
             departure: document.querySelector('#departure').value
           });
         },
         placeholder: "Ex : Marseille"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "",
+        onClick: function onClick(e) {
+          _this4.addStopover(e);
+        },
+        style: {
+          display: 'inline-block',
+          marginLeft: '10px'
+        }
+      }, "Ajouter une escale")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group",
+        id: "container-stop-over",
+        style: {
+          paddingLeft: '30px'
+        }
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "arrival"
@@ -1058,8 +1207,9 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         type: "text",
         className: "form-control",
         id: "arrival",
+        value: this.state.arrival,
         onChange: function onChange() {
-          _this2.setState({
+          _this4.setState({
             arrival: document.querySelector('#arrival').value
           });
         },
@@ -1073,8 +1223,9 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         type: "date",
         className: "form-control",
         id: "date-departure",
+        value: this.state.date_departure,
         onChange: function onChange() {
-          _this2.setState({
+          _this4.setState({
             date_departure: document.querySelector('#date-departure').value
           });
         }
@@ -1087,23 +1238,40 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         type: "time",
         className: "form-control",
         id: "time-departure",
+        value: this.state.time_departure,
         onChange: function onChange() {
-          _this2.setState({
+          _this4.setState({
             time_departure: document.querySelector('#time-departure').value
+          });
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group",
+        id: "container-picky-date-time"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "hour-departure"
+      }, "Date d'arriv\xE9e"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "date",
+        className: "form-control",
+        id: "date-arrival",
+        value: this.state.date_arrival,
+        onChange: function onChange() {
+          _this4.setState({
+            date_arrival: document.querySelector('#date-arrival').value
           });
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "avalaible_places"
-      }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], _defineProperty({
         spaces: this.state.spaces,
-        page: "add-journey"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        page: "edit-journey",
+        updateSpaces: this.updateSpaces.bind(this)
+      }, "spaces", this.state.spaces))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit",
-        onClick: this.saveJourney.bind(this),
+        onClick: this.updateJourney.bind(this),
         className: "btn btn-primary",
         style: {
           backgroundColor: '#6475a1'
@@ -1133,6 +1301,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Dragbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Dragbox */ "./components/journey/Dragbox.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1158,6 +1327,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var Journey = /*#__PURE__*/function (_Component) {
   _inherits(Journey, _Component);
 
@@ -1170,11 +1340,15 @@ var Journey = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
     _this.state = {
-      spaces: [],
-      dropSpaceZone: null
+      spaces: _this.props.spaces,
+      dropSpaceZone: null,
+      appMouseTop: 0,
+      appMouseLeft: 0
     };
+    _this.handleMouseMove = _this.handleMouseMove.bind(_assertThisInitialized(_this));
     _this.draggedElement = null;
-    _this.withSpaces = 0;
+    _this.spacesWidth = 0;
+    _this.iteration = 0;
     return _this;
   }
 
@@ -1191,6 +1365,7 @@ var Journey = /*#__PURE__*/function (_Component) {
       var element3 = document.getElementById("space-draggable-horizontal-100-120");
       var element4 = document.getElementById("space-draggable-vertical-100-120");
       this.initDraggable(element1);
+      this.initDraggable(element2);
       this.initDraggable(element2);
       this.initDraggable(element3);
       this.initDraggable(element4);
@@ -1391,6 +1566,7 @@ var Journey = /*#__PURE__*/function (_Component) {
     key: "validLine",
     value: function validLine(e) {
       e.preventDefault();
+      this.iteration = 100;
 
       if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#drop-spaces-zone').find('.space-draggable').length > 0) {
         var newElement = document.querySelector("#drop-spaces-zone").cloneNode(true);
@@ -1403,7 +1579,10 @@ var Journey = /*#__PURE__*/function (_Component) {
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#block-spaces").html(html);
         newElement.innerHTML = '';
         this.initDropZone(newElement);
-        console.log("width spaces = " + this.withSpaces);
+        console.log("width spaces = " + this.calculSpacesWidth());
+        this.setState({
+          spacesWidth: this.calculSpacesWidth()
+        });
         document.querySelector("#block-spaces").appendChild(newElement);
         newElement.setAttribute('id', 'drop-spaces-zone');
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('width', '63px');
@@ -1426,18 +1605,18 @@ var Journey = /*#__PURE__*/function (_Component) {
       var withSpaces = 0;
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
         if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id") != "drop-spaces-zone") {
-          console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width'));
+          console.log(Math.round(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", "")));
 
-          switch (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width')) {
-            case '51px':
+          switch (Math.round(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", ""))) {
+            case 51:
               withSpaces += 1;
               break;
 
-            case '63px':
+            case 63:
               withSpaces += 1.2;
               break;
 
-            case '44px':
+            case 44:
               withSpaces += 0.8;
               break;
 
@@ -1456,21 +1635,68 @@ var Journey = /*#__PURE__*/function (_Component) {
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
         if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id") != "drop-spaces-zone") {
           lineSpace = [];
+          var id_col = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id").replace("drop-spaces-zone-", "");
           jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).find(".space-draggable").each(function () {
             var space = {};
+            space.col = id_col;
             space.size = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('size');
             space.position = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('position');
-            lineSpace.push(space);
+            spaces.push(space);
           });
-          spaces[jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id").replace("drop-spaces-zone-", "")] = lineSpace;
         }
       });
       this.props.updateSpaces(spaces);
     }
   }, {
+    key: "handleMouseMove",
+    value: function handleMouseMove(e) {
+      this.setState({
+        appMouseTop: e.clientY,
+        appMouseLeft: e.clientX
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this4 = this;
+
+      console.log('Itération = ' + this.iteration);
+
+      if (this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0) {
+        var spaces = '';
+        var colMoins1 = null;
+        var i = 0; // console.log(this.props.spaces.length)
+
+        this.props.spaces.map(function (space, index) {
+          console.log('map ' + i);
+
+          if (colMoins1 != space.col) {
+            if (i > 0) {
+              spaces += '</div>';
+            }
+
+            spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + space.col + '" style="border: 3px solid grey;">';
+            spaces += '<span class="btn-delete-line" style="display: inline-block;"></span>';
+          }
+
+          spaces += '<div class="space-draggable space-draggable-' + space.position + '-' + space.size + '" id="space-draggable-' + space.position + '-' + space.size + '" data-size="' + space.size + '" data-position="' + space.position + '" draggable="true"></div>';
+          colMoins1 = space.col;
+          i++;
+        });
+        spaces += '</div>';
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").before(spaces);
+        this.spacesWidth = this.calculSpacesWidth();
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width'));
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'inline-block');
+        });
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr('id') == 'drop-spaces-zone') {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'none');
+          }
+        });
+        this.iteration = 100;
+      }
 
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-12"
@@ -1544,7 +1770,8 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "space-draggable space-draggable-horizontal-100-120",
         id: "space-draggable-horizontal-100-120",
         "data-size": "100-120",
-        "data-position": "horizontal"
+        "data-position": "horizontal",
+        draggable: "true"
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -1557,7 +1784,8 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "space-draggable space-draggable-vertical-100-120",
         id: "space-draggable-vertical-100-120",
         "data-size": "100-120",
-        "data-position": "vertical"
+        "data-position": "vertical",
+        draggable: "true"
       })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "",
         onClick: function onClick(e) {
@@ -1574,9 +1802,28 @@ var Journey = /*#__PURE__*/function (_Component) {
         },
         style: {
           display: 'inline-block',
-          marginTop: '15px'
+          marginTop: '15px',
+          marginLeft: '15px'
         }
       }, "Valider la ligne"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: {
+          display: 'inline-block',
+          marginTop: '15px',
+          marginLeft: '15px'
+        }
+      }, "Largeur totale des palettes : ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: {
+          fontWeight: '800',
+          fontSize: '1.2em',
+          color: 'rgb(100 156 161)'
+        }
+      }, this.calculSpacesWidth().toFixed(2), " m"), " (Max 13,310 m) - Place restante : ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: {
+          fontWeight: '800',
+          fontSize: '1.2em',
+          color: 'rgb(100 156 161)'
+        }
+      }, (13.310 - this.calculSpacesWidth()).toFixed(2), " m")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center height100"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "flex-row width100",
@@ -3217,7 +3464,7 @@ module.exports = function transformData(data, headers, fns) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
+
 
 var utils = __webpack_require__(/*! ./utils */ "./node_modules/axios/lib/utils.js");
 var normalizeHeaderName = __webpack_require__(/*! ./helpers/normalizeHeaderName */ "./node_modules/axios/lib/helpers/normalizeHeaderName.js");
@@ -3316,7 +3563,6 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js */ "../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -38382,9 +38628,9 @@ module.exports = Array.isArray || function (arr) {
   !*** ./node_modules/performance-now/lib/performance-now.js ***!
   \*************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-/* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.7.1
+// Generated by CoffeeScript 1.7.1
 (function() {
   var getNanoSeconds, hrtime, loadTime;
 
@@ -38417,7 +38663,6 @@ module.exports = Array.isArray || function (arr) {
 
 }).call(this);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js */ "../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js")))
 
 /***/ }),
 
@@ -39280,9 +39525,9 @@ module.exports.polyfill = function(object) {
   !*** ./node_modules/raf/node_modules/performance-now/lib/performance-now.js ***!
   \******************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-/* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
+// Generated by CoffeeScript 1.12.2
 (function() {
   var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
 
@@ -39319,7 +39564,6 @@ module.exports.polyfill = function(object) {
 
 //# sourceMappingURL=performance-now.js.map
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js */ "../../../Users/Saad/AppData/Roaming/npm/node_modules/webpack/node_modules/process/browser.js")))
 
 /***/ }),
 

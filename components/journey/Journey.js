@@ -1,16 +1,21 @@
-import React, { Component } from 'react';
-import $ from 'jQuery';
+import React, { Component } from 'react'
+import $ from 'jQuery'
+import Dragbox from './Dragbox'
 
 export default class Journey extends Component {
 
     constructor(props){
       super(props);
       this.state = {
-          spaces: [],
-          dropSpaceZone: null
+          spaces: this.props.spaces,
+          dropSpaceZone: null,
+          appMouseTop: 0,
+          appMouseLeft: 0
       }
+      this.handleMouseMove = this.handleMouseMove.bind(this)
       this.draggedElement = null;
-      this.withSpaces = 0
+      this.spacesWidth = 0
+      this.iteration = 0
     }
 
     componentDidMount(){
@@ -25,6 +30,7 @@ export default class Journey extends Component {
       let element4 = document.getElementById("space-draggable-vertical-100-120")
       this.initDraggable(element1)
       this.initDraggable(element2)
+      this.initDraggable(element2)
       this.initDraggable(element3)
       this.initDraggable(element4)
       let element5 = document.getElementById("drop-spaces-zone")
@@ -33,15 +39,15 @@ export default class Journey extends Component {
 
     initDraggable(draggable) {
       draggable.addEventListener("dragstart", (e) => {this.draggedElement = e.target});
-      draggable.addEventListener("drag", () => {});
-      draggable.addEventListener("dragend", () => {});
-      draggable.setAttribute("draggable", "true");
+      draggable.addEventListener("drag", () => {})
+      draggable.addEventListener("dragend", () => {})
+      draggable.setAttribute("draggable", "true")
   }
 
     initDropZone(dropZone) {
-      dropZone.addEventListener("dragenter", this.dragenter.bind(this));
-      dropZone.addEventListener("dragover", this.dragover.bind(this));
-      dropZone.addEventListener("dragleave", this.dragleave.bind(this));
+      dropZone.addEventListener("dragenter", this.dragenter.bind(this))
+      dropZone.addEventListener("dragover", this.dragover.bind(this))
+      dropZone.addEventListener("dragleave", this.dragleave.bind(this))
       dropZone.addEventListener("drop", (ev) => {
         this.dropElement(ev)
       });
@@ -189,6 +195,7 @@ export default class Journey extends Component {
 
     validLine(e){
       e.preventDefault()
+      this.iteration = 100
       if($('#drop-spaces-zone').find('.space-draggable').length > 0){
         let newElement = document.querySelector("#drop-spaces-zone").cloneNode(true)
         let html = ''
@@ -201,8 +208,8 @@ export default class Journey extends Component {
         newElement.innerHTML = ''
         this.initDropZone(newElement)
 
-        console.log("width spaces = "+this.withSpaces)
-        
+        console.log("width spaces = "+this.calculSpacesWidth())
+        this.setState({spacesWidth: this.calculSpacesWidth()})
         document.querySelector("#block-spaces").appendChild(newElement)
         newElement.setAttribute('id', 'drop-spaces-zone')
         $("#drop-spaces-zone").css('width', '63px')
@@ -224,15 +231,15 @@ export default class Journey extends Component {
       let withSpaces = 0
       $(".drop-spaces-zone").each(function(){
         if($(this).attr("id") != "drop-spaces-zone"){
-          console.log($(this).css('width'))
-          switch($(this).css('width')){
-            case '51px':
+          console.log(Math.round($(this).css('width').replace("px", "")))
+          switch(Math.round($(this).css('width').replace("px", ""))){
+            case 51:
               withSpaces += 1
               break;
-            case '63px':
+            case 63:
               withSpaces += 1.2
               break;
-            case '44px':
+            case 44:
               withSpaces += 0.8
               break;
             default:
@@ -250,19 +257,65 @@ export default class Journey extends Component {
       $(".drop-spaces-zone").each(function(){
         if($(this).attr("id") != "drop-spaces-zone"){
           lineSpace = []
+          let id_col = $(this).attr("id").replace("drop-spaces-zone-", "")
           $(this).find(".space-draggable").each(function(){
             let space = {}
+            space.col = id_col
             space.size = $(this).data('size')
             space.position = $(this).data('position')
-            lineSpace.push(space)
+            spaces.push(space)
           })
-          spaces[$(this).attr("id").replace("drop-spaces-zone-", "")] = lineSpace
+          
         }
 
       })
       this.props.updateSpaces(spaces)
     }
+
+    handleMouseMove(e) {
+      this.setState({
+        appMouseTop: e.clientY,
+        appMouseLeft: e.clientX,
+      });
+    }
+
     render() {
+      console.log('Itération = '+this.iteration)
+      if(this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0){
+        
+        let spaces = ''
+        let colMoins1 = null
+        let i = 0
+        // console.log(this.props.spaces.length)
+
+          this.props.spaces.map( (space, index) => {
+            console.log('map '+i)
+              if(colMoins1 != space.col){
+                if(i > 0){
+                  spaces += '</div>'
+                }
+                spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+space.col+'" style="border: 3px solid grey;">'
+                spaces += '<span class="btn-delete-line" style="display: inline-block;"></span>'
+              }
+              spaces += '<div class="space-draggable space-draggable-'+space.position+'-'+space.size+'" id="space-draggable-'+space.position+'-'+space.size+'" data-size="'+space.size+'" data-position="'+space.position+'" draggable="true"></div>'
+              colMoins1 = space.col;
+              i++
+          } )
+          spaces += '</div>'
+          $("#drop-spaces-zone").before(spaces)
+          this.spacesWidth = this.calculSpacesWidth()
+        
+        $('.btn-delete-line').each(function(){
+          $(this).css('width', $(this).parent().css('width'))
+          $(this).css('display', 'inline-block')
+        })
+        $('.btn-delete-line').each(function(){
+          if($(this).parent().attr('id') == 'drop-spaces-zone' ){
+            $(this).css('display', 'none')
+          }
+        })
+        this.iteration = 100
+      }
         return (
             <div className="col-12">
               <div className="row" style={{border: "3px solid black", minHeight: "130px"}}>
@@ -271,12 +324,24 @@ export default class Journey extends Component {
                   <div className="row" style={{height: "100%"}}>
                     <div className="col-6">
                       <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
-                        <div className="space-draggable space-draggable-horizontal-80-120" id="space-draggable-horizontal-80-120" data-size="80-120" data-position="horizontal" draggable="true"></div>
+                        <div 
+                          className="space-draggable space-draggable-horizontal-80-120" 
+                          id="space-draggable-horizontal-80-120" 
+                          data-size="80-120" 
+                          data-position="horizontal" 
+                          draggable="true">
+                        </div>
                       </div>
                     </div>
                     <div className="col-6">
                       <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
-                        <div className="space-draggable space-draggable-vertical-80-120" id="space-draggable-vertical-80-120" data-size="80-120" data-position="vertical" draggable="true"></div>
+                        <div 
+                          className="space-draggable space-draggable-vertical-80-120" 
+                          id="space-draggable-vertical-80-120" 
+                          data-size="80-120" 
+                          data-position="vertical" 
+                          draggable="true">
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -286,19 +351,32 @@ export default class Journey extends Component {
                   <div className="row" style={{height: "100%"}}>
                     <div className="col-6">
                       <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
-                        <div className="space-draggable space-draggable-horizontal-100-120" id="space-draggable-horizontal-100-120" data-size="100-120" data-position="horizontal"></div>
+                        <div 
+                          className="space-draggable space-draggable-horizontal-100-120" 
+                          id="space-draggable-horizontal-100-120" 
+                          data-size="100-120" 
+                          data-position="horizontal"
+                          draggable="true">
+                        </div>
                       </div>
                     </div>
                     <div className="col-6">
                       <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
-                        <div className="space-draggable space-draggable-vertical-100-120" id="space-draggable-vertical-100-120" data-size="100-120" data-position="vertical"></div>
+                        <div 
+                          className="space-draggable space-draggable-vertical-100-120" 
+                          id="space-draggable-vertical-100-120" 
+                          data-size="100-120" 
+                          data-position="vertical"
+                          draggable="true">
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
               <a href="" onClick={(e) => {this.cleanLine(e)}} style={{display: 'inline-block', marginTop: '15px'}}>Vider la ligne</a>
-              <a href="" onClick={(e) => {this.validLine(e)}} style={{display: 'inline-block', marginTop: '15px'}}>Valider la ligne</a>
+              <a href="" onClick={(e) => {this.validLine(e)}} style={{display: 'inline-block', marginTop: '15px', marginLeft: '15px'}}>Valider la ligne</a>
+              <div style={{display: 'inline-block', marginTop: '15px', marginLeft: '15px'}}>Largeur totale des palettes : <span style={{fontWeight: '800', fontSize: '1.2em', color: 'rgb(100 156 161)'}}>{this.calculSpacesWidth().toFixed(2)} m</span> (Max 13,310 m) - Place restante : <span style={{fontWeight: '800', fontSize: '1.2em', color: 'rgb(100 156 161)'}}>{(13.310 - this.calculSpacesWidth()).toFixed(2)} m</span></div>
               <div className="display-flex-center height100">
                 <div className="flex-row width100" style={{minHeight: '100px'}}>
                   <div className="block-spaces" id="block-spaces" style={{marginRight: '-16px', height: '130px'}}>
@@ -312,6 +390,17 @@ export default class Journey extends Component {
                 </div>
               </div>
               
+              {/* <div
+                  onMouseMove={this.handleMouseMove}
+                >
+                  <Dragbox
+                    clickTop={this.state.appMouseTop}
+                    clickLeft={this.state.appMouseLeft}
+                    number={1}
+                  />
+
+              </div> */}
+
             </div>
         );
       }

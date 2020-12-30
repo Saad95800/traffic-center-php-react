@@ -40,6 +40,26 @@ class AppController extends Controller {
 
     }
 
+    public function getJourneyAjax(){
+
+        $auth = new AuthenticationController();
+
+        if(!$auth->is_connected()){
+            echo json_encode([
+                'error' => true,
+                'error_code' => 1,
+                'msg' => 'L\'utilisateur n\'est pas connecté'
+            ]);
+            die;
+        }
+
+        $jm = new JourneyManager();
+        $journey = $jm->getJourney($_GET['id_journey']);
+        echo json_encode($journey);
+        die;
+
+    }
+
     public function getCompanyAjax(){
 
         $auth = new AuthenticationController();
@@ -72,10 +92,12 @@ class AppController extends Controller {
 
     public function saveJourneyAjax(){
 
+        // echo '<pre>'.print_r($_POST, true).'/<pre>';
+        // die;
         if(empty($_POST)){
             echo \json_encode([
                 'error' => true,
-                'msg' => 'Erreur lors du traitement'
+                'msg' => 'Erreur lors de l\'enregistrement'
             ]);
             die;
         }
@@ -84,6 +106,7 @@ class AppController extends Controller {
            $_POST['departure'] == '' || 
            $_POST['arrival'] == '' || 
            $_POST['date_departure'] == '' || 
+           $_POST['date_arrival'] == '' || 
            $_POST['time_departure'] == ''){
             echo \json_encode([
                 'error' => true,
@@ -96,6 +119,52 @@ class AppController extends Controller {
 
         $jm = new JourneyManager();
         $result = $jm->save($_POST);
+
+        if(!$result){
+            echo \json_encode([
+                'error' => true,
+                'msg' => 'Echec de l\'enregistrement'
+            ]);
+            die;
+        }
+
+        echo \json_encode([
+            'error' => false,
+            'msg' => 'Enregistrement effectué avec succès'
+        ]);
+        die;
+
+    }
+
+    public function updateJourneyAjax(){
+
+        // echo '<pre>'.print_r($_POST, true).'/<pre>';
+        // die;
+        if(empty($_POST)){
+            echo \json_encode([
+                'error' => true,
+                'msg' => 'Erreur lors de l\'enregistrement'
+            ]);
+            die;
+        }
+
+        if($_POST['delivery_company'] == '' || 
+           $_POST['departure'] == '' || 
+           $_POST['arrival'] == '' || 
+           $_POST['date_departure'] == '' || 
+           $_POST['date_arrival'] == '' || 
+           $_POST['time_departure'] == ''){
+            echo \json_encode([
+                'error' => true,
+                'msg' => 'Veuillez-remplir tout les champs'
+            ]);
+            die;
+        }
+
+        $_POST['spaces'] = json_decode($_POST['spaces'], true);
+
+        $jm = new JourneyManager();
+        $result = $jm->update($_POST);
 
         if(!$result){
             echo \json_encode([

@@ -268,3 +268,19 @@ a:hover{
         margin-top: 70px;
     }
 }
+
+
+/* DragBox */
+  
+  .dragbox {
+    position: absolute;
+    background: #c2c2c2;
+    border-radius: .2em;
+    border: .1em solid #272727;
+    width: 10em;
+    height: 10em;
+    line-height: 10em;
+    text-align: center;
+    cursor: move;
+    user-select: none;
+  }

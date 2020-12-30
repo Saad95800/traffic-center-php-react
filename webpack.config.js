@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const NODE_ENV = 'development';
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const common = {
     nodeEnv: new webpack.DefinePlugin({
@@ -22,6 +23,10 @@ const common = {
 
 module.exports = [
     {
+        node: {
+            Buffer: false,
+            process: false
+          },
         // client side rendering
         target: 'web',
         entry: {
@@ -35,9 +40,10 @@ module.exports = [
         watch: true,
         mode: NODE_ENV,
         plugins: [
-            new webpack.ProvidePlugin({
+            new CircularDependencyPlugin({
                 $: "jquery",
-                jQuery: "jquery"
+                jQuery: "jquery",
+                process: 'process/browser',
               })
           ],
         resolve: common.resolve,
