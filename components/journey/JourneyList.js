@@ -54,7 +54,7 @@ export default class JourneyList extends Component {
           .catch( (error) => {
             console.log(error);
           });
-    
+          
         }
 
     render() {
@@ -66,36 +66,56 @@ export default class JourneyList extends Component {
             journeys = this.state.journeys.map((journey, index) => {
               
               let date_departure = moment.unix(journey.date_departure).format("DD/MM/YYYY");
+              let date_arrival = moment.unix(journey.date_arrival).format("DD/MM/YYYY");
               let time_departure = moment.unix(journey.date_departure).format("hh:mm");
               let link = "/journey/edit/"+journey.id_journey
+
+              let stopovers_str = ''
+              let stopovers = null
+
+              if(journey.stopovers.length > 0){
+                
+                journey.stopovers.map((stopover, index) => {
+                  stopovers_str += stopover.city+', '
+                })
+                stopovers_str = stopovers_str.substring(0, stopovers_str.length - 2);
+              
+                stopovers = <div className="row">
+                              <div className="col-3"></div>
+                              <div className="col-9"><span className="fontwb">Escales: </span><span className="colorblue">{stopovers_str}</span></div>
+                            </div>
+
+              }
+
               return <Link to={link}>
                     <div className="row line-journey">
                       <div className="col-md-4" style={{margin: '10px 0px 10px 0px'}}>
-                        <div className="height50p row">
+                        <div className="height33p row">
                           <div className="col-2 logo-green-point"></div>
                           <div className="col-10"><span className="fontwb">Ville de départ: </span><span className="fontwb colorblue">{journey.departure}</span></div>
                         </div>
-                        <div className="height50p row">
+                        {stopovers}
+                        <div className="height33p row" style={{marginTop: '10px'}}>
                           <div className="col-2 logo-green-arrow"></div>
                           <div className="col-10"><span className="fontwb">Ville d'arrivée: </span><span className="fontwb colorblue">{journey.arrival}</span></div>
                         </div>
                       </div>
                       <div className="col-md-4" style={{margin: '10px 0px 10px 0px'}}>
-                        <div className="height50p row">
+                        <div className="height33p row">
                           <div className="col-2 logo-date"></div>
                           <div className="col-10"><span className="fontwb">Date de départ: </span><span className="fontwb colorblue">{date_departure}</span></div>
                         </div>
-                        <div className="height50p row">
+                        <div className="height33p row">
                           <div className="col-2 logo-clock"></div>
                           <div className="col-10"><span className="fontwb">Heure de départ: </span><span className="fontwb colorblue">{time_departure}</span></div>
                         </div>
+                        <div className="height33p row">
+                          <div className="col-2 logo-date"></div>
+                          <div className="col-10"><span className="fontwb">Date d'arrivée: </span><span className="fontwb colorblue">{date_arrival}</span></div>
+                        </div>
                       </div>
                       <div className="col-md-4" style={{margin: '10px 0px 10px 0px'}}>
-                        <div className="height50p row">
-                          <div className="col-2 logo-date"></div>
-                          <div className="col-10"><span className="fontwb">Date d'arrivée: </span><span className="fontwb colorblue">---</span></div>
-                        </div>
-                        <div className="height50p row">
+                        <div className="height33p row">
                           <div className="col-2 logo-mini-truck"></div>
                           <div className="col-10"><span className="fontwb">Transporteur: </span><span className="fontwb colorblue">{journey.name_company}</span></div>
                         </div>

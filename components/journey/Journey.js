@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import $ from 'jQuery'
-import Dragbox from './Dragbox'
 
 export default class Journey extends Component {
 
@@ -9,17 +8,21 @@ export default class Journey extends Component {
       this.state = {
           spaces: this.props.spaces,
           dropSpaceZone: null,
-          appMouseTop: 0,
-          appMouseLeft: 0
+          viewSpaceForm: false,
+          id_space: '',
+          pallet_number: '',
+          customer_name: '',
+          goods_nature: '',
+          delivery_address: '',
+          city: '',
+          zip_code: ''
       }
-      this.handleMouseMove = this.handleMouseMove.bind(this)
       this.draggedElement = null;
       this.spacesWidth = 0
       this.iteration = 0
     }
 
     componentDidMount(){
-      let self = this
       $(document).on('click', '.btn-delete-line', function(){
         $(this).parent().remove()
         $("#drop-spaces-zone").css('display', 'inline-block')
@@ -35,6 +38,42 @@ export default class Journey extends Component {
       this.initDraggable(element4)
       let element5 = document.getElementById("drop-spaces-zone")
       this.initDropZone(element5)
+
+      $(document).on('mouseenter', ".drop-spaces-zone", function(){
+        if($(this).attr('id') != 'drop-spaces-zone'){
+          $(".btn-delete-line").each(function(){
+            $(this).css("display", 'none')
+          })
+          $(this).find(".btn-delete-line").css('display', 'inline-block')
+          setTimeout(() => {
+            $(this).find(".btn-delete-line").css('display', 'none')
+          }, 3000)
+        }
+      })
+
+      if(this.props.page == "edit-journey"){
+
+        let self = this
+        $(document).on('click', ".space-draggable", function(){
+
+          if($(this).parent().attr("class") == "drop-spaces-zone"){
+            self.setState({
+              viewSpaceForm: true,
+              id_space: $(this).data('id_space'),
+              pallet_number: $(this).data('pallet_number'),
+              customer_name: $(this).data('customer_name'),
+              goods_nature: $(this).data('goods_nature'),
+              delivery_address: $(this).data('delivery_address'),
+              city: $(this).data('city'),
+              zip_code: $(this).data('zip_code')
+            })
+          }
+
+        })
+        
+      }
+
+
     }
 
     initDraggable(draggable) {
@@ -272,15 +311,27 @@ export default class Journey extends Component {
       this.props.updateSpaces(spaces)
     }
 
-    handleMouseMove(e) {
-      this.setState({
-        appMouseTop: e.clientY,
-        appMouseLeft: e.clientX,
-      });
+    updateSpace(e){
+      e.preventDefault()
+      console.log('space updated')
     }
 
+    hideSpaceForm(e){
+
+      this.setState({
+        viewSpaceForm: false,
+        id_space: '',
+        pallet_number: '',
+        customer_name: '',
+        goods_nature: '',
+        delivery_address: '',
+        city: '',
+        zip_code: ''
+      })
+
+    }
     render() {
-      console.log('Itération = '+this.iteration)
+
       if(this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0){
         
         let spaces = ''
@@ -295,9 +346,10 @@ export default class Journey extends Component {
                   spaces += '</div>'
                 }
                 spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+space.col+'" style="border: 3px solid grey;">'
-                spaces += '<span class="btn-delete-line" style="display: inline-block;"></span>'
+                spaces += '<span class="btn-delete-line" style="display: none;"></span>'
               }
-              spaces += '<div class="space-draggable space-draggable-'+space.position+'-'+space.size+'" id="space-draggable-'+space.position+'-'+space.size+'" data-size="'+space.size+'" data-position="'+space.position+'" draggable="true"></div>'
+
+              spaces += '<div class="space-draggable space-draggable-'+space.position+'-'+space.size+'" id="space-draggable-'+space.position+'-'+space.size+'" data-id_space="'+space.id_space+'" data-number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-address="'+space.address+'" data-city="'+space.city+'" data-zip_code="'+space.zip_code+'" data-size="'+space.size+'" data-position="'+space.position+'" draggable="true"></div>'
               colMoins1 = space.col;
               i++
           } )
@@ -307,15 +359,54 @@ export default class Journey extends Component {
         
         $('.btn-delete-line').each(function(){
           $(this).css('width', $(this).parent().css('width'))
-          $(this).css('display', 'inline-block')
+          // $(this).css('display', 'inline-block')
         })
-        $('.btn-delete-line').each(function(){
-          if($(this).parent().attr('id') == 'drop-spaces-zone' ){
-            $(this).css('display', 'none')
-          }
-        })
+        // $('.btn-delete-line').each(function(){
+        //   if($(this).parent().attr('id') == 'drop-spaces-zone' ){
+        //     $(this).css('display', 'none')
+        //   }
+        // })
         this.iteration = 100
       }
+
+      let spaceForm = ''
+      if(this.state.viewSpaceForm){
+        spaceForm = <div className="container-space-form" onClick={this.hideSpaceForm.bind(this)}>
+                      <form method="POST" className="space-form" id="space-form" onClick={(e)=>{e.stopPropagation()}}>
+                        <div className="form-group">
+                          <input type="hidden" className="form-control" id="id_space" name="id_space" />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="pallet_number">Numéro de palette</label>
+                          <input type="text" className="form-control" id="pallet_number" onChange={() => {}} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="customer_name">Nom du client</label>
+                          <input type="text" className="form-control" id="customer_name" onChange={() => {}} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="goods_nature">Nature de la marchandise</label>
+                          <input type="text" className="form-control" id="goods_nature" onChange={() => {}} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="delivery_address">Adresse de livraison</label>
+                          <input type="text" className="form-control" id="delivery_address" onChange={() => {}} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="city">Ville</label>
+                          <input type="text" className="form-control" id="city" onChange={() => {}} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="zip_code">Code Postal</label>
+                          <input type="text" className="form-control" id="zip_code" onChange={() => {}} />
+                        </div>
+                        <div className="display-flex-center">
+                          <button type="submit" onClick={this.updateSpace.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
+                        </div>
+                      </form>
+                    </div>
+      }
+
         return (
             <div className="col-12">
               <div className="row" style={{border: "3px solid black", minHeight: "130px"}}>
@@ -327,8 +418,15 @@ export default class Journey extends Component {
                         <div 
                           className="space-draggable space-draggable-horizontal-80-120" 
                           id="space-draggable-horizontal-80-120" 
+                          data-id_space=""
                           data-size="80-120" 
-                          data-position="horizontal" 
+                          data-position="horizontal"
+                          data-number=""
+                          data-customer_name=""
+                          data-goods_nature=""
+                          data-address=""
+                          data-city=""
+                          data-zip_code=""
                           draggable="true">
                         </div>
                       </div>
@@ -338,8 +436,15 @@ export default class Journey extends Component {
                         <div 
                           className="space-draggable space-draggable-vertical-80-120" 
                           id="space-draggable-vertical-80-120" 
+                         data-id_space=""
                           data-size="80-120" 
-                          data-position="vertical" 
+                          data-position="vertical"
+                          data-number=""
+                          data-customer_name=""
+                          data-goods_nature=""
+                          data-address=""
+                          data-city=""
+                          data-zip_code="" 
                           draggable="true">
                         </div>
                       </div>
@@ -354,8 +459,15 @@ export default class Journey extends Component {
                         <div 
                           className="space-draggable space-draggable-horizontal-100-120" 
                           id="space-draggable-horizontal-100-120" 
+                          data-id_space=""
                           data-size="100-120" 
                           data-position="horizontal"
+                          data-number=""
+                          data-customer_name=""
+                          data-goods_nature=""
+                          data-address=""
+                          data-city=""
+                          data-zip_code=""
                           draggable="true">
                         </div>
                       </div>
@@ -365,8 +477,15 @@ export default class Journey extends Component {
                         <div 
                           className="space-draggable space-draggable-vertical-100-120" 
                           id="space-draggable-vertical-100-120" 
+                          data-id_space=""
                           data-size="100-120" 
                           data-position="vertical"
+                          data-number=""
+                          data-customer_name=""
+                          data-goods_nature=""
+                          data-address=""
+                          data-city=""
+                          data-zip_code=""
                           draggable="true">
                         </div>
                       </div>
@@ -390,16 +509,7 @@ export default class Journey extends Component {
                 </div>
               </div>
               
-              {/* <div
-                  onMouseMove={this.handleMouseMove}
-                >
-                  <Dragbox
-                    clickTop={this.state.appMouseTop}
-                    clickLeft={this.state.appMouseLeft}
-                    number={1}
-                  />
-
-              </div> */}
+              {spaceForm}
 
             </div>
         );

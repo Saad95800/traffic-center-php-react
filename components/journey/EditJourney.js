@@ -81,11 +81,12 @@ export default class EditJourney extends Component {
 
         let self = this
         $(document).on('click', '.btn-delete-stop-over', function(){
-          // self.setState({nbStopOver: $(".block-stop-over").length})
           $(this).parent().remove()
           self.setState({nbStopOver: self.state.nbStopOver - 1})
+          $(".btn-delete-stop-over").each(function(){
+            $(this).css('display', 'none')
+          })
           $("#block-stop-over-"+(self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block")
-          self.state.nbStopOver - 1
           console.log('stop over removed')
         })
     }

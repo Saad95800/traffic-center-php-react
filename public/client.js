@@ -537,7 +537,6 @@ var AddJourney = /*#__PURE__*/function (_Component) {
           nbStopOver: self.state.nbStopOver - 1
         });
         jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#block-stop-over-" + (self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block");
-        self.state.nbStopOver - 1;
         console.log('stop over removed');
       });
     }
@@ -780,128 +779,6 @@ var AddJourney = /*#__PURE__*/function (_Component) {
 
 /***/ }),
 
-/***/ "./components/journey/Dragbox.js":
-/*!***************************************!*\
-  !*** ./components/journey/Dragbox.js ***!
-  \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Dragbox; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-var Dragbox = /*#__PURE__*/function (_Component) {
-  _inherits(Dragbox, _Component);
-
-  var _super = _createSuper(Dragbox);
-
-  function Dragbox(props) {
-    var _this;
-
-    _classCallCheck(this, Dragbox);
-
-    _this = _super.call(this, props);
-    _this.state = {
-      isMoving: false,
-      top: 0,
-      left: 0,
-      originTop: 0,
-      originLeft: 0,
-      clickTop: 0,
-      clickLeft: 0,
-      zIndex: 1
-    };
-    _this.handleStartMove = _this.handleStartMove.bind(_assertThisInitialized(_this));
-    _this.handleMouseMove = _this.handleMouseMove.bind(_assertThisInitialized(_this));
-    _this.handleEndMove = _this.handleEndMove.bind(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(Dragbox, [{
-    key: "handleStartMove",
-    value: function handleStartMove(e) {
-      console.log("start");
-      this.setState({
-        isMoving: true,
-        originTop: this.state.top,
-        originLeft: this.state.left,
-        clickTop: this.props.clickTop,
-        clickLeft: this.props.clickLeft,
-        zIndex: 2
-      });
-    }
-  }, {
-    key: "handleMouseMove",
-    value: function handleMouseMove(e) {
-      if (this.state.isMoving) {
-        console.log("move");
-        e.preventDefault();
-        this.setState({
-          top: this.state.originTop + (e.clientY - this.state.clickTop),
-          left: this.state.originLeft + (e.clientX - this.state.clickLeft)
-        });
-      }
-    }
-  }, {
-    key: "handleEndMove",
-    value: function handleEndMove() {
-      console.log("end");
-      this.setState({
-        isMoving: false,
-        zIndex: 1
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "dragbox",
-        onMouseDown: this.handleStartMove,
-        onMouseMove: this.handleMouseMove,
-        onMouseUp: this.handleEndMove,
-        onMouseLeave: this.handleEndMove,
-        style: {
-          top: "".concat(this.state.top, "px"),
-          left: "".concat(this.state.left, "px"),
-          zIndex: "".concat(this.state.zIndex)
-        }
-      }, "Dragbox #", this.props.number);
-    }
-  }]);
-
-  return Dragbox;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
-
-
-
-/***/ }),
-
 /***/ "./components/journey/EditJourney.js":
 /*!*******************************************!*\
   !*** ./components/journey/EditJourney.js ***!
@@ -1038,13 +915,14 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       });
       var self = this;
       jQuery__WEBPACK_IMPORTED_MODULE_5___default()(document).on('click', '.btn-delete-stop-over', function () {
-        // self.setState({nbStopOver: $(".block-stop-over").length})
         jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().remove();
         self.setState({
           nbStopOver: self.state.nbStopOver - 1
         });
+        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
+        });
         jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#block-stop-over-" + (self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block");
-        self.state.nbStopOver - 1;
         console.log('stop over removed');
       });
     }
@@ -1301,7 +1179,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Dragbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Dragbox */ "./components/journey/Dragbox.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1327,7 +1204,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
 var Journey = /*#__PURE__*/function (_Component) {
   _inherits(Journey, _Component);
 
@@ -1342,10 +1218,15 @@ var Journey = /*#__PURE__*/function (_Component) {
     _this.state = {
       spaces: _this.props.spaces,
       dropSpaceZone: null,
-      appMouseTop: 0,
-      appMouseLeft: 0
+      viewSpaceForm: false,
+      id_space: '',
+      pallet_number: '',
+      customer_name: '',
+      goods_nature: '',
+      delivery_address: '',
+      city: '',
+      zip_code: ''
     };
-    _this.handleMouseMove = _this.handleMouseMove.bind(_assertThisInitialized(_this));
     _this.draggedElement = null;
     _this.spacesWidth = 0;
     _this.iteration = 0;
@@ -1355,7 +1236,6 @@ var Journey = /*#__PURE__*/function (_Component) {
   _createClass(Journey, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var self = this;
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', '.btn-delete-line', function () {
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().remove();
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('display', 'inline-block');
@@ -1371,14 +1251,45 @@ var Journey = /*#__PURE__*/function (_Component) {
       this.initDraggable(element4);
       var element5 = document.getElementById("drop-spaces-zone");
       this.initDropZone(element5);
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('mouseenter', ".drop-spaces-zone", function () {
+        var _this2 = this;
+
+        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != 'drop-spaces-zone') {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".btn-delete-line").each(function () {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css("display", 'none');
+          });
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).find(".btn-delete-line").css('display', 'inline-block');
+          setTimeout(function () {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(_this2).find(".btn-delete-line").css('display', 'none');
+          }, 3000);
+        }
+      });
+
+      if (this.props.page == "edit-journey") {
+        var self = this;
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', ".space-draggable", function () {
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr("class") == "drop-spaces-zone") {
+            self.setState({
+              viewSpaceForm: true,
+              id_space: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('id_space'),
+              pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('pallet_number'),
+              customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('customer_name'),
+              goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('goods_nature'),
+              delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('delivery_address'),
+              city: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('city'),
+              zip_code: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('zip_code')
+            });
+          }
+        });
+      }
     }
   }, {
     key: "initDraggable",
     value: function initDraggable(draggable) {
-      var _this2 = this;
+      var _this3 = this;
 
       draggable.addEventListener("dragstart", function (e) {
-        _this2.draggedElement = e.target;
+        _this3.draggedElement = e.target;
       });
       draggable.addEventListener("drag", function () {});
       draggable.addEventListener("dragend", function () {});
@@ -1387,13 +1298,13 @@ var Journey = /*#__PURE__*/function (_Component) {
   }, {
     key: "initDropZone",
     value: function initDropZone(dropZone) {
-      var _this3 = this;
+      var _this4 = this;
 
       dropZone.addEventListener("dragenter", this.dragenter.bind(this));
       dropZone.addEventListener("dragover", this.dragover.bind(this));
       dropZone.addEventListener("dragleave", this.dragleave.bind(this));
       dropZone.addEventListener("drop", function (ev) {
-        _this3.dropElement(ev);
+        _this4.dropElement(ev);
       });
     }
   }, {
@@ -1648,19 +1559,29 @@ var Journey = /*#__PURE__*/function (_Component) {
       this.props.updateSpaces(spaces);
     }
   }, {
-    key: "handleMouseMove",
-    value: function handleMouseMove(e) {
+    key: "updateSpace",
+    value: function updateSpace(e) {
+      e.preventDefault();
+      console.log('space updated');
+    }
+  }, {
+    key: "hideSpaceForm",
+    value: function hideSpaceForm(e) {
       this.setState({
-        appMouseTop: e.clientY,
-        appMouseLeft: e.clientX
+        viewSpaceForm: false,
+        id_space: '',
+        pallet_number: '',
+        customer_name: '',
+        goods_nature: '',
+        delivery_address: '',
+        city: '',
+        zip_code: ''
       });
     }
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
-
-      console.log('Itération = ' + this.iteration);
+      var _this5 = this;
 
       if (this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0) {
         var spaces = '';
@@ -1676,10 +1597,10 @@ var Journey = /*#__PURE__*/function (_Component) {
             }
 
             spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + space.col + '" style="border: 3px solid grey;">';
-            spaces += '<span class="btn-delete-line" style="display: inline-block;"></span>';
+            spaces += '<span class="btn-delete-line" style="display: none;"></span>';
           }
 
-          spaces += '<div class="space-draggable space-draggable-' + space.position + '-' + space.size + '" id="space-draggable-' + space.position + '-' + space.size + '" data-size="' + space.size + '" data-position="' + space.position + '" draggable="true"></div>';
+          spaces += '<div class="space-draggable space-draggable-' + space.position + '-' + space.size + '" id="space-draggable-' + space.position + '-' + space.size + '" data-id_space="' + space.id_space + '" data-number="' + space.pallet_number + '" data-customer_name="' + space.customer_name + '" data-goods_nature="' + space.goods_nature + '" data-address="' + space.address + '" data-city="' + space.city + '" data-zip_code="' + space.zip_code + '" data-size="' + space.size + '" data-position="' + space.position + '" draggable="true"></div>';
           colMoins1 = space.col;
           i++;
         });
@@ -1687,15 +1608,100 @@ var Journey = /*#__PURE__*/function (_Component) {
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").before(spaces);
         this.spacesWidth = this.calculSpacesWidth();
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width'));
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'inline-block');
-        });
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
-          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr('id') == 'drop-spaces-zone') {
-            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'none');
-          }
-        });
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width')); // $(this).css('display', 'inline-block')
+        }); // $('.btn-delete-line').each(function(){
+        //   if($(this).parent().attr('id') == 'drop-spaces-zone' ){
+        //     $(this).css('display', 'none')
+        //   }
+        // })
+
         this.iteration = 100;
+      }
+
+      var spaceForm = '';
+
+      if (this.state.viewSpaceForm) {
+        spaceForm = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "container-space-form",
+          onClick: this.hideSpaceForm.bind(this)
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+          method: "POST",
+          className: "space-form",
+          id: "space-form",
+          onClick: function onClick(e) {
+            e.stopPropagation();
+          }
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "hidden",
+          className: "form-control",
+          id: "id_space",
+          name: "id_space"
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "pallet_number"
+        }, "Num\xE9ro de palette"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "pallet_number",
+          onChange: function onChange() {}
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "customer_name"
+        }, "Nom du client"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "customer_name",
+          onChange: function onChange() {}
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "goods_nature"
+        }, "Nature de la marchandise"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "goods_nature",
+          onChange: function onChange() {}
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "delivery_address"
+        }, "Adresse de livraison"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "delivery_address",
+          onChange: function onChange() {}
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "city"
+        }, "Ville"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "city",
+          onChange: function onChange() {}
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "zip_code"
+        }, "Code Postal"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "zip_code",
+          onChange: function onChange() {}
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "display-flex-center"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          type: "submit",
+          onClick: this.updateSpace.bind(this),
+          className: "btn btn-primary",
+          style: {
+            backgroundColor: '#6475a1'
+          }
+        }, "Enregistrer"))));
       }
 
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -1729,8 +1735,15 @@ var Journey = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-horizontal-80-120",
         id: "space-draggable-horizontal-80-120",
+        "data-id_space": "",
         "data-size": "80-120",
         "data-position": "horizontal",
+        "data-number": "",
+        "data-customer_name": "",
+        "data-goods_nature": "",
+        "data-address": "",
+        "data-city": "",
+        "data-zip_code": "",
         draggable: "true"
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
@@ -1743,8 +1756,15 @@ var Journey = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-vertical-80-120",
         id: "space-draggable-vertical-80-120",
+        "data-id_space": "",
         "data-size": "80-120",
         "data-position": "vertical",
+        "data-number": "",
+        "data-customer_name": "",
+        "data-goods_nature": "",
+        "data-address": "",
+        "data-city": "",
+        "data-zip_code": "",
         draggable: "true"
       }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6",
@@ -1769,8 +1789,15 @@ var Journey = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-horizontal-100-120",
         id: "space-draggable-horizontal-100-120",
+        "data-id_space": "",
         "data-size": "100-120",
         "data-position": "horizontal",
+        "data-number": "",
+        "data-customer_name": "",
+        "data-goods_nature": "",
+        "data-address": "",
+        "data-city": "",
+        "data-zip_code": "",
         draggable: "true"
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
@@ -1783,13 +1810,20 @@ var Journey = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-vertical-100-120",
         id: "space-draggable-vertical-100-120",
+        "data-id_space": "",
         "data-size": "100-120",
         "data-position": "vertical",
+        "data-number": "",
+        "data-customer_name": "",
+        "data-goods_nature": "",
+        "data-address": "",
+        "data-city": "",
+        "data-zip_code": "",
         draggable: "true"
       })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "",
         onClick: function onClick(e) {
-          _this4.cleanLine(e);
+          _this5.cleanLine(e);
         },
         style: {
           display: 'inline-block',
@@ -1798,7 +1832,7 @@ var Journey = /*#__PURE__*/function (_Component) {
       }, "Vider la ligne"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "",
         onClick: function onClick(e) {
-          _this4.validLine(e);
+          _this5.validLine(e);
         },
         style: {
           display: 'inline-block',
@@ -1849,7 +1883,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "http://traffic-center.local/public/img/front-truck.png"
-      })))));
+      })))), spaceForm);
     }
   }]);
 
@@ -1968,8 +2002,30 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       if (this.state.journeys.length != 0 && this.state.journeys.length != undefined) {
         journeys = this.state.journeys.map(function (journey, index) {
           var date_departure = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(journey.date_departure).format("DD/MM/YYYY");
+          var date_arrival = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(journey.date_arrival).format("DD/MM/YYYY");
           var time_departure = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(journey.date_departure).format("hh:mm");
           var link = "/journey/edit/" + journey.id_journey;
+          var stopovers_str = '';
+          var stopovers = null;
+
+          if (journey.stopovers.length > 0) {
+            journey.stopovers.map(function (stopover, index) {
+              stopovers_str += stopover.city + ', ';
+            });
+            stopovers_str = stopovers_str.substring(0, stopovers_str.length - 2);
+            stopovers = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+              className: "row"
+            }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+              className: "col-3"
+            }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+              className: "col-9"
+            }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+              className: "fontwb"
+            }, "Escales: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+              className: "colorblue"
+            }, stopovers_str)));
+          }
+
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Link"], {
             to: link
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -1980,7 +2036,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
               margin: '10px 0px 10px 0px'
             }
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "height50p row"
+            className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-green-point"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -1989,8 +2045,11 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             className: "fontwb"
           }, "Ville de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb colorblue"
-          }, journey.departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "height50p row"
+          }, journey.departure))), stopovers, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "height33p row",
+            style: {
+              marginTop: '10px'
+            }
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-green-arrow"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2005,7 +2064,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
               margin: '10px 0px 10px 0px'
             }
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "height50p row"
+            className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-date"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2015,7 +2074,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, "Date de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb colorblue"
           }, date_departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "height50p row"
+            className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-clock"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2024,13 +2083,8 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             className: "fontwb"
           }, "Heure de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb colorblue"
-          }, time_departure)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-md-4",
-            style: {
-              margin: '10px 0px 10px 0px'
-            }
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "height50p row"
+          }, time_departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-date"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2039,8 +2093,13 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             className: "fontwb"
           }, "Date d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb colorblue"
-          }, "---"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "height50p row"
+          }, date_arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "col-md-4",
+            style: {
+              margin: '10px 0px 10px 0px'
+            }
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-mini-truck"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {

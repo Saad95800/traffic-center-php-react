@@ -30,7 +30,6 @@ export default class AddJourney extends Component {
         $(this).parent().remove()
         self.setState({nbStopOver: self.state.nbStopOver - 1})
         $("#block-stop-over-"+(self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block")
-        self.state.nbStopOver - 1
         console.log('stop over removed')
       })
 
