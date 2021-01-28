@@ -112,8 +112,25 @@ export default class EditJourney extends Component {
         formData.append('date_departure', this.state.date_departure);
         formData.append('date_arrival', this.state.date_arrival);
         formData.append('time_departure', this.state.time_departure);
-        formData.append('spaces', JSON.stringify(this.state.spaces));
+        let spaces = []
+        $(".space-dropped").each(function(){
+          console.log($(this).parent())
+          spaces.push({
+            pallet_number: $(this).data('number'),
+            customer_name: $(this).data('customer_name'),
+            goods_nature: $(this).data('goods_nature'),
+            address: $(this).data('address'),
+            city: $(this).data('city'),
+            country: $(this).data('country'),
+            zip_code: $(this).data('zip_code'),
+            size: $(this).data('size'),
+            position: $(this).data('position'),
+            col: $(this).parent().attr('data-col'),
+          })
+        })
+        formData.append('spaces', JSON.stringify(spaces));
         formData.append('id_journey', this.id_journey);
+        console.log(spaces)
         if($(".stop-over-input").length > 0){
           let i = 0
           $(".stop-over-input").each(function(){
@@ -205,7 +222,7 @@ export default class EditJourney extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
-                  <Journey spaces={this.state.spaces} page="edit-journey" updateSpaces={this.updateSpaces.bind(this)} spaces={this.state.spaces}/>
+                  <Journey spaces={this.state.spaces} page="edit-journey" updateSpaces={this.updateSpaces.bind(this)} spaces={this.state.spaces} viewMessageFlash={this.props.viewMessageFlash}/>
                 </div>
                 <div className="display-flex-center">
                   <button type="submit" onClick={this.updateJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>

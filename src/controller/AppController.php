@@ -3,6 +3,7 @@
 namespace App\Controller;
 use lib\Controller;
 use App\Model\JourneyManager;
+use App\Model\SpaceManager;
 use App\Model\CompanyManager;
 use App\Controller\AuthenticationController;
 
@@ -138,7 +139,7 @@ class AppController extends Controller {
 
     public function updateJourneyAjax(){
 
-        // echo '<pre>'.print_r($_POST, true).'/<pre>';
+        // echo '<pre>'.print_r(json_decode($_POST['spaces'], true), true).'/<pre>';
         // die;
         if(empty($_POST)){
             echo \json_encode([
@@ -166,6 +167,7 @@ class AppController extends Controller {
         $jm = new JourneyManager();
         $result = $jm->update($_POST);
 
+        // var_dump($result);die;
         if(!$result){
             echo \json_encode([
                 'error' => true,
@@ -182,4 +184,34 @@ class AppController extends Controller {
 
     }
 
+    public function updateSpaceAjax(){
+
+        if(empty($_POST)){
+            echo \json_encode([
+                'error' => true,
+                'msg' => 'Erreur lors de l\'enregistrement'
+            ]);
+            die;
+        }
+
+        $data = $_POST;
+
+        $sm = new SpaceManager();
+        $result = $sm->update($data);
+
+        if(!$result){
+            echo \json_encode([
+                'error' => true,
+                'msg' => 'Echec de l\'enregistrement'
+            ]);
+            die;
+        }
+
+        echo \json_encode([
+            'error' => false,
+            'msg' => 'Enregistrement effectué avec succès',
+        ]);
+        die;
+
+    }
 }

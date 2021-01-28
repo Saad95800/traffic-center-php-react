@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import $ from 'jQuery'
+import axios from 'axios'
 
 export default class Journey extends Component {
 
@@ -15,7 +16,9 @@ export default class Journey extends Component {
           goods_nature: '',
           delivery_address: '',
           city: '',
-          zip_code: ''
+          country: '',
+          zip_code: '',
+          id_space_block_html: ''
       }
       this.draggedElement = null;
       this.spacesWidth = 0
@@ -25,7 +28,19 @@ export default class Journey extends Component {
     componentDidMount(){
       $(document).on('click', '.btn-delete-line', function(){
         $(this).parent().remove()
-        $("#drop-spaces-zone").css('display', 'inline-block')
+        $("#drop-spaces-zone").css('display', 'flex')
+        let k = 0
+        $(".space-dropped").each(function(){
+          $(this).attr("id", "space-dropped-"+k)
+          k++
+        })
+        let l = 0
+        $(".drop-spaces-zone").each(function(){
+          if($(this).attr('id') != 'drop-spaces-zone'){
+            $(this).attr('data-col', l)
+            l++
+          }
+        })
       })
       let element1 = document.getElementById("space-draggable-horizontal-80-120")
       let element2 = document.getElementById("space-draggable-vertical-80-120")
@@ -51,28 +66,28 @@ export default class Journey extends Component {
         }
       })
 
-      if(this.props.page == "edit-journey"){
+      // if(this.props.page == "edit-journey"){
 
         let self = this
         $(document).on('click', ".space-draggable", function(){
-
-          if($(this).parent().attr("class") == "drop-spaces-zone"){
+          if($(this).parent().attr("class") == "drop-spaces-zone" && !$(this).hasClass("new_element")){
+            console.log($(this).attr('data-number'))
             self.setState({
               viewSpaceForm: true,
-              id_space: $(this).data('id_space'),
-              pallet_number: $(this).data('pallet_number'),
-              customer_name: $(this).data('customer_name'),
-              goods_nature: $(this).data('goods_nature'),
-              delivery_address: $(this).data('delivery_address'),
-              city: $(this).data('city'),
-              zip_code: $(this).data('zip_code')
+              pallet_number: ($(this).attr('data-number') == 'null' ? '' : $(this).attr('data-number')),
+              customer_name: $(this).attr('data-customer_name'),
+              goods_nature: $(this).attr('data-goods_nature'),
+              delivery_address: $(this).attr('data-address'),
+              city: $(this).attr('data-city'),
+              country: $(this).attr('data-country'),
+              zip_code: $(this).attr('data-zip_code'),
+              id_space_block_html: $(this).attr('id')
             })
           }
 
         })
         
-      }
-
+      // }
 
     }
 
@@ -114,7 +129,15 @@ export default class Journey extends Component {
         $(".space-draggable").each(function(){
           $(this).html("")
         })
+      newElem.classList.add('space-dropped');
+      newElem.classList.add('new_element');
+      // $(newElem).attr("data-col", "toto")
       ev.target.appendChild(newElem)
+      let i = 0
+      $(".space-dropped").each(function(){
+        $(this).attr("id", "space-dropped-"+i)
+        i++
+      })
     }
 
     dropElement(ev){
@@ -236,18 +259,26 @@ export default class Journey extends Component {
       e.preventDefault()
       this.iteration = 100
       if($('#drop-spaces-zone').find('.space-draggable').length > 0){
+        $("#drop-spaces-zone").find('.new_element').each(function(){
+          $(this).removeClass('new_element')
+        })
+      let j = 0
+      $(".space-dropped").each(function(){
+        $(this).attr("id", "space-dropped-"+j)
+        j++
+      })
+
         let newElement = document.querySelector("#drop-spaces-zone").cloneNode(true)
         let html = ''
         let i = 0
         $(".drop-spaces-zone").each(function(){
-          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+i+'" style="border: 3px solid grey;"></span>'+$(this).html()+'</div>'
+          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+i+'" data-col="'+i+'" style="border: 3px solid grey;"></span>'+$(this).html()+'</div>'
           i++
         })
         $("#block-spaces").html(html)
         newElement.innerHTML = ''
         this.initDropZone(newElement)
 
-        console.log("width spaces = "+this.calculSpacesWidth())
         this.setState({spacesWidth: this.calculSpacesWidth()})
         document.querySelector("#block-spaces").appendChild(newElement)
         newElement.setAttribute('id', 'drop-spaces-zone')
@@ -311,12 +342,69 @@ export default class Journey extends Component {
       this.props.updateSpaces(spaces)
     }
 
-    updateSpace(e){
+    updateSpaceData(e){
+
       e.preventDefault()
-      console.log('space updated')
+
+      // if(this.state.id_space != ""){
+
+        // let formData = new FormData();
+        // formData.append('pallet_number', this.state.pallet_number);
+        // formData.append('customer_name', this.state.customer_name);
+        // formData.append('goods_nature', this.state.goods_nature);
+        // formData.append('address', this.state.delivery_address);
+        // formData.append('zip_code', this.state.zip_code);
+        // formData.append('city', this.state.city);
+        // formData.append('country', this.state.country);
+        // formData.append('id_space', this.state.id_space);
+
+        // axios({
+        //   method: 'POST',
+        //   url: '/update-space-ajax',
+        //   responseType: 'json',
+        //   headers: {
+        //     'Content-Type': 'application/x-www-form-urlencoded'
+        //   },
+        //   data: formData
+        // })
+        // .then((response) => {
+        //   console.log(response);
+        //   if(response.statusText == 'OK'){
+        //     this.props.viewMessageFlash(response.data.msg, response.data.error);
+        //     let space = $("#block-spaces").find('[data-id_space='+this.state.id_space+']')
+        //     space.attr('data-number', this.state.pallet_number)
+        //     space.attr('data-customer_name', this.state.customer_name)
+        //     space.attr('data-goods_nature', this.state.goods_nature)
+        //     space.attr('data-address', this.state.delivery_address)
+        //     space.attr('data-zip_code', this.state.zip_code)
+        //     space.attr('data-city', this.state.city)
+        //     space.attr('data-country', this.state.country)
+        //   }else{
+        //     this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+        //   }
+        // })
+        // .catch( (error) => {
+        //   console.log(error);
+        //   this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+        // });
+
+      // }else{
+
+        let space = $("#"+this.state.id_space_block_html)
+        space.attr('data-number', this.state.pallet_number)
+        space.attr('data-customer_name', this.state.customer_name)
+        space.attr('data-goods_nature', this.state.goods_nature)
+        space.attr('data-address', this.state.delivery_address)
+        space.attr('data-zip_code', this.state.zip_code)
+        space.attr('data-city', this.state.city)
+        space.attr('data-country', this.state.country)
+
+        this.hideSpaceForm()
+      // }
+
     }
 
-    hideSpaceForm(e){
+    hideSpaceForm(){
 
       this.setState({
         viewSpaceForm: false,
@@ -326,7 +414,9 @@ export default class Journey extends Component {
         goods_nature: '',
         delivery_address: '',
         city: '',
-        zip_code: ''
+        country: '',
+        zip_code: '',
+        id_space_block_html: ''
       })
 
     }
@@ -345,11 +435,11 @@ export default class Journey extends Component {
                 if(i > 0){
                   spaces += '</div>'
                 }
-                spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+space.col+'" style="border: 3px solid grey;">'
+                spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+space.col+'" data-col="'+space.col+'" style="border: 3px solid grey;">'
                 spaces += '<span class="btn-delete-line" style="display: none;"></span>'
               }
 
-              spaces += '<div class="space-draggable space-draggable-'+space.position+'-'+space.size+'" id="space-draggable-'+space.position+'-'+space.size+'" data-id_space="'+space.id_space+'" data-number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-address="'+space.address+'" data-city="'+space.city+'" data-zip_code="'+space.zip_code+'" data-size="'+space.size+'" data-position="'+space.position+'" draggable="true"></div>'
+              spaces += '<div class="space-draggable space-dropped space-draggable-'+space.position+'-'+space.size+'" id="space-dropped-'+i+'" data-id_space="'+space.id_space+'" data-number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-address="'+space.address+'" data-city="'+space.city+'" data-country="'+space.country+'" data-zip_code="'+space.zip_code+'" data-size="'+space.size+'" data-position="'+space.position+'" data-col="'+space.col+'" draggable="true"></div>'
               colMoins1 = space.col;
               i++
           } )
@@ -359,13 +449,7 @@ export default class Journey extends Component {
         
         $('.btn-delete-line').each(function(){
           $(this).css('width', $(this).parent().css('width'))
-          // $(this).css('display', 'inline-block')
         })
-        // $('.btn-delete-line').each(function(){
-        //   if($(this).parent().attr('id') == 'drop-spaces-zone' ){
-        //     $(this).css('display', 'none')
-        //   }
-        // })
         this.iteration = 100
       }
 
@@ -374,34 +458,38 @@ export default class Journey extends Component {
         spaceForm = <div className="container-space-form" onClick={this.hideSpaceForm.bind(this)}>
                       <form method="POST" className="space-form" id="space-form" onClick={(e)=>{e.stopPropagation()}}>
                         <div className="form-group">
-                          <input type="hidden" className="form-control" id="id_space" name="id_space" />
+                          <input type="hidden" className="form-control" id="id_space" value={this.state.id_space} name="id_space" />
                         </div>
                         <div className="form-group">
                           <label htmlFor="pallet_number">Numéro de palette</label>
-                          <input type="text" className="form-control" id="pallet_number" onChange={() => {}} />
+                          <input type="text" className="form-control" id="pallet_number" value={this.state.pallet_number} onChange={() => {this.setState({pallet_number: $("#pallet_number").val()})}} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="customer_name">Nom du client</label>
-                          <input type="text" className="form-control" id="customer_name" onChange={() => {}} />
+                          <input type="text" className="form-control" id="customer_name" value={this.state.customer_name} onChange={() => {this.setState({customer_name: $("#customer_name").val()})}} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="goods_nature">Nature de la marchandise</label>
-                          <input type="text" className="form-control" id="goods_nature" onChange={() => {}} />
+                          <input type="text" className="form-control" id="goods_nature" value={this.state.goods_nature} onChange={() => {this.setState({goods_nature: $("#goods_nature").val()})}} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="delivery_address">Adresse de livraison</label>
-                          <input type="text" className="form-control" id="delivery_address" onChange={() => {}} />
+                          <input type="text" className="form-control" id="delivery_address" value={this.state.delivery_address} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="city">Ville</label>
-                          <input type="text" className="form-control" id="city" onChange={() => {}} />
+                          <input type="text" className="form-control" id="city" value={this.state.city} onChange={() => {this.setState({city: $("#city").val()})}} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="country">Pays</label>
+                          <input type="text" className="form-control" id="country" value={this.state.country} onChange={() => {this.setState({country: $("#country").val()})}} />
                         </div>
                         <div className="form-group">
                           <label htmlFor="zip_code">Code Postal</label>
-                          <input type="text" className="form-control" id="zip_code" onChange={() => {}} />
+                          <input type="text" className="form-control" id="zip_code" value={this.state.zip_code} onChange={() => {this.setState({zip_code: $("#zip_code").val()})}} />
                         </div>
                         <div className="display-flex-center">
-                          <button type="submit" onClick={this.updateSpace.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
+                          <button type="submit" onClick={this.updateSpaceData.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
                         </div>
                       </form>
                     </div>
@@ -427,6 +515,7 @@ export default class Journey extends Component {
                           data-address=""
                           data-city=""
                           data-zip_code=""
+                          data-country=""
                           draggable="true">
                         </div>
                       </div>
@@ -445,6 +534,7 @@ export default class Journey extends Component {
                           data-address=""
                           data-city=""
                           data-zip_code="" 
+                          data-country=""
                           draggable="true">
                         </div>
                       </div>
@@ -468,6 +558,7 @@ export default class Journey extends Component {
                           data-address=""
                           data-city=""
                           data-zip_code=""
+                          data-country=""
                           draggable="true">
                         </div>
                       </div>
@@ -486,6 +577,7 @@ export default class Journey extends Component {
                           data-address=""
                           data-city=""
                           data-zip_code=""
+                          data-country=""
                           draggable="true">
                         </div>
                       </div>

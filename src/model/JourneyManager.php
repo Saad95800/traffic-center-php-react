@@ -123,15 +123,24 @@ class JourneyManager extends Model {
                     }     
                 }
             }
-            $sql = "INSERT INTO `space`(`col`, `size`, `position`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
-                    VALUES (:col, :size, :position, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
-
+            $sql = "INSERT INTO `space`(`col`, `size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`, `zip_code`, `city`, `country`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
+                    VALUES (:col, :size, :position, :pallet_number, :customer_name, :goods_nature, :address, :zip_code, :city, :country, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
+            // var_dump($data);die;
             foreach($data['spaces'] as $key => $space){
-
+                if($space['col'] === ''){
+                    throw new \Exception('Erreur sur les données.');
+                }
                 $req = $this->dbh->prepare($sql);
                 $req->bindValue(':col', htmlentities($space['col']));
                 $req->bindValue(':size', htmlentities($space['size']));
                 $req->bindValue(':position', htmlentities($space['position']));
+                $req->bindValue(':pallet_number', htmlentities($space['pallet_number']));
+                $req->bindValue(':customer_name', htmlentities($space['customer_name']));
+                $req->bindValue(':goods_nature', htmlentities($space['goods_nature']));
+                $req->bindValue(':address', htmlentities($space['address']));
+                $req->bindValue(':zip_code', htmlentities($space['zip_code']));
+                $req->bindValue(':city', htmlentities($space['city']));
+                $req->bindValue(':country', htmlentities($space['country']));
                 $req->bindValue(':created_at', time());
                 $req->bindValue(':updated_at', time());
                 $req->bindValue(':fk_id_journey', $id_journey);
@@ -155,9 +164,9 @@ class JourneyManager extends Model {
 
     public function update($data){
 
-        try {
+        $this->dbh->beginTransaction();
 
-            $this->dbh->beginTransaction();
+        try {
 
             $sql0 = "DELETE FROM `space` WHERE fk_id_journey = :id_journey";
 
@@ -169,9 +178,9 @@ class JourneyManager extends Model {
                 return false;
             }
 
-            $sql0 = "DELETE FROM `stopover` WHERE fk_id_journey = :id_journey";
+            $sql00 = "DELETE FROM `stopover` WHERE fk_id_journey = :id_journey";
 
-            $req = $this->dbh->prepare($sql0);
+            $req = $this->dbh->prepare($sql00);
             $req->bindValue(':id_journey', $data['id_journey']);
             $result = $req->execute();
 
@@ -186,7 +195,7 @@ class JourneyManager extends Model {
                          `date_arrival`=:date_arrival,
                          `updated_at`=:updated_at,
                          `fk_id_company`=:fk_id_company
-                          WHERE :id_journey";
+                          WHERE id_journey = :id_journey";
 
             $req = $this->dbh->prepare($sql1);
             $req->bindValue(':departure', $data['departure']);
@@ -204,24 +213,36 @@ class JourneyManager extends Model {
 
             $id_journey = $data['id_journey'];
 
-            $sql = "INSERT INTO `space`(`col`, `size`, `position`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
-                    VALUES (:col, :size, :position, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
+            $sql = "INSERT INTO `space`(`col`, `size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`, `zip_code`, `city`, `country`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
+                    VALUES (:col, :size, :position, :pallet_number, :customer_name, :goods_nature, :address, :zip_code, :city, :country, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
 
-            foreach($data['spaces'] as $key => $space){
+                foreach($data['spaces'] as $key => $space){
 
-                $req = $this->dbh->prepare($sql);
-                $req->bindValue(':col', htmlentities($space['col']));
-                $req->bindValue(':size', htmlentities($space['size']));
-                $req->bindValue(':position', htmlentities($space['position']));
-                $req->bindValue(':created_at', time());
-                $req->bindValue(':updated_at', time());
-                $req->bindValue(':fk_id_journey', $id_journey);
-                $req->bindValue(':fk_id_company', $_SESSION['id_company']);
-                if(!$req->execute()){
-                    return false;
+                    if($space['col'] === ''){
+                        throw new Exception('Erreur sur les données.');
+                        return false;
+                    }
+                    
+                    $req = $this->dbh->prepare($sql);
+                    $req->bindValue(':col', htmlentities($space['col']));
+                    $req->bindValue(':size', htmlentities($space['size']));
+                    $req->bindValue(':position', htmlentities($space['position']));
+                    $req->bindValue(':pallet_number', htmlentities($space['pallet_number']));
+                    $req->bindValue(':customer_name', htmlentities($space['customer_name']));
+                    $req->bindValue(':goods_nature', htmlentities($space['goods_nature']));
+                    $req->bindValue(':address', htmlentities($space['address']));
+                    $req->bindValue(':zip_code', htmlentities($space['zip_code']));
+                    $req->bindValue(':city', htmlentities($space['city']));
+                    $req->bindValue(':country', htmlentities($space['country']));
+                    $req->bindValue(':created_at', time());
+                    $req->bindValue(':updated_at', time());
+                    $req->bindValue(':fk_id_journey', $id_journey);
+                    $req->bindValue(':fk_id_company', $_SESSION['id_company']);
+                    if(!$req->execute()){
+                        return false;
+                    }
+                    
                 }
-                
-            }
 
             /////////////
             $sql = "INSERT INTO `stopover`(`nb_stopover`, `city`, `fk_id_journey`) VALUES (:nb_stopover, :city, :fk_id_journey)";
@@ -239,14 +260,17 @@ class JourneyManager extends Model {
                 }
             }
 
-            $this->dbh->commit();
 
-            return true;
             
         } catch (PDOException $e) {
             $this->dbh->rollback();
             return false;
         }
+
+
+        $this->dbh->commit();
+
+        return true;
 
     }
 

@@ -559,7 +559,24 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       formData.append('date_departure', this.state.date_departure);
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
-      formData.append('spaces', JSON.stringify(this.state.spaces));
+      var spaces = [];
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".space-dropped").each(function () {
+        spaces.push({
+          pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('number'),
+          customer_name: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('customer_name'),
+          goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('goods_nature'),
+          address: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('address'),
+          city: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('city'),
+          country: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('country'),
+          zip_code: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('zip_code'),
+          size: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('size'),
+          position: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('position'),
+          col: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).parent().data('col')
+        });
+      });
+      formData.append('spaces', JSON.stringify(spaces));
+      formData.append('id_journey', this.id_journey);
+      console.log(spaces);
 
       if (jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".stop-over-input").length > 0) {
         var i = 0;
@@ -945,8 +962,25 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       formData.append('date_departure', this.state.date_departure);
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
-      formData.append('spaces', JSON.stringify(this.state.spaces));
+      var spaces = [];
+      jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".space-dropped").each(function () {
+        console.log(jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent());
+        spaces.push({
+          pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('number'),
+          customer_name: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('customer_name'),
+          goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('goods_nature'),
+          address: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('address'),
+          city: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('city'),
+          country: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('country'),
+          zip_code: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('zip_code'),
+          size: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('size'),
+          position: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('position'),
+          col: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().attr('data-col')
+        });
+      });
+      formData.append('spaces', JSON.stringify(spaces));
       formData.append('id_journey', this.id_journey);
+      console.log(spaces);
 
       if (jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".stop-over-input").length > 0) {
         var i = 0;
@@ -1010,7 +1044,8 @@ var EditJourney = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this4 = this,
+          _React$createElement;
 
       if (this.state.redirect) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Redirect"], {
@@ -1141,11 +1176,11 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "avalaible_places"
-      }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], _defineProperty({
+      }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], (_React$createElement = {
         spaces: this.state.spaces,
         page: "edit-journey",
         updateSpaces: this.updateSpaces.bind(this)
-      }, "spaces", this.state.spaces))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, _defineProperty(_React$createElement, "spaces", this.state.spaces), _defineProperty(_React$createElement, "viewMessageFlash", this.props.viewMessageFlash), _React$createElement))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "submit",
@@ -1179,6 +1214,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1204,6 +1241,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var Journey = /*#__PURE__*/function (_Component) {
   _inherits(Journey, _Component);
 
@@ -1225,7 +1263,9 @@ var Journey = /*#__PURE__*/function (_Component) {
       goods_nature: '',
       delivery_address: '',
       city: '',
-      zip_code: ''
+      country: '',
+      zip_code: '',
+      id_space_block_html: ''
     };
     _this.draggedElement = null;
     _this.spacesWidth = 0;
@@ -1238,7 +1278,19 @@ var Journey = /*#__PURE__*/function (_Component) {
     value: function componentDidMount() {
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', '.btn-delete-line', function () {
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().remove();
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('display', 'inline-block');
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('display', 'flex');
+        var k = 0;
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-dropped").each(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id", "space-dropped-" + k);
+          k++;
+        });
+        var l = 0;
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != 'drop-spaces-zone') {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-col', l);
+            l++;
+          }
+        });
       });
       var element1 = document.getElementById("space-draggable-horizontal-80-120");
       var element2 = document.getElementById("space-draggable-vertical-80-120");
@@ -1263,25 +1315,25 @@ var Journey = /*#__PURE__*/function (_Component) {
             jQuery__WEBPACK_IMPORTED_MODULE_1___default()(_this2).find(".btn-delete-line").css('display', 'none');
           }, 3000);
         }
-      });
+      }); // if(this.props.page == "edit-journey"){
 
-      if (this.props.page == "edit-journey") {
-        var self = this;
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', ".space-draggable", function () {
-          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr("class") == "drop-spaces-zone") {
-            self.setState({
-              viewSpaceForm: true,
-              id_space: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('id_space'),
-              pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('pallet_number'),
-              customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('customer_name'),
-              goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('goods_nature'),
-              delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('delivery_address'),
-              city: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('city'),
-              zip_code: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('zip_code')
-            });
-          }
-        });
-      }
+      var self = this;
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', ".space-draggable", function () {
+        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr("class") == "drop-spaces-zone" && !jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).hasClass("new_element")) {
+          console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-number'));
+          self.setState({
+            viewSpaceForm: true,
+            pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-number') == 'null' ? '' : jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-number'),
+            customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-customer_name'),
+            goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-goods_nature'),
+            delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-address'),
+            city: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-city'),
+            country: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-country'),
+            zip_code: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-zip_code'),
+            id_space_block_html: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id')
+          });
+        }
+      }); // }
     }
   }, {
     key: "initDraggable",
@@ -1334,7 +1386,15 @@ var Journey = /*#__PURE__*/function (_Component) {
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-draggable").each(function () {
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).html("");
       });
+      newElem.classList.add('space-dropped');
+      newElem.classList.add('new_element'); // $(newElem).attr("data-col", "toto")
+
       ev.target.appendChild(newElem);
+      var i = 0;
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-dropped").each(function () {
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id", "space-dropped-" + i);
+        i++;
+      });
     }
   }, {
     key: "dropElement",
@@ -1480,17 +1540,24 @@ var Journey = /*#__PURE__*/function (_Component) {
       this.iteration = 100;
 
       if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#drop-spaces-zone').find('.space-draggable').length > 0) {
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").find('.new_element').each(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).removeClass('new_element');
+        });
+        var j = 0;
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-dropped").each(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id", "space-dropped-" + j);
+          j++;
+        });
         var newElement = document.querySelector("#drop-spaces-zone").cloneNode(true);
         var html = '';
         var i = 0;
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
-          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + i + '" style="border: 3px solid grey;"></span>' + jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).html() + '</div>';
+          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + i + '" data-col="' + i + '" style="border: 3px solid grey;"></span>' + jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).html() + '</div>';
           i++;
         });
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#block-spaces").html(html);
         newElement.innerHTML = '';
         this.initDropZone(newElement);
-        console.log("width spaces = " + this.calculSpacesWidth());
         this.setState({
           spacesWidth: this.calculSpacesWidth()
         });
@@ -1559,14 +1626,62 @@ var Journey = /*#__PURE__*/function (_Component) {
       this.props.updateSpaces(spaces);
     }
   }, {
-    key: "updateSpace",
-    value: function updateSpace(e) {
-      e.preventDefault();
-      console.log('space updated');
+    key: "updateSpaceData",
+    value: function updateSpaceData(e) {
+      e.preventDefault(); // if(this.state.id_space != ""){
+      // let formData = new FormData();
+      // formData.append('pallet_number', this.state.pallet_number);
+      // formData.append('customer_name', this.state.customer_name);
+      // formData.append('goods_nature', this.state.goods_nature);
+      // formData.append('address', this.state.delivery_address);
+      // formData.append('zip_code', this.state.zip_code);
+      // formData.append('city', this.state.city);
+      // formData.append('country', this.state.country);
+      // formData.append('id_space', this.state.id_space);
+      // axios({
+      //   method: 'POST',
+      //   url: '/update-space-ajax',
+      //   responseType: 'json',
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   },
+      //   data: formData
+      // })
+      // .then((response) => {
+      //   console.log(response);
+      //   if(response.statusText == 'OK'){
+      //     this.props.viewMessageFlash(response.data.msg, response.data.error);
+      //     let space = $("#block-spaces").find('[data-id_space='+this.state.id_space+']')
+      //     space.attr('data-number', this.state.pallet_number)
+      //     space.attr('data-customer_name', this.state.customer_name)
+      //     space.attr('data-goods_nature', this.state.goods_nature)
+      //     space.attr('data-address', this.state.delivery_address)
+      //     space.attr('data-zip_code', this.state.zip_code)
+      //     space.attr('data-city', this.state.city)
+      //     space.attr('data-country', this.state.country)
+      //   }else{
+      //     this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+      //   }
+      // })
+      // .catch( (error) => {
+      //   console.log(error);
+      //   this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+      // });
+      // }else{
+
+      var space = jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#" + this.state.id_space_block_html);
+      space.attr('data-number', this.state.pallet_number);
+      space.attr('data-customer_name', this.state.customer_name);
+      space.attr('data-goods_nature', this.state.goods_nature);
+      space.attr('data-address', this.state.delivery_address);
+      space.attr('data-zip_code', this.state.zip_code);
+      space.attr('data-city', this.state.city);
+      space.attr('data-country', this.state.country);
+      this.hideSpaceForm(); // }
     }
   }, {
     key: "hideSpaceForm",
-    value: function hideSpaceForm(e) {
+    value: function hideSpaceForm() {
       this.setState({
         viewSpaceForm: false,
         id_space: '',
@@ -1575,7 +1690,9 @@ var Journey = /*#__PURE__*/function (_Component) {
         goods_nature: '',
         delivery_address: '',
         city: '',
-        zip_code: ''
+        country: '',
+        zip_code: '',
+        id_space_block_html: ''
       });
     }
   }, {
@@ -1596,11 +1713,11 @@ var Journey = /*#__PURE__*/function (_Component) {
               spaces += '</div>';
             }
 
-            spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + space.col + '" style="border: 3px solid grey;">';
+            spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + space.col + '" data-col="' + space.col + '" style="border: 3px solid grey;">';
             spaces += '<span class="btn-delete-line" style="display: none;"></span>';
           }
 
-          spaces += '<div class="space-draggable space-draggable-' + space.position + '-' + space.size + '" id="space-draggable-' + space.position + '-' + space.size + '" data-id_space="' + space.id_space + '" data-number="' + space.pallet_number + '" data-customer_name="' + space.customer_name + '" data-goods_nature="' + space.goods_nature + '" data-address="' + space.address + '" data-city="' + space.city + '" data-zip_code="' + space.zip_code + '" data-size="' + space.size + '" data-position="' + space.position + '" draggable="true"></div>';
+          spaces += '<div class="space-draggable space-dropped space-draggable-' + space.position + '-' + space.size + '" id="space-dropped-' + i + '" data-id_space="' + space.id_space + '" data-number="' + space.pallet_number + '" data-customer_name="' + space.customer_name + '" data-goods_nature="' + space.goods_nature + '" data-address="' + space.address + '" data-city="' + space.city + '" data-country="' + space.country + '" data-zip_code="' + space.zip_code + '" data-size="' + space.size + '" data-position="' + space.position + '" data-col="' + space.col + '" draggable="true"></div>';
           colMoins1 = space.col;
           i++;
         });
@@ -1608,13 +1725,8 @@ var Journey = /*#__PURE__*/function (_Component) {
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").before(spaces);
         this.spacesWidth = this.calculSpacesWidth();
         jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width')); // $(this).css('display', 'inline-block')
-        }); // $('.btn-delete-line').each(function(){
-        //   if($(this).parent().attr('id') == 'drop-spaces-zone' ){
-        //     $(this).css('display', 'none')
-        //   }
-        // })
-
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width'));
+        });
         this.iteration = 100;
       }
 
@@ -1637,6 +1749,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "hidden",
           className: "form-control",
           id: "id_space",
+          value: this.state.id_space,
           name: "id_space"
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "form-group"
@@ -1646,7 +1759,12 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "text",
           className: "form-control",
           id: "pallet_number",
-          onChange: function onChange() {}
+          value: this.state.pallet_number,
+          onChange: function onChange() {
+            _this5.setState({
+              pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#pallet_number").val()
+            });
+          }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "form-group"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -1655,7 +1773,12 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "text",
           className: "form-control",
           id: "customer_name",
-          onChange: function onChange() {}
+          value: this.state.customer_name,
+          onChange: function onChange() {
+            _this5.setState({
+              customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#customer_name").val()
+            });
+          }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "form-group"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -1664,7 +1787,12 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "text",
           className: "form-control",
           id: "goods_nature",
-          onChange: function onChange() {}
+          value: this.state.goods_nature,
+          onChange: function onChange() {
+            _this5.setState({
+              goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#goods_nature").val()
+            });
+          }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "form-group"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -1673,7 +1801,12 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "text",
           className: "form-control",
           id: "delivery_address",
-          onChange: function onChange() {}
+          value: this.state.delivery_address,
+          onChange: function onChange() {
+            _this5.setState({
+              delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
+            });
+          }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "form-group"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -1682,7 +1815,26 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "text",
           className: "form-control",
           id: "city",
-          onChange: function onChange() {}
+          value: this.state.city,
+          onChange: function onChange() {
+            _this5.setState({
+              city: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#city").val()
+            });
+          }
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+          className: "form-group"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+          htmlFor: "country"
+        }, "Pays"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "text",
+          className: "form-control",
+          id: "country",
+          value: this.state.country,
+          onChange: function onChange() {
+            _this5.setState({
+              country: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#country").val()
+            });
+          }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "form-group"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
@@ -1691,12 +1843,17 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "text",
           className: "form-control",
           id: "zip_code",
-          onChange: function onChange() {}
+          value: this.state.zip_code,
+          onChange: function onChange() {
+            _this5.setState({
+              zip_code: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#zip_code").val()
+            });
+          }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "display-flex-center"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           type: "submit",
-          onClick: this.updateSpace.bind(this),
+          onClick: this.updateSpaceData.bind(this),
           className: "btn btn-primary",
           style: {
             backgroundColor: '#6475a1'
@@ -1744,6 +1901,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-address": "",
         "data-city": "",
         "data-zip_code": "",
+        "data-country": "",
         draggable: "true"
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
@@ -1765,6 +1923,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-address": "",
         "data-city": "",
         "data-zip_code": "",
+        "data-country": "",
         draggable: "true"
       }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6",
@@ -1798,6 +1957,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-address": "",
         "data-city": "",
         "data-zip_code": "",
+        "data-country": "",
         draggable: "true"
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
@@ -1819,6 +1979,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-address": "",
         "data-city": "",
         "data-zip_code": "",
+        "data-country": "",
         draggable: "true"
       })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "",

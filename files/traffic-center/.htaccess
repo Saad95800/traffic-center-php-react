@@ -10,16 +10,12 @@ RewriteEngine on
 RewriteRule ^$ index.php?controller=homeController&method=indexaction [L]
 RewriteRule ^app$ index.php?controller=appController&method=indexaction [L]
 RewriteRule ^add-journey$ index.php?controller=appController&method=indexaction [L]
-RewriteRule ^journey/edit/([0-9=_]+)$ index.php?controller=appController&method=indexaction&id_journey=$1 [L]
 RewriteRule ^logout$ index.php?controller=authenticationController&method=logoutAjax [L]
 RewriteRule ^get-journey-list$ index.php?controller=appController&method=getJourneyListAjax [L]
-RewriteRule ^get-journey/([0-9=_]+)$ index.php?controller=appController&method=getJourneyAjax&id_journey=$1 [L]
 RewriteRule ^save-company-ajax$ index.php?controller=appController&method=saveCompanyAjax [L]
 RewriteRule ^connect-company-ajax$ index.php?controller=authenticationController&method=connectUserAjax [L]
 RewriteRule ^get-company-ajax$ index.php?controller=appController&method=getCompanyAjax [L]
 RewriteRule ^save-journey-ajax$ index.php?controller=appController&method=saveJourneyAjax [L]
-RewriteRule ^update-journey-ajax$ index.php?controller=appController&method=updateJourneyAjax [L]
-RewriteRule ^update-space-ajax$ index.php?controller=appController&method=updateSpaceAjax [L]
 
 # ACCUEIL
 #RewriteRule ^home$ index.php?controller=AccueilController&method=indexAction [L]
