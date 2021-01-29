@@ -354,104 +354,6 @@ var App = /*#__PURE__*/function (_Component) {
 
 /***/ }),
 
-/***/ "./components/functions.js":
-/*!*********************************!*\
-  !*** ./components/functions.js ***!
-  \*********************************/
-/*! exports provided: timeConverter, getDate, getHour, checkPassword */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "timeConverter", function() { return timeConverter; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getDate", function() { return getDate; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getHour", function() { return getHour; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkPassword", function() { return checkPassword; });
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function timeConverter(UNIX_timestamp) {
-  var a = new Date(UNIX_timestamp * 1000);
-  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var year = a.getFullYear();
-  var month = months[a.getMonth()];
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var sec = a.getSeconds();
-  var time = date + '/' + a.getMonth() + '/' + year + ' ' + hour + ':' + min + ':' + sec;
-  return time;
-}
-
-function getDate(UNIX_timestamp) {
-  var a = new Date(UNIX_timestamp * 1000);
-  var year = a.getFullYear();
-  var date = a.getDate();
-  var time = date + '/' + a.getMonth() + '/' + year;
-  return time;
-}
-
-function getHour(UNIX_timestamp) {
-  var a = new Date(UNIX_timestamp * 1000);
-  var hour = a.getHours();
-  var min = a.getMinutes();
-
-  if (min.toString().length == 1) {
-    min = '0' + min;
-  }
-
-  var time = hour + ':' + min;
-  return time;
-}
-
-function checkPassword(pwd) {
-  var error = false;
-  var msg = '';
-  var csp = ['À', 'Á', 'Â', 'Ã', 'Ä', ',', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Œ', 'Š', 'þ', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'Ÿ', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'œ', 'š', 'Þ', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', '¢', 'ß', '¥', '£', '™', '©', '®', 'ª', '×', '÷', '±', '²', '³', '¼', '½', '¾', 'µ', '¿', '¶', '·', '¸', 'º', '°', '¯', '§', '…', '¤', '¦', '≠', '¬', 'ˆ', '¨', '‰'];
-
-  if (typeof pwd == 'string') {
-    if (pwd.length > 5) {
-      var _iterator = _createForOfIteratorHelper(csp),
-          _step;
-
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var cs = _step.value;
-
-          if (pwd.indexOf(cs) != -1) {
-            error = true;
-            msg = 'Les caractères spéciaux sont interdits';
-            break;
-          }
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    } else {
-      error = true;
-      msg = 'Le mot de passe doit faire au moins 6 caratères';
-    }
-  } else {
-    error = true;
-    msg = 'Le format du mot de passe est incorrect';
-  }
-
-  if (error == true) {
-    return [false, msg];
-  }
-
-  return true;
-}
-
-
-
-/***/ }),
-
 /***/ "./components/journey/AddJourney.js":
 /*!******************************************!*\
   !*** ./components/journey/AddJourney.js ***!
@@ -909,7 +811,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
 
             var _self = _this2;
             response.data.stopovers.map(function (stopover, index) {
-              jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + stopover.nb_stopover + '"><label for="stop-over-' + stopover.nb_stopover + '">Escale ' + (parseInt(stopover.nb_stopover) + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="' + stopover.city + '" class="form-control stop-over-input" id="stop-over-' + stopover.nb_stopover + '" placeholder="Ex : Marseille" /></div>');
+              jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + stopover.nb_stopover + '"><label for="stop-over-' + stopover.nb_stopover + '">Escale ' + (parseInt(stopover.nb_stopover) + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="' + stopover.city + '" class="form-control form-control-sm stop-over-input" id="stop-over-' + stopover.nb_stopover + '" placeholder="Ex : Marseille" /></div>');
 
               _self.setState({
                 nbStopOver: _this2.state.nbStopOver + 1
@@ -1036,7 +938,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
         jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
       });
-      jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
+      jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control form-control-sm stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
       this.setState({
         nbStopOver: this.state.nbStopOver + 1
       });
@@ -1073,7 +975,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "select-delivery-company"
       }, "Entreprise de livraison"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-        className: "form-control",
+        className: "form-control form-control-sm",
         id: "select-delivery-company",
         onChange: function onChange() {
           _this4.setState({
@@ -1088,7 +990,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         htmlFor: "departure"
       }, "Ville de d\xE9part"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
-        className: "form-control",
+        className: "form-control form-control-sm",
         id: "departure",
         value: this.state.departure,
         onChange: function onChange() {
@@ -1118,7 +1020,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         htmlFor: "arrival"
       }, "Ville d'arriv\xE9e"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
-        className: "form-control",
+        className: "form-control form-control-sm",
         id: "arrival",
         value: this.state.arrival,
         onChange: function onChange() {
@@ -1134,7 +1036,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         htmlFor: "date-departure"
       }, "Date de d\xE9part"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "date",
-        className: "form-control",
+        className: "form-control form-control-sm",
         id: "date-departure",
         value: this.state.date_departure,
         onChange: function onChange() {
@@ -1149,7 +1051,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         htmlFor: "hour-departure"
       }, "Heure de d\xE9part"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "time",
-        className: "form-control",
+        className: "form-control form-control-sm",
         id: "time-departure",
         value: this.state.time_departure,
         onChange: function onChange() {
@@ -1164,7 +1066,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         htmlFor: "hour-departure"
       }, "Date d'arriv\xE9e"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "date",
-        className: "form-control",
+        className: "form-control form-control-sm",
         id: "date-arrival",
         value: this.state.date_arrival,
         onChange: function onChange() {
@@ -1744,20 +1646,20 @@ var Journey = /*#__PURE__*/function (_Component) {
             e.stopPropagation();
           }
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "hidden",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "id_space",
           value: this.state.id_space,
           name: "id_space"
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "pallet_number"
         }, "Num\xE9ro de palette"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "pallet_number",
           value: this.state.pallet_number,
           onChange: function onChange() {
@@ -1766,12 +1668,12 @@ var Journey = /*#__PURE__*/function (_Component) {
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "customer_name"
         }, "Nom du client"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "customer_name",
           value: this.state.customer_name,
           onChange: function onChange() {
@@ -1780,12 +1682,12 @@ var Journey = /*#__PURE__*/function (_Component) {
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "goods_nature"
         }, "Nature de la marchandise"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "goods_nature",
           value: this.state.goods_nature,
           onChange: function onChange() {
@@ -1794,12 +1696,12 @@ var Journey = /*#__PURE__*/function (_Component) {
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "delivery_address"
         }, "Adresse de livraison"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "delivery_address",
           value: this.state.delivery_address,
           onChange: function onChange() {
@@ -1808,12 +1710,12 @@ var Journey = /*#__PURE__*/function (_Component) {
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "city"
         }, "Ville"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "city",
           value: this.state.city,
           onChange: function onChange() {
@@ -1822,12 +1724,12 @@ var Journey = /*#__PURE__*/function (_Component) {
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "country"
         }, "Pays"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "country",
           value: this.state.country,
           onChange: function onChange() {
@@ -1836,12 +1738,12 @@ var Journey = /*#__PURE__*/function (_Component) {
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-          className: "form-group"
+          className: ""
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
           htmlFor: "zip_code"
         }, "Code Postal"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "text",
-          className: "form-control",
+          className: "form-control form-control-sm",
           id: "zip_code",
           value: this.state.zip_code,
           onChange: function onChange() {
@@ -2069,12 +1971,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../functions */ "./components/functions.js");
-/* harmony import */ var _Journey__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Journey */ "./components/journey/Journey.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2097,7 +2005,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-
+ // import {getDate, getHour} from './../functions'
+// import Journey from './Journey'
 
 
 
@@ -2115,8 +2024,15 @@ var JourneyList = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
     _this.state = {
-      journeys: []
+      journeys: [],
+      journeysList: [],
+      keywordSearch: '',
+      keywordSearchDeparture: '',
+      keywordSearchArrival: '',
+      keywordSearchDateDeparture: '',
+      keywordSearchDateArrival: ''
     };
+    _this.journeys = [];
     return _this;
   }
 
@@ -2143,9 +2059,14 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             } else {// this.viewMessageFlash(response.data.msg, true);
               }
           } else {
+            console.log(response.data);
+
             _this2.setState({
-              journeys: response.data
+              journeys: response.data,
+              journeysList: response.data
             });
+
+            _this2.journeys = response.data;
           }
         } else {
           _this2.viewMessageFlash('Erreur lors de la tentative de connexion', true);
@@ -2155,16 +2076,127 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       });
     }
   }, {
+    key: "filter",
+    value: function filter(e) {
+      var newJourneysList1 = [];
+      var newJourneysList2 = [];
+      var newJourneysList3 = [];
+      var newJourneysList4 = [];
+      var newJourneysList5 = [];
+      var keyword_gen = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-bar").val().toLowerCase();
+      var keyword_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-departure").val().toLowerCase();
+      var keyword_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-arrival").val().toLowerCase();
+      var keyword_date_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val().toLowerCase();
+      var keyword_date_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val().toLowerCase(); // Filtre général
+
+      if (keyword_gen == "") {
+        newJourneysList1 = this.state.journeys;
+      } else {
+        var _iterator = _createForOfIteratorHelper(this.state.journeys),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var journey = _step.value;
+
+            if (journey.arrival.toLowerCase().indexOf(keyword_gen) != -1 || journey.departure.toLowerCase().indexOf(keyword_gen) != -1 || journey.name_company.toLowerCase().indexOf(keyword_gen) != -1) {
+              newJourneysList1.push(journey);
+              continue;
+            } else {
+              var _iterator2 = _createForOfIteratorHelper(journey.stopovers),
+                  _step2;
+
+              try {
+                for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+                  var stopover = _step2.value;
+
+                  if (stopover.city.toLowerCase().indexOf(keyword_gen) != -1) {
+                    newJourneysList1.push(journey);
+                    break;
+                  }
+                }
+              } catch (err) {
+                _iterator2.e(err);
+              } finally {
+                _iterator2.f();
+              }
+            }
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      } // Filtre sur la date de départ
+
+
+      if (keyword_dep == "") {
+        newJourneysList2 = newJourneysList1;
+      } else {
+        console.log(newJourneysList1);
+
+        var _iterator3 = _createForOfIteratorHelper(newJourneysList1),
+            _step3;
+
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var _journey = _step3.value;
+            console.log(keyword_dep);
+
+            if (_journey.departure.toLowerCase().indexOf(keyword_dep) != -1) {
+              console.log('found');
+              newJourneysList2.push(_journey);
+              continue;
+            }
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+      } // Filtre sur la date d'arrivée
+
+
+      if (keyword_arr == "") {
+        newJourneysList3 = newJourneysList2;
+      } else {
+        var _iterator4 = _createForOfIteratorHelper(newJourneysList2),
+            _step4;
+
+        try {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var _journey2 = _step4.value;
+            console.log(keyword_arr);
+
+            if (_journey2.arrival.toLowerCase().indexOf(keyword_arr) != -1) {
+              console.log('found');
+              newJourneysList3.push(_journey2);
+              continue;
+            }
+          }
+        } catch (err) {
+          _iterator4.e(err);
+        } finally {
+          _iterator4.f();
+        }
+      }
+
+      this.setState({
+        journeysList: newJourneysList3
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       var journeys = '';
-      console.log(this.state.journeys.length);
 
       if (this.state.journeys.length != 0 && this.state.journeys.length != undefined) {
-        journeys = this.state.journeys.map(function (journey, index) {
-          var date_departure = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(journey.date_departure).format("DD/MM/YYYY");
-          var date_arrival = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(journey.date_arrival).format("DD/MM/YYYY");
-          var time_departure = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(journey.date_departure).format("hh:mm");
+        journeys = this.state.journeysList.map(function (journey, index) {
+          var date_departure = moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(journey.date_departure).format("DD/MM/YYYY");
+          var date_arrival = moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(journey.date_arrival).format("DD/MM/YYYY");
+          var time_departure = moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(journey.date_departure).format("hh:mm");
           var link = "/journey/edit/" + journey.id_journey;
           var stopovers_str = '';
           var stopovers = null;
@@ -2187,15 +2219,12 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             }, stopovers_str)));
           }
 
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Link"], {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_3__["Link"], {
             to: link
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "row line-journey"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-md-4",
-            style: {
-              margin: '10px 0px 10px 0px'
-            }
+            className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2220,10 +2249,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, "Ville d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb colorblue"
           }, journey.arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-md-4",
-            style: {
-              margin: '10px 0px 10px 0px'
-            }
+            className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2255,10 +2281,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, "Date d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb colorblue"
           }, date_arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-md-4",
-            style: {
-              margin: '10px 0px 10px 0px'
-            }
+            className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2278,9 +2301,99 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container-list-journey-page display-flex-center"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", {
-        className: "mgtop50"
+        className: "mgtop20"
       }, "Liste des trajets"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "container-list-journey"
+        className: "form-group has-search",
+        style: {
+          width: '96%'
+        }
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        className: "fa fa-search form-control-feedback"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "search-bar",
+        style: {
+          marginBottom: '10px'
+        },
+        placeholder: "Recherche",
+        value: this.state.keywordSearch
+        /*onKeyPress={this.filter.bind(this)}*/
+        ,
+        onChange: function onChange() {
+          _this3.setState({
+            keywordSearch: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-bar').val()
+          });
+
+          _this3.filter();
+        }
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-sm-3"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "search-departure",
+        value: this.state.keywordSearchDeparture,
+        placeholder: "D\xE9part",
+        onChange: function onChange() {
+          _this3.setState({
+            keywordSearchDeparture: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-departure').val()
+          });
+
+          _this3.filter();
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-sm-3"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "search-arrival",
+        value: this.state.keywordSearchArrival,
+        placeholder: "Arriv\xE9e",
+        onChange: function onChange() {
+          _this3.setState({
+            keywordSearchArrival: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-arrival').val()
+          });
+
+          _this3.filter();
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-sm-3"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "date",
+        className: "form-control form-control-sm",
+        id: "search-date-departure",
+        value: this.state.keywordSearchDateDeparture,
+        placeholder: "Date d\xE9part",
+        onChange: function onChange() {
+          _this3.setState({
+            keywordSearchDateDeparture: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-date-departure').val()
+          });
+
+          _this3.filter();
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "col-sm-3"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "date",
+        className: "form-control form-control-sm",
+        id: "search-date-arrival",
+        value: this.state.keywordSearchDateArrival,
+        placeholder: "Date arriv\xE9e",
+        onChange: function onChange() {
+          _this3.setState({
+            keywordSearchDateArrival: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-date-arrival').val()
+          });
+
+          _this3.filter();
+        }
+      })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "container-list-journey",
+        style: {
+          fontSize: '0.7rem'
+        }
       }, journeys));
     }
   }]);

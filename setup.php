@@ -1,6 +1,6 @@
 <?php
 
-
+ini_set('display_errors', 1);
 //chemin absolu *** ROOT => racine du dossier ***
 define('ROOT', realpath(__DIR__).DIRECTORY_SEPARATOR);
 

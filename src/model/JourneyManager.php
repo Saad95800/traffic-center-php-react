@@ -11,7 +11,7 @@ class JourneyManager extends Model {
                 FROM journey as a
                 INNER JOIN company as b
                 ON b.id_company = a.fk_id_company
-                ORDER BY a.created_at DESC";				
+                ORDER BY a.created_at DESC LIMIT 5";				
 				
 		$req = $this->dbh->prepare($sql);
         $req->execute();

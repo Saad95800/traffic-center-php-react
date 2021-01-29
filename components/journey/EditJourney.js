@@ -57,7 +57,7 @@ export default class EditJourney extends Component {
 
               let self = this
               response.data.stopovers.map((stopover, index) => {
-                $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+stopover.nb_stopover+'"><label for="stop-over-'+stopover.nb_stopover+'">Escale '+(parseInt(stopover.nb_stopover)+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="'+stopover.city+'" class="form-control stop-over-input" id="stop-over-'+stopover.nb_stopover+'" placeholder="Ex : Marseille" /></div>')
+                $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+stopover.nb_stopover+'"><label for="stop-over-'+stopover.nb_stopover+'">Escale '+(parseInt(stopover.nb_stopover)+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="'+stopover.city+'" class="form-control form-control-sm stop-over-input" id="stop-over-'+stopover.nb_stopover+'" placeholder="Ex : Marseille" /></div>')
                 self.setState({nbStopOver: this.state.nbStopOver +1})
               })
 
@@ -178,7 +178,7 @@ export default class EditJourney extends Component {
       $(".btn-delete-stop-over").each(function(){
         $(this).css('display', 'none')
       })
-      $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+this.state.nbStopOver+'"><label for="stop-over-'+this.state.nbStopOver+'">Escale '+(this.state.nbStopOver+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control stop-over-input" id="stop-over-'+this.state.nbStopOver+'" placeholder="Ex : Marseille" /></div>')
+      $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+this.state.nbStopOver+'"><label for="stop-over-'+this.state.nbStopOver+'">Escale '+(this.state.nbStopOver+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control form-control-sm stop-over-input" id="stop-over-'+this.state.nbStopOver+'" placeholder="Ex : Marseille" /></div>')
       this.setState({nbStopOver: this.state.nbStopOver +1})
     }
 
@@ -194,31 +194,31 @@ export default class EditJourney extends Component {
               <form method="POST" encType="multipart/form-data">
                 <div className="form-group">
                   <label htmlFor="select-delivery-company">Entreprise de livraison</label>
-                  <select className="form-control" id="select-delivery-company" onChange={() => {this.setState({delivery_company: document.querySelector('#select-delivery-company').value})}} >
+                  <select className="form-control form-control-sm" id="select-delivery-company" onChange={() => {this.setState({delivery_company: document.querySelector('#select-delivery-company').value})}} >
                     <option id="1">SDY Transport</option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label htmlFor="departure">Ville de départ</label>
-                  <input type="text" className="form-control" id="departure" value={this.state.departure} onChange={() => {this.setState({departure: document.querySelector('#departure').value})}} placeholder="Ex : Marseille" />
+                  <input type="text" className="form-control form-control-sm" id="departure" value={this.state.departure} onChange={() => {this.setState({departure: document.querySelector('#departure').value})}} placeholder="Ex : Marseille" />
                   <a href="" onClick={(e) => {this.addStopover(e)}} style={{display: 'inline-block', marginLeft: '10px'}}>Ajouter une escale</a>
                 </div>
                 <div className="form-group" id="container-stop-over" style={{paddingLeft: '30px'}}></div>
                 <div className="form-group">
                   <label htmlFor="arrival">Ville d'arrivée</label>
-                  <input type="text" className="form-control" id="arrival" value={this.state.arrival} onChange={() => {this.setState({arrival: document.querySelector('#arrival').value})}} placeholder="Ex : Toulouse" />
+                  <input type="text" className="form-control form-control-sm" id="arrival" value={this.state.arrival} onChange={() => {this.setState({arrival: document.querySelector('#arrival').value})}} placeholder="Ex : Toulouse" />
                 </div>
                 <div className="form-group" id="container-picky-date-time">
                   <label htmlFor="date-departure">Date de départ</label>
-                  <input type="date" className="form-control" id="date-departure" value={this.state.date_departure}  onChange={() => {this.setState({date_departure: document.querySelector('#date-departure').value})}} />
+                  <input type="date" className="form-control form-control-sm" id="date-departure" value={this.state.date_departure}  onChange={() => {this.setState({date_departure: document.querySelector('#date-departure').value})}} />
                 </div>
                 <div className="form-group" id="container-picky-date-time">
                   <label htmlFor="hour-departure">Heure de départ</label>
-                  <input type="time" className="form-control" id="time-departure" value={this.state.time_departure} onChange={() => {this.setState({time_departure: document.querySelector('#time-departure').value})}} />
+                  <input type="time" className="form-control form-control-sm" id="time-departure" value={this.state.time_departure} onChange={() => {this.setState({time_departure: document.querySelector('#time-departure').value})}} />
                 </div>
                 <div className="form-group" id="container-picky-date-time">
                   <label htmlFor="hour-departure">Date d'arrivée</label>
-                  <input type="date" className="form-control" id="date-arrival" value={this.state.date_arrival} onChange={() => {this.setState({date_arrival: document.querySelector('#date-arrival').value})}} />
+                  <input type="date" className="form-control form-control-sm" id="date-arrival" value={this.state.date_arrival} onChange={() => {this.setState({date_arrival: document.querySelector('#date-arrival').value})}} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>

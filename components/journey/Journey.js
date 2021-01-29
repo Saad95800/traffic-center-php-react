@@ -457,36 +457,36 @@ export default class Journey extends Component {
       if(this.state.viewSpaceForm){
         spaceForm = <div className="container-space-form" onClick={this.hideSpaceForm.bind(this)}>
                       <form method="POST" className="space-form" id="space-form" onClick={(e)=>{e.stopPropagation()}}>
-                        <div className="form-group">
-                          <input type="hidden" className="form-control" id="id_space" value={this.state.id_space} name="id_space" />
+                        <div className="">
+                          <input type="hidden" className="form-control form-control-sm" id="id_space" value={this.state.id_space} name="id_space" />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="pallet_number">Numéro de palette</label>
-                          <input type="text" className="form-control" id="pallet_number" value={this.state.pallet_number} onChange={() => {this.setState({pallet_number: $("#pallet_number").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="pallet_number" value={this.state.pallet_number} onChange={() => {this.setState({pallet_number: $("#pallet_number").val()})}} />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="customer_name">Nom du client</label>
-                          <input type="text" className="form-control" id="customer_name" value={this.state.customer_name} onChange={() => {this.setState({customer_name: $("#customer_name").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="customer_name" value={this.state.customer_name} onChange={() => {this.setState({customer_name: $("#customer_name").val()})}} />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="goods_nature">Nature de la marchandise</label>
-                          <input type="text" className="form-control" id="goods_nature" value={this.state.goods_nature} onChange={() => {this.setState({goods_nature: $("#goods_nature").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="goods_nature" value={this.state.goods_nature} onChange={() => {this.setState({goods_nature: $("#goods_nature").val()})}} />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="delivery_address">Adresse de livraison</label>
-                          <input type="text" className="form-control" id="delivery_address" value={this.state.delivery_address} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="delivery_address" value={this.state.delivery_address} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="city">Ville</label>
-                          <input type="text" className="form-control" id="city" value={this.state.city} onChange={() => {this.setState({city: $("#city").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="city" value={this.state.city} onChange={() => {this.setState({city: $("#city").val()})}} />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="country">Pays</label>
-                          <input type="text" className="form-control" id="country" value={this.state.country} onChange={() => {this.setState({country: $("#country").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="country" value={this.state.country} onChange={() => {this.setState({country: $("#country").val()})}} />
                         </div>
-                        <div className="form-group">
+                        <div className="">
                           <label htmlFor="zip_code">Code Postal</label>
-                          <input type="text" className="form-control" id="zip_code" value={this.state.zip_code} onChange={() => {this.setState({zip_code: $("#zip_code").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="zip_code" value={this.state.zip_code} onChange={() => {this.setState({zip_code: $("#zip_code").val()})}} />
                         </div>
                         <div className="display-flex-center">
                           <button type="submit" onClick={this.updateSpaceData.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>

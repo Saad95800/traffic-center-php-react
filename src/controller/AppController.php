@@ -10,11 +10,12 @@ use App\Controller\AuthenticationController;
 class AppController extends Controller {
 
     public function indexaction(){
-
+// var_dump($_SESSION);
+// var_dump($_COOKIE);die('toto');
         $auth = new AuthenticationController();
-        if(!$auth->is_connected()){
-            header('location: /');
-        }
+        // if(!$auth->is_connected()){
+        //     header('location: /');
+        // }
         $display['content'] = $this->_view->render( 'app.php' , []);
 
         include VIEW . 'layout.php';

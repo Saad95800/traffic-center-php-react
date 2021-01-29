@@ -40,10 +40,6 @@ class AuthenticationController extends Controller {
         }
 
         $_SESSION['id_company'] = $company->id_company;
-        setcookie('id_company', $company->id_company, -1);
-        // var_dump($_SESSION['id_company']);
-        // var_dump($company->id_company);
-        // die('titi');
         echo json_encode([
             'error' => false,
             'msg' => 'Connexion effectuée avec succès',
