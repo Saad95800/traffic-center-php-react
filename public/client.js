@@ -1789,7 +1789,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '100%'
+          height: '60%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-horizontal-80-120",
@@ -1811,7 +1811,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '100%'
+          height: '60%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-vertical-80-120",
@@ -1845,7 +1845,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '100%'
+          height: '60%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-horizontal-100-120",
@@ -1867,7 +1867,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '100%'
+          height: '60%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-vertical-100-120",
@@ -2086,8 +2086,8 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       var keyword_gen = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-bar").val().toLowerCase();
       var keyword_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-departure").val().toLowerCase();
       var keyword_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-arrival").val().toLowerCase();
-      var keyword_date_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val().toLowerCase();
-      var keyword_date_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val().toLowerCase(); // Filtre général
+      var keyword_date_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val();
+      var keyword_date_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-arrival").val(); // Filtre général
 
       if (keyword_gen == "") {
         newJourneysList1 = this.state.journeys;
@@ -2127,21 +2127,18 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         } finally {
           _iterator.f();
         }
-      } // Filtre sur la date de départ
+      } // Filtre sur la ville de départ
 
 
       if (keyword_dep == "") {
         newJourneysList2 = newJourneysList1;
       } else {
-        console.log(newJourneysList1);
-
         var _iterator3 = _createForOfIteratorHelper(newJourneysList1),
             _step3;
 
         try {
           for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
             var _journey = _step3.value;
-            console.log(keyword_dep);
 
             if (_journey.departure.toLowerCase().indexOf(keyword_dep) != -1) {
               console.log('found');
@@ -2154,7 +2151,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         } finally {
           _iterator3.f();
         }
-      } // Filtre sur la date d'arrivée
+      } // Filtre sur la ville d'arrivée
 
 
       if (keyword_arr == "") {
@@ -2179,10 +2176,56 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         } finally {
           _iterator4.f();
         }
+      } // Filtre sur la ville de départ
+
+
+      if (keyword_date_dep == "") {
+        newJourneysList4 = newJourneysList3;
+      } else {
+        var _iterator5 = _createForOfIteratorHelper(newJourneysList3),
+            _step5;
+
+        try {
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+            var _journey3 = _step5.value;
+
+            if (moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(_journey3.date_departure).format("DD/MM/YYYY") == moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(new Date(keyword_date_dep).getTime() / 1000).format("DD/MM/YYYY")) {
+              newJourneysList4.push(_journey3);
+              continue;
+            }
+          }
+        } catch (err) {
+          _iterator5.e(err);
+        } finally {
+          _iterator5.f();
+        }
+      } // Filtre sur la ville d'arrivée
+
+
+      if (keyword_date_arr == "") {
+        newJourneysList5 = newJourneysList4;
+      } else {
+        var _iterator6 = _createForOfIteratorHelper(newJourneysList4),
+            _step6;
+
+        try {
+          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
+            var _journey4 = _step6.value;
+
+            if (moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(_journey4.date_arrival).format("DD/MM/YYYY") == moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(new Date(keyword_date_arr).getTime() / 1000).format("DD/MM/YYYY")) {
+              newJourneysList5.push(_journey4);
+              continue;
+            }
+          }
+        } catch (err) {
+          _iterator6.e(err);
+        } finally {
+          _iterator6.f();
+        }
       }
 
       this.setState({
-        journeysList: newJourneysList3
+        journeysList: newJourneysList5
       });
     }
   }, {
@@ -2234,11 +2277,12 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb"
           }, "Ville de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb colorblue"
+            className: "colorblue"
           }, journey.departure))), stopovers, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row",
             style: {
-              marginTop: '10px'
+              marginTop: '5px',
+              marginBottom: '5px'
             }
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-2 logo-green-arrow"
@@ -2247,7 +2291,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb"
           }, "Ville d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb colorblue"
+            className: "colorblue"
           }, journey.arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2259,7 +2303,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb"
           }, "Date de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb colorblue"
+            className: "colorblue"
           }, date_departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2269,7 +2313,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb"
           }, "Heure de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb colorblue"
+            className: "colorblue"
           }, time_departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2279,7 +2323,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb"
           }, "Date d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb colorblue"
+            className: "colorblue"
           }, date_arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2291,7 +2335,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
             className: "fontwb"
           }, "Transporteur: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb colorblue"
+            className: "colorblue"
           }, journey.name_company))))));
         });
       } else {

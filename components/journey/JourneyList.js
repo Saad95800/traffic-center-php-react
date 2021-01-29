@@ -77,8 +77,8 @@ export default class JourneyList extends Component {
         let keyword_gen = $("#search-bar").val().toLowerCase()
         let keyword_dep = $("#search-departure").val().toLowerCase()
         let keyword_arr = $("#search-arrival").val().toLowerCase()
-        let keyword_date_dep = $("#search-date-departure").val().toLowerCase()
-        let keyword_date_arr = $("#search-date-departure").val().toLowerCase()
+        let keyword_date_dep = $("#search-date-departure").val()
+        let keyword_date_arr = $("#search-date-arrival").val()
 
         // Filtre général
             if(keyword_gen == ""){
@@ -102,13 +102,11 @@ export default class JourneyList extends Component {
               }              
             }
 
-            // Filtre sur la date de départ
+            // Filtre sur la ville de départ
             if(keyword_dep == ""){
               newJourneysList2 = newJourneysList1
             }else{
-              console.log(newJourneysList1)
               for(let journey of newJourneysList1){
-                console.log(keyword_dep)
                 if(journey.departure.toLowerCase().indexOf(keyword_dep) != -1){
                   console.log('found')
                   newJourneysList2.push(journey)
@@ -117,7 +115,7 @@ export default class JourneyList extends Component {
               }
             }
 
-            // Filtre sur la date d'arrivée
+            // Filtre sur la ville d'arrivée
             if(keyword_arr == ""){
               newJourneysList3 = newJourneysList2
             }else{
@@ -131,7 +129,31 @@ export default class JourneyList extends Component {
               }
             }
             
-        this.setState({journeysList: newJourneysList3})
+            // Filtre sur la ville de départ
+            if(keyword_date_dep == ""){
+              newJourneysList4 = newJourneysList3
+            }else{
+              for(let journey of newJourneysList3){
+                if( moment.unix(journey.date_departure).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_dep).getTime()/1000).format("DD/MM/YYYY")){
+                  newJourneysList4.push(journey)
+                  continue
+                }
+              }
+            }
+
+            // Filtre sur la ville d'arrivée
+            if(keyword_date_arr == ""){
+              newJourneysList5 = newJourneysList4
+            }else{
+              for(let journey of newJourneysList4){
+                if( moment.unix(journey.date_arrival).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_arr).getTime()/1000).format("DD/MM/YYYY")){
+                  newJourneysList5.push(journey)
+                  continue
+                }
+              }
+            }
+
+        this.setState({journeysList: newJourneysList5})
 
     }
 
@@ -169,32 +191,32 @@ export default class JourneyList extends Component {
                       <div className="col-md-4">
                         <div className="height33p row">
                           <div className="col-2 logo-green-point"></div>
-                          <div className="col-10"><span className="fontwb">Ville de départ: </span><span className="fontwb colorblue">{journey.departure}</span></div>
+                          <div className="col-10"><span className="fontwb">Ville de départ: </span><span className="colorblue">{journey.departure}</span></div>
                         </div>
                         {stopovers}
-                        <div className="height33p row" style={{marginTop: '10px'}}>
+                        <div className="height33p row" style={{marginTop: '5px', marginBottom: '5px'}}>
                           <div className="col-2 logo-green-arrow"></div>
-                          <div className="col-10"><span className="fontwb">Ville d'arrivée: </span><span className="fontwb colorblue">{journey.arrival}</span></div>
+                          <div className="col-10"><span className="fontwb">Ville d'arrivée: </span><span className="colorblue">{journey.arrival}</span></div>
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="height33p row">
                           <div className="col-2 logo-date"></div>
-                          <div className="col-10"><span className="fontwb">Date de départ: </span><span className="fontwb colorblue">{date_departure}</span></div>
+                          <div className="col-10"><span className="fontwb">Date de départ: </span><span className="colorblue">{date_departure}</span></div>
                         </div>
                         <div className="height33p row">
                           <div className="col-2 logo-clock"></div>
-                          <div className="col-10"><span className="fontwb">Heure de départ: </span><span className="fontwb colorblue">{time_departure}</span></div>
+                          <div className="col-10"><span className="fontwb">Heure de départ: </span><span className="colorblue">{time_departure}</span></div>
                         </div>
                         <div className="height33p row">
                           <div className="col-2 logo-date"></div>
-                          <div className="col-10"><span className="fontwb">Date d'arrivée: </span><span className="fontwb colorblue">{date_arrival}</span></div>
+                          <div className="col-10"><span className="fontwb">Date d'arrivée: </span><span className="colorblue">{date_arrival}</span></div>
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="height33p row">
                           <div className="col-2 logo-mini-truck"></div>
-                          <div className="col-10"><span className="fontwb">Transporteur: </span><span className="fontwb colorblue">{journey.name_company}</span></div>
+                          <div className="col-10"><span className="fontwb">Transporteur: </span><span className="colorblue">{journey.name_company}</span></div>
                         </div>
                       </div>
                       {/* <Journey key={index} id_journey={journey.id_journey} spaces={journey.spaces} page="list-journey"/> */}

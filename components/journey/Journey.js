@@ -502,7 +502,7 @@ export default class Journey extends Component {
                   <div className="text-center">Palettes 80/120</div>
                   <div className="row" style={{height: "100%"}}>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
                         <div 
                           className="space-draggable space-draggable-horizontal-80-120" 
                           id="space-draggable-horizontal-80-120" 
@@ -521,7 +521,7 @@ export default class Journey extends Component {
                       </div>
                     </div>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
                         <div 
                           className="space-draggable space-draggable-vertical-80-120" 
                           id="space-draggable-vertical-80-120" 
@@ -545,7 +545,7 @@ export default class Journey extends Component {
                   <div className="text-center">Palettes 100/120</div>
                   <div className="row" style={{height: "100%"}}>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
                         <div 
                           className="space-draggable space-draggable-horizontal-100-120" 
                           id="space-draggable-horizontal-100-120" 
@@ -564,7 +564,7 @@ export default class Journey extends Component {
                       </div>
                     </div>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
                         <div 
                           className="space-draggable space-draggable-vertical-100-120" 
                           id="space-draggable-vertical-100-120" 

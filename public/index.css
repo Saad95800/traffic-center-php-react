@@ -311,6 +311,9 @@ a:hover{
     .space-form{
         margin-top: 25%;
     }
+    .form-container{
+        width: 90%;
+    }
 }
 
 
