@@ -18,53 +18,108 @@ export default class JourneyList extends Component {
           keywordSearchDeparture: '',
           keywordSearchArrival: '',
           keywordSearchDateDeparture: '',
-          keywordSearchDateArrival: ''
+          keywordSearchDateArrival: '',
+          lastPage: false
       }
 
       this.journeys = []
+      this.offset = 0
     }
 
     componentDidMount(){
 
-        this.props.hideMenu()
+      this.props.hideMenu()
+      
+      let data = {}
+      axios({
+        method: 'POST',
+        url: '/get-journey-list',
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: data
+      })
+      .then((response) => {
 
-        let data = {};
-
-          axios({
-            method: 'POST',
-            url: '/get-journey-list',
-            responseType: 'json',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: data
-          })
-          .then((response) => {
-
-            if(response.statusText == 'OK'){
-              if(response.data.error == true){
-                if(response.data.error_code == 1){
-                  // this.viewMessageFlash(response.data.msg, true);
-                  // document.location.href="/app";
-                }else{
-                  // this.viewMessageFlash(response.data.msg, true);
-                }
-
-              }else{
-                console.log(response.data)
-                this.setState({journeys: response.data, journeysList: response.data})
-                this.journeys = response.data
-              }
+        if(response.statusText == 'OK'){
+          if(response.data.error == true){
+            if(response.data.error_code == 1){
+              // this.viewMessageFlash(response.data.msg, true);
+              // document.location.href="/app";
             }else{
-              this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
+              // this.viewMessageFlash(response.data.msg, true);
             }
+          }else{
+            console.log(response.data)
+            this.setState({journeys: response.data, journeysList: response.data})
+            this.journeys = response.data
+          }
+        }else{
+          this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
+        }
 
+      })
+      .catch( (error) => {
+        console.log(error);
+        return false
+      });
+ 
+    }
 
-          })
-          .catch( (error) => {
-            console.log(error);
-          });
-          
+    changePage(val){
+
+      if(val == 'next'){
+        this.offset++
+      }else{
+        if(this.offset > 0){
+          this.offset--
+        }
+      }
+
+      let formData = new FormData();
+      formData.append('offset', this.offset);
+
+      axios({
+        method: 'POST',
+        url: '/get-journey-list',
+        responseType: 'json',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: formData
+      })
+      .then((response) => {
+
+        if(response.statusText == 'OK'){
+          if(response.data.error == true){
+            if(response.data.error_code == 1){
+              // this.viewMessageFlash(response.data.msg, true);
+              // document.location.href="/app";
+            }else{
+              // this.viewMessageFlash(response.data.msg, true);
+            }
+          }else{
+            console.log(response.data)
+            this.setState({journeys: response.data, journeysList: response.data})
+            this.journeys = response.data
+            console.log(response.data.length)
+            if(response.data.length < 15){
+              this.setState({lastPage: true})
+            }else{
+              this.setState({lastPage: false})
+            }
+          }
+        }else{
+          this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
+        }
+
+      })
+      .catch( (error) => {
+        console.log(error);
+        return false
+      });
+
     }
 
     filter(e) {
@@ -227,6 +282,12 @@ export default class JourneyList extends Component {
           }else{
             journeys = ''
           }
+
+          let nextButton = ''
+          if(this.state.lastPage == false){
+            nextButton = <div><button onClick={() => { this.changePage('next') }}>{'>'}</button></div>
+          }
+
         return (
           <div className="container-list-journey-page display-flex-center">
                 <h1 className="mgtop20">Liste des trajets</h1>
@@ -238,24 +299,28 @@ export default class JourneyList extends Component {
                     }}/>
                     <div className="row">
                       <div className="col-sm-3">
+                        <label htmlFor="search-departure">Ville de départ</label>
                         <input type="text" className="form-control form-control-sm" id="search-departure" value={this.state.keywordSearchDeparture} placeholder="Départ" onChange={()=>{
                     this.setState({keywordSearchDeparture: $('#search-departure').val()})
                     this.filter()
                     }}/>
                       </div>
                       <div className="col-sm-3">
+                        <label htmlFor="search-arrival">Ville de départ</label>
                         <input type="text" className="form-control form-control-sm" id="search-arrival" value={this.state.keywordSearchArrival} placeholder="Arrivée" onChange={()=>{
                     this.setState({keywordSearchArrival: $('#search-arrival').val()})
                     this.filter()
                     }}/>
                       </div>
                       <div className="col-sm-3">
+                        <label htmlFor="search-date-departure">Date de départ</label>
                         <input type="date" className="form-control form-control-sm" id="search-date-departure" value={this.state.keywordSearchDateDeparture} placeholder="Date départ" onChange={()=>{
                     this.setState({keywordSearchDateDeparture: $('#search-date-departure').val()})
                     this.filter()
                     }}/>
                       </div>
                       <div className="col-sm-3">
+                        <label htmlFor="search-date-arrival">Date d'arrivée</label>
                         <input type="date" className="form-control form-control-sm" id="search-date-arrival" value={this.state.keywordSearchDateArrival} placeholder="Date arrivée" onChange={()=>{
                     this.setState({keywordSearchDateArrival: $('#search-date-arrival').val()})
                     this.filter()
@@ -263,6 +328,11 @@ export default class JourneyList extends Component {
                       </div>
                     </div>
                 </div>
+                <div className="display-flex-center" style={{flexDirection: 'row'}}>
+                    <div><button onClick={() => { this.changePage('previous') }}>{'<'}</button></div>
+                    {nextButton}
+                </div>
+                <div>{this.offset+1}</div>
                 <div className="container-list-journey" style={{fontSize: '0.7rem'}}>
                   {journeys}
                 </div>

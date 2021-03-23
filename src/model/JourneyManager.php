@@ -5,14 +5,15 @@ use lib\Model;
 
 class JourneyManager extends Model {
 
-    public function getJourneyList(){
-
+    public function getJourneyList($offset){
+        
 		$sql = "SELECT *
                 FROM journey as a
                 INNER JOIN company as b
                 ON b.id_company = a.fk_id_company
-                ORDER BY a.created_at DESC LIMIT 5";				
+                ORDER BY a.created_at DESC LIMIT 15 OFFSET ".($offset*15);				
 				
+            // var_dump($sql);
 		$req = $this->dbh->prepare($sql);
         $req->execute();
         $result = $req->fetchAll(\PDO::FETCH_OBJ);
@@ -36,7 +37,7 @@ class JourneyManager extends Model {
             $stopovers = $req->fetchAll(\PDO::FETCH_OBJ);
             $res->stopovers = $stopovers;
         }
-
+// var_dump($result);die;
         if ($result) {
             return $result;
         }

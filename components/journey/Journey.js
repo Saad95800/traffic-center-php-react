@@ -420,17 +420,29 @@ export default class Journey extends Component {
       })
 
     }
+
+    toggleSpaceList(e){
+      e.preventDefault()
+      if($("#spaces-lines-table").css("display") == 'none'){
+        $("#spaces-lines-table").slideDown()
+        $("#btn-view-spaces-list").text('Masquer la liste des palettes')
+      }else{
+      $("#spaces-lines-table").slideUp()
+      $("#btn-view-spaces-list").text('Voir la liste des palettes')
+      }
+    }
+
     render() {
 
       if(this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0){
         
         let spaces = ''
+        let spacesLines = ''
         let colMoins1 = null
         let i = 0
         // console.log(this.props.spaces.length)
 
           this.props.spaces.map( (space, index) => {
-            console.log('map '+i)
               if(colMoins1 != space.col){
                 if(i > 0){
                   spaces += '</div>'
@@ -440,11 +452,13 @@ export default class Journey extends Component {
               }
 
               spaces += '<div class="space-draggable space-dropped space-draggable-'+space.position+'-'+space.size+'" id="space-dropped-'+i+'" data-id_space="'+space.id_space+'" data-number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-address="'+space.address+'" data-city="'+space.city+'" data-country="'+space.country+'" data-zip_code="'+space.zip_code+'" data-size="'+space.size+'" data-position="'+space.position+'" data-col="'+space.col+'" draggable="true"></div>'
+              spacesLines += '<tr><td>'+space.pallet_number+'</td><td>'+space.customer_name+'</td><td>'+space.date_delivery+'</td><td>'+space.hour_delivery+'</td><td>'+space.goods_nature+'</td><td>'+space.address+'</td></tr>'
               colMoins1 = space.col;
               i++
           } )
           spaces += '</div>'
           $("#drop-spaces-zone").before(spaces)
+          $("#spaces-lines").html(spacesLines)
           this.spacesWidth = this.calculSpacesWidth()
         
         $('.btn-delete-line').each(function(){
@@ -473,20 +487,16 @@ export default class Journey extends Component {
                           <input type="text" className="form-control form-control-sm" id="goods_nature" value={this.state.goods_nature} onChange={() => {this.setState({goods_nature: $("#goods_nature").val()})}} />
                         </div>
                         <div className="">
+                          <label htmlFor="delivery_address">Date de livraison</label>
+                          <input type="date" className="form-control form-control-sm" id="delivery_address" value={this.state.date_delivery} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                        </div>
+                        <div className="">
+                          <label htmlFor="delivery_address">Heure de chargement</label>
+                          <input type="time" className="form-control form-control-sm" id="delivery_address" value={this.state.hour_delivery} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                        </div>
+                        <div className="">
                           <label htmlFor="delivery_address">Adresse de livraison</label>
                           <input type="text" className="form-control form-control-sm" id="delivery_address" value={this.state.delivery_address} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
-                        </div>
-                        <div className="">
-                          <label htmlFor="city">Ville</label>
-                          <input type="text" className="form-control form-control-sm" id="city" value={this.state.city} onChange={() => {this.setState({city: $("#city").val()})}} />
-                        </div>
-                        <div className="">
-                          <label htmlFor="country">Pays</label>
-                          <input type="text" className="form-control form-control-sm" id="country" value={this.state.country} onChange={() => {this.setState({country: $("#country").val()})}} />
-                        </div>
-                        <div className="">
-                          <label htmlFor="zip_code">Code Postal</label>
-                          <input type="text" className="form-control form-control-sm" id="zip_code" value={this.state.zip_code} onChange={() => {this.setState({zip_code: $("#zip_code").val()})}} />
                         </div>
                         <div className="display-flex-center">
                           <button type="submit" onClick={this.updateSpaceData.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
@@ -599,6 +609,27 @@ export default class Journey extends Component {
                     <img src="http://traffic-center.local/public/img/front-truck.png" />
                   </div>
                 </div>
+              </div>
+              <button 
+                type="button" 
+                className="btn btn btn-light form-control-sm display-flex-center" 
+                id="btn-view-spaces-list"
+                style={{margin: '20px 0px'}}
+                onClick={(e)=> {this.toggleSpaceList(e)}}>Voir la liste des palettes</button>
+              <div className="table-responsive" id="spaces-lines-table" style={{display: 'none'}}>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th  scope="col">N° de palette</th>
+                      <th  scope="col">Client</th>
+                      <th  scope="col">Nature marchandise</th>
+                      <th  scope="col">Date livraison</th>
+                      <th  scope="col">Heure chargement</th>
+                      <th  scope="col">Adresse livraison</th>
+                    </tr>
+                  </thead>
+                  <tbody id="spaces-lines"></tbody>
+                </table>
               </div>
               
               {spaceForm}

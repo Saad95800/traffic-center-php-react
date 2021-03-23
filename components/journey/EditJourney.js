@@ -119,10 +119,9 @@ export default class EditJourney extends Component {
             pallet_number: $(this).data('number'),
             customer_name: $(this).data('customer_name'),
             goods_nature: $(this).data('goods_nature'),
+            date_delivery: $(this).data('date_delivery'),
+            hour_delivery: $(this).data('hour_delivery'),
             address: $(this).data('address'),
-            city: $(this).data('city'),
-            country: $(this).data('country'),
-            zip_code: $(this).data('zip_code'),
             size: $(this).data('size'),
             position: $(this).data('position'),
             col: $(this).parent().attr('data-col'),
@@ -173,7 +172,6 @@ export default class EditJourney extends Component {
     }
 
     addStopover(e){
-      console.log("add stop over")
       e.preventDefault()
       $(".btn-delete-stop-over").each(function(){
         $(this).css('display', 'none')

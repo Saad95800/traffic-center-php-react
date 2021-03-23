@@ -35,8 +35,17 @@ class AppController extends Controller {
             die;
         }
 
+
+        $offset = 0;
+        if(isset($_POST['offset'])){
+            $offset = $_POST['offset'];
+        }
+
+        // var_dump($_POST);
+        // die;
+
         $jm = new JourneyManager();
-        $journeyList = $jm->getJourneyList();
+        $journeyList = $jm->getJourneyList($offset);
         echo json_encode($journeyList);
         die;
 
