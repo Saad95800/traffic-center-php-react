@@ -1116,6 +1116,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var draggabilly__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! draggabilly */ "./node_modules/draggabilly/draggabilly.js");
+/* harmony import */ var draggabilly__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(draggabilly__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1137,6 +1139,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -1165,491 +1168,181 @@ var Journey = /*#__PURE__*/function (_Component) {
       city: '',
       country: '',
       zip_code: '',
-      id_space_block_html: ''
+      id_space_block_html: '',
+      id_pallet_edit: '',
+      date_delivery: '',
+      hour_delivery: ''
     };
-    _this.draggedElement = null;
-    _this.spacesWidth = 0;
-    _this.iteration = 0;
+    _this.id_space = 1;
     return _this;
   }
 
   _createClass(Journey, [{
     key: "componentDidMount",
-    value: function componentDidMount() {
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', '.btn-delete-line', function () {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().remove();
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('display', 'flex');
-        var k = 0;
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-dropped").each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id", "space-dropped-" + k);
-          k++;
-        });
-        var l = 0;
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
-          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != 'drop-spaces-zone') {
-            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-col', l);
-            l++;
-          }
-        });
+    value: function componentDidMount() {}
+  }, {
+    key: "save",
+    value: function save() {
+      var spaces = [];
+    }
+  }, {
+    key: "createBox",
+    value: function createBox(b) {
+      var _this2 = this;
+
+      console.log('createBox');
+      var size_css = 'width:80px;height:50px;';
+      var size = '';
+      var position = '';
+
+      switch (b) {
+        case 'b1':
+          size_css = 'width:70px;height:45px;background-color:rgb(100, 117, 161);';
+          size = '80-120';
+          position = 'horizontal';
+          break;
+
+        case 'b2':
+          size_css = 'width:70px;height:60px;background-color:rgb(100 156 161);';
+          size = '100-120';
+          position = 'horizontal';
+          break;
+
+        case 'b3':
+          size_css = 'width:45px;height:70px;background-color:rgb(100, 117, 161);';
+          size = '80-120';
+          position = 'vertical';
+          break;
+
+        case 'b4':
+          size_css = 'width:60px;height:70px;background-color:rgb(100 156 161);';
+          size = '100-120';
+          position = 'vertical';
+          break;
+
+        default:
+          break;
+      }
+
+      var elem = jQuery__WEBPACK_IMPORTED_MODULE_1___default()('<div draggable="true" class="draggable-space box-space" id="space-' + this.id_space + '" data-pallet_number="' + this.id_space + '" data-customer_name="" data-goods_nature="" data-size="' + size + '" data-position="' + position + '" data-address="" data-date_delivery="" data-hour_delivery="" style="' + size_css + '"><div style="width:100%;height:100%;display:flex;flex-direction: column;justify-content: space-between;"><div style="width:100%;height:20px;"><div class="img-space-info"></div></div><div class="space-number">' + this.id_space + '</div><div class="width100" style="height:20px;"><div class="img-space-rotate"></div><div class="img-space-trash"></div></div></div></div>');
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#block-spaces').append(elem[0]);
+      var draggie = new draggabilly__WEBPACK_IMPORTED_MODULE_3___default.a(elem[0], {
+        containment: true,
+        grid: [5, 5]
       });
-      var element1 = document.getElementById("space-draggable-horizontal-80-120");
-      var element2 = document.getElementById("space-draggable-vertical-80-120");
-      var element3 = document.getElementById("space-draggable-horizontal-100-120");
-      var element4 = document.getElementById("space-draggable-vertical-100-120");
-      this.initDraggable(element1);
-      this.initDraggable(element2);
-      this.initDraggable(element2);
-      this.initDraggable(element3);
-      this.initDraggable(element4);
-      var element5 = document.getElementById("drop-spaces-zone");
-      this.initDropZone(element5);
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('mouseenter', ".drop-spaces-zone", function () {
-        var _this2 = this;
+      elem.mousemove(function (e) {
+        e.stopPropagation();
+        var $this = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent();
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-top", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("top").replace("px", ""));
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-left", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("left").replace("px", ""));
+        var collision = false;
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").length > 1) {
+            // console.log($(this).attr('id') + '==' + $this.attr("id"))
+            if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != $this.attr("id")) {
+              var boxMoveLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", ""));
+              var boxMoveTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('top').replace("px", ""));
+              var boxMoveWidth = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('width').replace("px", ""));
+              var boxMoveHeight = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('height').replace("px", ""));
+              var boxFixLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('left').replace("px", ""));
+              var boxFixTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('top').replace("px", ""));
+              var boxFixWidth = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", ""));
+              var boxFixHeight = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('height').replace("px", ""));
 
-        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != 'drop-spaces-zone') {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".btn-delete-line").each(function () {
-            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css("display", 'none');
-          });
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).find(".btn-delete-line").css('display', 'inline-block');
-          setTimeout(function () {
-            jQuery__WEBPACK_IMPORTED_MODULE_1___default()(_this2).find(".btn-delete-line").css('display', 'none');
-          }, 3000);
-        }
-      }); // if(this.props.page == "edit-journey"){
-
-      var self = this;
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', ".space-draggable", function () {
-        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr("class") == "drop-spaces-zone" && !jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).hasClass("new_element")) {
-          console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-number'));
-          self.setState({
-            viewSpaceForm: true,
-            pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-number') == 'null' ? '' : jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-number'),
-            customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-customer_name'),
-            goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-goods_nature'),
-            delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-address'),
-            city: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-city'),
-            country: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-country'),
-            zip_code: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('data-zip_code'),
-            id_space_block_html: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id')
-          });
-        }
-      }); // }
-    }
-  }, {
-    key: "initDraggable",
-    value: function initDraggable(draggable) {
-      var _this3 = this;
-
-      draggable.addEventListener("dragstart", function (e) {
-        _this3.draggedElement = e.target;
-      });
-      draggable.addEventListener("drag", function () {});
-      draggable.addEventListener("dragend", function () {});
-      draggable.setAttribute("draggable", "true");
-    }
-  }, {
-    key: "initDropZone",
-    value: function initDropZone(dropZone) {
-      var _this4 = this;
-
-      dropZone.addEventListener("dragenter", this.dragenter.bind(this));
-      dropZone.addEventListener("dragover", this.dragover.bind(this));
-      dropZone.addEventListener("dragleave", this.dragleave.bind(this));
-      dropZone.addEventListener("drop", function (ev) {
-        _this4.dropElement(ev);
-      });
-    }
-  }, {
-    key: "dragenter",
-    value: function dragenter(e) {
-      console.log('dragenter');
-      e.preventDefault();
-    }
-  }, {
-    key: "dragover",
-    value: function dragover(e) {
-      console.log('dragover');
-      e.preventDefault();
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('background-color', 'yellow');
-    }
-  }, {
-    key: "dragleave",
-    value: function dragleave(e) {
-      console.log('dragleave');
-      e.preventDefault();
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('background-color', 'transparent');
-    }
-  }, {
-    key: "createNemElement",
-    value: function createNemElement(ev) {
-      var newElem = this.draggedElement.cloneNode(true);
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-draggable").each(function () {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).html("");
-      });
-      newElem.classList.add('space-dropped');
-      newElem.classList.add('new_element'); // $(newElem).attr("data-col", "toto")
-
-      ev.target.appendChild(newElem);
-      var i = 0;
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-dropped").each(function () {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id", "space-dropped-" + i);
-        i++;
-      });
-    }
-  }, {
-    key: "dropElement",
-    value: function dropElement(ev) {
-      var withSpaces = this.calculSpacesWidth();
-
-      if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(ev.target).attr("class").indexOf('space-draggable') == -1) {
-        withSpaces = this.calculSpacesWidth();
-
-        if (withSpaces <= 12.5) {
-          var spacesDraggable = jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").find('.space-draggable');
-          var nbrSpaceDraggable = jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").find('.space-draggable').length; // console.log(nbrSpaceDraggable)
-
-          var validLine = false;
-          ev.preventDefault();
-
-          if (nbrSpaceDraggable < 3) {
-            if (nbrSpaceDraggable == 0) {
-              // Si la dropzone est vide on autorise le drop
-              if (withSpaces <= 12.1) {
-                // Si la largeur restante est inférieure ou égale à 12,1m
-                this.createNemElement(ev);
-              } else {
-                // On refuse le drop si la largeur des palettes est supérieure à 12,1m et si la pallette à déposr est horizontale (parce qu'il n'y aura plus assez de place pour la poser)
-                if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this.draggedElement).data('position') == 'vertical') {
-                  console.log('vertical');
-
-                  if (withSpaces <= 12.3) {
-                    this.createNemElement(ev);
-                  } else {
-                    if (withSpaces <= 12.5) {
-                      if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this.draggedElement).data('size') == '80-120') {
-                        this.createNemElement(ev);
-                      } else {
-                        this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette 100/120', true);
-                        validLine = false;
-                      }
-                    } else {
-                      this.props.viewMessageFlash('Il n\'y a plus assez de place pour mettre de palette', true);
-                      validLine = false;
-                    }
-                  }
-                } else {
-                  this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette horizontale', true);
+              if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", "") != 'auto') {
+                if (boxMoveLeft < boxFixLeft + boxFixWidth && boxMoveLeft + boxMoveWidth > boxFixLeft && boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop) {
+                  console.log("Collision entre " + jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') + ' et ' + $this.attr('id'));
+                  console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().attr('id'));
+                  collision = true;
                 }
-              }
-            } else if (nbrSpaceDraggable == 1) {
-              // Si il n'y a qu'un seul élément dans la dropzone, on autorise le drop
-              if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(spacesDraggable[0]).data('position') == 'vertical' || jQuery__WEBPACK_IMPORTED_MODULE_1___default()(spacesDraggable[0]).data('size') == '100-120') {
-                // Si on a que un élément qui est vertical on valide la ligne
-                validLine = true;
-              }
-
-              if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this.draggedElement).data('size') == '100-120') {
-                validLine = true;
-              }
-
-              if (withSpaces <= 12.1) {
-                this.createNemElement(ev);
-              } else {
-                if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this.draggedElement).data('position') == 'vertical') {
-                  if (withSpaces <= 12.3) {
-                    this.createNemElement(ev);
-                  } else {
-                    if (withSpaces <= 12.5) {
-                      if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this.draggedElement).data('size') == '80-120') {
-                        this.createNemElement(ev);
-                      } else {
-                        this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette 100/120', true);
-                        validLine = false;
-                      }
-                    } else {
-                      this.props.viewMessageFlash('Il n\'y a plus assez de place pour mettre de palette', true);
-                      validLine = false;
-                    }
-                  }
-                } else {
-                  validLine = false;
-                  this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette horizontale', true);
-                }
-              }
-            } else if (nbrSpaceDraggable == 2) {
-              // Si il y a 2 éléments dans la dropzone
-              var two80120Horizontal = true;
-              spacesDraggable.each(function () {
-                if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('size') != '80-120' && jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('position') != 'horizontal') {
-                  two80120Horizontal = false;
-                }
-              });
-
-              if (two80120Horizontal) {
-                // Si on a 2 éléments horizontaux validLine = true
-                console.log('On a 2 élément précédent');
-                validLine = true;
-              }
-
-              var hundred = false;
-              var positionOk = true;
-              spacesDraggable.each(function () {
-                if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('size') == '100-120') {
-                  // Si un des 2 élément est 100/120 on interdit le drop
-                  hundred = true;
-                }
-
-                if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('position') == 'vertical') {
-                  // Si un des éléments est vertical on interdit le drop
-                  positionOk = false;
-                }
-              });
-
-              if (hundred == false && positionOk == true && this.draggedElement.getAttribute('data-size') == '80-120') {
-                // Si les 2 éléments sont horizontaux et 80/120 et que l'élément à placer est 80/120 on autorise le drop
-                this.createNemElement(ev);
               }
             }
-          } // Si ce drop est le dernier possible, on valide la ligne de drop
-
-
-          if (validLine) {
-            this.validLine(ev);
           }
+        });
 
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('background-color', 'transparent');
+        if (collision) {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'red');
         } else {
-          this.props.viewMessageFlash('Il n\'y a plus assez de place pour mettre de palettes', true);
-        }
-      } else {
-        console.log("Pas de drop pour cet élément");
-      }
-    }
-  }, {
-    key: "cleanLine",
-    value: function cleanLine(e) {
-      e.preventDefault();
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").find('.space-draggable').each(function () {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).remove();
-      });
-    }
-  }, {
-    key: "validLine",
-    value: function validLine(e) {
-      e.preventDefault();
-      this.iteration = 100;
-
-      if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#drop-spaces-zone').find('.space-draggable').length > 0) {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").find('.new_element').each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).removeClass('new_element');
-        });
-        var j = 0;
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".space-dropped").each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id", "space-dropped-" + j);
-          j++;
-        });
-        var newElement = document.querySelector("#drop-spaces-zone").cloneNode(true);
-        var html = '';
-        var i = 0;
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
-          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + i + '" data-col="' + i + '" style="border: 3px solid grey;"></span>' + jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).html() + '</div>';
-          i++;
-        });
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#block-spaces").html(html);
-        newElement.innerHTML = '';
-        this.initDropZone(newElement);
-        this.setState({
-          spacesWidth: this.calculSpacesWidth()
-        });
-        document.querySelector("#block-spaces").appendChild(newElement);
-        newElement.setAttribute('id', 'drop-spaces-zone');
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('width', '63px');
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width'));
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'inline-block');
-        });
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").append('<span class="btn-delete-line" style="display:none;"></span>');
-
-        if (this.calculSpacesWidth() > 12.5) {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").css('display', 'none');
-        }
-      }
-
-      this.updateSpaces();
-    }
-  }, {
-    key: "calculSpacesWidth",
-    value: function calculSpacesWidth() {
-      var withSpaces = 0;
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
-        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id") != "drop-spaces-zone") {
-          console.log(Math.round(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", "")));
-
-          switch (Math.round(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", ""))) {
-            case 51:
-              withSpaces += 1;
-              break;
-
-            case 63:
-              withSpaces += 1.2;
-              break;
-
-            case 44:
-              withSpaces += 0.8;
-              break;
-
-            default:
-              break;
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).attr("data-size") == '80-120') {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100, 117, 161)');
+          } else {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100 156 161)');
           }
         }
+
+        collision = false;
       });
-      return withSpaces;
-    }
-  }, {
-    key: "updateSpaces",
-    value: function updateSpaces() {
-      var spaces = [];
-      var lineSpace = [];
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".drop-spaces-zone").each(function () {
-        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id") != "drop-spaces-zone") {
-          lineSpace = [];
-          var id_col = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr("id").replace("drop-spaces-zone-", "");
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).find(".space-draggable").each(function () {
-            var space = {};
-            space.col = id_col;
-            space.size = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('size');
-            space.position = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('position');
-            spaces.push(space);
-          });
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-info").click(function (e) {
+        _this2.setState({
+          viewSpaceForm: true
+        });
+
+        console.log(e.target);
+        console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent().attr('id'));
+
+        _this2.setState({
+          id_pallet_edit: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent().attr('id')
+        });
+      });
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-trash").click(function () {
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().remove();
+      });
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-rotate").click(function () {
+        console.log('rotate');
+        var width = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("width");
+        var height = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("height");
+        console.log(width);
+        console.log(height);
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("width", height);
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("height", width);
+        var pos = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().attr("data-position");
+
+        if (pos == 'vertical') {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().attr("data-position", 'horizontal');
+        } else {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().attr("data-position", 'vertical');
         }
       });
-      this.props.updateSpaces(spaces);
+      this.id_space = this.id_space + 1;
+    }
+  }, {
+    key: "hideSpaceForm",
+    value: function hideSpaceForm(e) {
+      e.preventDefault();
+      this.setState({
+        viewSpaceForm: false
+      });
     }
   }, {
     key: "updateSpaceData",
     value: function updateSpaceData(e) {
-      e.preventDefault(); // if(this.state.id_space != ""){
-      // let formData = new FormData();
-      // formData.append('pallet_number', this.state.pallet_number);
-      // formData.append('customer_name', this.state.customer_name);
-      // formData.append('goods_nature', this.state.goods_nature);
-      // formData.append('address', this.state.delivery_address);
-      // formData.append('zip_code', this.state.zip_code);
-      // formData.append('city', this.state.city);
-      // formData.append('country', this.state.country);
-      // formData.append('id_space', this.state.id_space);
-      // axios({
-      //   method: 'POST',
-      //   url: '/update-space-ajax',
-      //   responseType: 'json',
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded'
-      //   },
-      //   data: formData
-      // })
-      // .then((response) => {
-      //   console.log(response);
-      //   if(response.statusText == 'OK'){
-      //     this.props.viewMessageFlash(response.data.msg, response.data.error);
-      //     let space = $("#block-spaces").find('[data-id_space='+this.state.id_space+']')
-      //     space.attr('data-number', this.state.pallet_number)
-      //     space.attr('data-customer_name', this.state.customer_name)
-      //     space.attr('data-goods_nature', this.state.goods_nature)
-      //     space.attr('data-address', this.state.delivery_address)
-      //     space.attr('data-zip_code', this.state.zip_code)
-      //     space.attr('data-city', this.state.city)
-      //     space.attr('data-country', this.state.country)
-      //   }else{
-      //     this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
-      //   }
-      // })
-      // .catch( (error) => {
-      //   console.log(error);
-      //   this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
-      // });
-      // }else{
-
-      var space = jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#" + this.state.id_space_block_html);
-      space.attr('data-number', this.state.pallet_number);
+      e.preventDefault();
+      var space = jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#" + this.state.id_pallet_edit);
+      space.attr('data-pallet_number', this.state.pallet_number);
       space.attr('data-customer_name', this.state.customer_name);
       space.attr('data-goods_nature', this.state.goods_nature);
+      space.attr('data-date_delivery', this.state.date_delivery);
+      space.attr('data-hour_delivery', this.state.hour_delivery);
       space.attr('data-address', this.state.delivery_address);
-      space.attr('data-zip_code', this.state.zip_code);
-      space.attr('data-city', this.state.city);
-      space.attr('data-country', this.state.country);
-      this.hideSpaceForm(); // }
-    }
-  }, {
-    key: "hideSpaceForm",
-    value: function hideSpaceForm() {
       this.setState({
-        viewSpaceForm: false,
-        id_space: '',
-        pallet_number: '',
-        customer_name: '',
-        goods_nature: '',
-        delivery_address: '',
-        city: '',
-        country: '',
-        zip_code: '',
-        id_space_block_html: ''
+        viewSpaceForm: false
       });
-    }
-  }, {
-    key: "toggleSpaceList",
-    value: function toggleSpaceList(e) {
-      e.preventDefault();
-
-      if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#spaces-lines-table").css("display") == 'none') {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#spaces-lines-table").slideDown();
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#btn-view-spaces-list").text('Masquer la liste des palettes');
-      } else {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#spaces-lines-table").slideUp();
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#btn-view-spaces-list").text('Voir la liste des palettes');
-      }
     }
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this;
+      var _this3 = this;
 
-      if (this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0) {
-        var spaces = '';
-        var spacesLines = '';
-        var colMoins1 = null;
-        var i = 0; // console.log(this.props.spaces.length)
-
-        this.props.spaces.map(function (space, index) {
-          if (colMoins1 != space.col) {
-            if (i > 0) {
-              spaces += '</div>';
-            }
-
-            spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-' + space.col + '" data-col="' + space.col + '" style="border: 3px solid grey;">';
-            spaces += '<span class="btn-delete-line" style="display: none;"></span>';
-          }
-
-          spaces += '<div class="space-draggable space-dropped space-draggable-' + space.position + '-' + space.size + '" id="space-dropped-' + i + '" data-id_space="' + space.id_space + '" data-number="' + space.pallet_number + '" data-customer_name="' + space.customer_name + '" data-goods_nature="' + space.goods_nature + '" data-address="' + space.address + '" data-city="' + space.city + '" data-country="' + space.country + '" data-zip_code="' + space.zip_code + '" data-size="' + space.size + '" data-position="' + space.position + '" data-col="' + space.col + '" draggable="true"></div>';
-          spacesLines += '<tr><td>' + space.pallet_number + '</td><td>' + space.customer_name + '</td><td>' + space.date_delivery + '</td><td>' + space.hour_delivery + '</td><td>' + space.goods_nature + '</td><td>' + space.address + '</td></tr>';
-          colMoins1 = space.col;
-          i++;
-        });
-        spaces += '</div>';
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#drop-spaces-zone").before(spaces);
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#spaces-lines").html(spacesLines);
-        this.spacesWidth = this.calculSpacesWidth();
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('.btn-delete-line').each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width', jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().css('width'));
-        });
-        this.iteration = 100;
-      }
+      if (this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0) {}
 
       var spaceForm = '';
 
       if (this.state.viewSpaceForm) {
         spaceForm = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "container-space-form",
-          onClick: this.hideSpaceForm.bind(this)
+          onClick: function onClick(e) {
+            _this3.hideSpaceForm(e);
+          }
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
           method: "POST",
           className: "space-form",
@@ -1675,7 +1368,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "pallet_number",
           value: this.state.pallet_number,
           onChange: function onChange() {
-            _this5.setState({
+            _this3.setState({
               pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#pallet_number").val()
             });
           }
@@ -1689,7 +1382,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "customer_name",
           value: this.state.customer_name,
           onChange: function onChange() {
-            _this5.setState({
+            _this3.setState({
               customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#customer_name").val()
             });
           }
@@ -1703,7 +1396,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "goods_nature",
           value: this.state.goods_nature,
           onChange: function onChange() {
-            _this5.setState({
+            _this3.setState({
               goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#goods_nature").val()
             });
           }
@@ -1714,10 +1407,9 @@ var Journey = /*#__PURE__*/function (_Component) {
         }, "Date de livraison"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "date",
           className: "form-control form-control-sm",
-          id: "delivery_address",
-          value: this.state.date_delivery,
+          id: "date_delivery",
           onChange: function onChange() {
-            _this5.setState({
+            _this3.setState({
               delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
             });
           }
@@ -1728,10 +1420,9 @@ var Journey = /*#__PURE__*/function (_Component) {
         }, "Heure de chargement"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
           type: "time",
           className: "form-control form-control-sm",
-          id: "delivery_address",
-          value: this.state.hour_delivery,
+          id: "hour_delivery",
           onChange: function onChange() {
-            _this5.setState({
+            _this3.setState({
               delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
             });
           }
@@ -1745,7 +1436,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "delivery_address",
           value: this.state.delivery_address,
           onChange: function onChange() {
-            _this5.setState({
+            _this3.setState({
               delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
             });
           }
@@ -1753,7 +1444,9 @@ var Journey = /*#__PURE__*/function (_Component) {
           className: "display-flex-center"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           type: "submit",
-          onClick: this.updateSpaceData.bind(this),
+          onClick: function onClick(e) {
+            _this3.updateSpaceData(e);
+          },
           className: "btn btn-primary",
           style: {
             backgroundColor: '#6475a1'
@@ -1787,7 +1480,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '60%'
+          height: '100%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-horizontal-80-120",
@@ -1802,14 +1495,17 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-city": "",
         "data-zip_code": "",
         "data-country": "",
-        draggable: "true"
+        draggable: "true",
+        onClick: function onClick() {
+          _this3.createBox('b1');
+        }
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '60%'
+          height: '100%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-vertical-80-120",
@@ -1824,11 +1520,15 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-city": "",
         "data-zip_code": "",
         "data-country": "",
-        draggable: "true"
+        draggable: "true",
+        onClick: function onClick() {
+          _this3.createBox('b3');
+        }
       }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6",
         style: {
-          border: "3px solid black"
+          border: "3px solid black",
+          padding: "10px"
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "text-center"
@@ -1843,7 +1543,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '60%'
+          height: '100%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-horizontal-100-120",
@@ -1858,14 +1558,17 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-city": "",
         "data-zip_code": "",
         "data-country": "",
-        draggable: "true"
+        draggable: "true",
+        onClick: function onClick() {
+          _this3.createBox('b2');
+        }
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center",
         style: {
           width: '100%',
-          height: '60%'
+          height: '100%'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "space-draggable space-draggable-vertical-100-120",
@@ -1880,71 +1583,32 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-city": "",
         "data-zip_code": "",
         "data-country": "",
-        draggable: "true"
-      })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: "",
-        onClick: function onClick(e) {
-          _this5.cleanLine(e);
-        },
-        style: {
-          display: 'inline-block',
-          marginTop: '15px'
+        draggable: "true",
+        onClick: function onClick() {
+          _this3.createBox('b4');
         }
-      }, "Vider la ligne"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: "",
-        onClick: function onClick(e) {
-          _this5.validLine(e);
-        },
-        style: {
-          display: 'inline-block',
-          marginTop: '15px',
-          marginLeft: '15px'
-        }
-      }, "Valider la ligne"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        style: {
-          display: 'inline-block',
-          marginTop: '15px',
-          marginLeft: '15px'
-        }
-      }, "Largeur totale des palettes : ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        style: {
-          fontWeight: '800',
-          fontSize: '1.2em',
-          color: 'rgb(100 156 161)'
-        }
-      }, this.calculSpacesWidth().toFixed(2), " m"), " (Max 13,310 m) - Place restante : ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        style: {
-          fontWeight: '800',
-          fontSize: '1.2em',
-          color: 'rgb(100 156 161)'
-        }
-      }, (13.310 - this.calculSpacesWidth()).toFixed(2), " m")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center height100"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "flex-row width100",
+        className: "width100 display-flex-center",
         style: {
-          minHeight: '100px'
+          minHeight: '100px',
+          flexDirection: 'row'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "block-spaces",
-        id: "block-spaces",
+        className: "d-none d-sm-block",
         style: {
-          marginRight: '-16px',
-          height: '130px'
-        }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "drop-spaces-zone",
-        id: "drop-spaces-zone"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-        className: "btn-delete-line"
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-3 d-none d-sm-block",
-        style: {
-          flex: 2
+          margin: '50px 10px 50px 50px'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "http://traffic-center.local/public/img/front-truck.png"
-      })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        src: "http://traffic-center.local/public/img/front-truck.png",
+        style: {
+          transform: "rotate(180deg)"
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "block-spaces",
+        id: "block-spaces"
+      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
         className: "btn btn btn-light form-control-sm display-flex-center",
         id: "btn-view-spaces-list",
@@ -1952,7 +1616,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           margin: '20px 0px'
         },
         onClick: function onClick(e) {
-          _this5.toggleSpaceList(e);
+          _this3.toggleSpaceList(e);
         }
       }, "Voir la liste des palettes"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "table-responsive",
@@ -1961,7 +1625,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           display: 'none'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
-        "class": "table"
+        className: "table"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         scope: "col"
       }, "N\xB0 de palette"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
@@ -2496,7 +2160,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         className: "col-sm-3"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "search-arrival"
-      }, "Ville de d\xE9part"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+      }, "Ville d'arriv\xE9e"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
         type: "text",
         className: "form-control form-control-sm",
         id: "search-arrival",
@@ -4851,6 +4515,805 @@ module.exports = {
   trim: trim,
   stripBOM: stripBOM
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/draggabilly/draggabilly.js":
+/*!*************************************************!*\
+  !*** ./node_modules/draggabilly/draggabilly.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * Draggabilly v2.3.0
+ * Make that shiz draggable
+ * https://draggabilly.desandro.com
+ * MIT license
+ */
+
+/* jshint browser: true, strict: true, undef: true, unused: true */
+
+( function( window, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /* globals define */
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! get-size/get-size */ "./node_modules/get-size/get-size.js"),
+      __webpack_require__(/*! unidragger/unidragger */ "./node_modules/unidragger/unidragger.js"),
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( getSize, Unidragger ) {
+        return factory( window, getSize, Unidragger );
+      }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( window, function factory( window, getSize, Unidragger ) {
+
+// -------------------------- helpers & variables -------------------------- //
+
+// extend objects
+function extend( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+}
+
+function noop() {}
+
+var jQuery = window.jQuery;
+
+// --------------------------  -------------------------- //
+
+function Draggabilly( element, options ) {
+  // querySelector if string
+  this.element = typeof element == 'string' ?
+    document.querySelector( element ) : element;
+
+  if ( jQuery ) {
+    this.$element = jQuery( this.element );
+  }
+
+  // options
+  this.options = extend( {}, this.constructor.defaults );
+  this.option( options );
+
+  this._create();
+}
+
+// inherit Unidragger methods
+var proto = Draggabilly.prototype = Object.create( Unidragger.prototype );
+
+Draggabilly.defaults = {
+};
+
+/**
+ * set options
+ * @param {Object} opts
+ */
+proto.option = function( opts ) {
+  extend( this.options, opts );
+};
+
+// css position values that don't need to be set
+var positionValues = {
+  relative: true,
+  absolute: true,
+  fixed: true,
+};
+
+proto._create = function() {
+  // properties
+  this.position = {};
+  this._getPosition();
+
+  this.startPoint = { x: 0, y: 0 };
+  this.dragPoint = { x: 0, y: 0 };
+
+  this.startPosition = extend( {}, this.position );
+
+  // set relative positioning
+  var style = getComputedStyle( this.element );
+  if ( !positionValues[ style.position ] ) {
+    this.element.style.position = 'relative';
+  }
+
+  // events, bridge jQuery events from vanilla
+  this.on( 'pointerMove', this.onPointerMove );
+  this.on( 'pointerUp', this.onPointerUp );
+
+  this.enable();
+  this.setHandles();
+};
+
+/**
+ * set this.handles and bind start events to 'em
+ */
+proto.setHandles = function() {
+  this.handles = this.options.handle ?
+    this.element.querySelectorAll( this.options.handle ) : [ this.element ];
+
+  this.bindHandles();
+};
+
+/**
+ * emits events via EvEmitter and jQuery events
+ * @param {String} type - name of event
+ * @param {Event} event - original event
+ * @param {Array} args - extra arguments
+ */
+proto.dispatchEvent = function( type, event, args ) {
+  var emitArgs = [ event ].concat( args );
+  this.emitEvent( type, emitArgs );
+  this.dispatchJQueryEvent( type, event, args );
+};
+
+proto.dispatchJQueryEvent = function( type, event, args ) {
+  var jquery = window.jQuery;
+  // trigger jQuery event
+  if ( !jquery || !this.$element ) {
+    return;
+  }
+  // create jQuery event
+  /* eslint-disable-next-line new-cap */
+  var $event = jquery.Event( event );
+  $event.type = type;
+  this.$element.trigger( $event, args );
+};
+
+// -------------------------- position -------------------------- //
+
+// get x/y position from style
+proto._getPosition = function() {
+  var style = getComputedStyle( this.element );
+  var x = this._getPositionCoord( style.left, 'width' );
+  var y = this._getPositionCoord( style.top, 'height' );
+  // clean up 'auto' or other non-integer values
+  this.position.x = isNaN( x ) ? 0 : x;
+  this.position.y = isNaN( y ) ? 0 : y;
+
+  this._addTransformPosition( style );
+};
+
+proto._getPositionCoord = function( styleSide, measure ) {
+  if ( styleSide.indexOf('%') != -1 ) {
+    // convert percent into pixel for Safari, #75
+    var parentSize = getSize( this.element.parentNode );
+    // prevent not-in-DOM element throwing bug, #131
+    return !parentSize ? 0 :
+      ( parseFloat( styleSide ) / 100 ) * parentSize[ measure ];
+  }
+  return parseInt( styleSide, 10 );
+};
+
+// add transform: translate( x, y ) to position
+proto._addTransformPosition = function( style ) {
+  var transform = style.transform;
+  // bail out if value is 'none'
+  if ( transform.indexOf('matrix') !== 0 ) {
+    return;
+  }
+  // split matrix(1, 0, 0, 1, x, y)
+  var matrixValues = transform.split(',');
+  // translate X value is in 12th or 4th position
+  var xIndex = transform.indexOf('matrix3d') === 0 ? 12 : 4;
+  var translateX = parseInt( matrixValues[ xIndex ], 10 );
+  // translate Y value is in 13th or 5th position
+  var translateY = parseInt( matrixValues[ xIndex + 1 ], 10 );
+  this.position.x += translateX;
+  this.position.y += translateY;
+};
+
+// -------------------------- events -------------------------- //
+
+proto.onPointerDown = function( event, pointer ) {
+  this.element.classList.add('is-pointer-down');
+  this.dispatchJQueryEvent( 'pointerDown', event, [ pointer ] );
+};
+
+proto.pointerDown = function( event, pointer ) {
+  var isOkay = this.okayPointerDown( event );
+  if ( !isOkay || !this.isEnabled ) {
+    this._pointerReset();
+    return;
+  }
+  // track start event position
+  // Safari 9 overrides pageX and pageY. These values needs to be copied. flickity#842
+  this.pointerDownPointer = {
+    pageX: pointer.pageX,
+    pageY: pointer.pageY,
+  };
+
+  event.preventDefault();
+  this.pointerDownBlur();
+  // bind move and end events
+  this._bindPostStartEvents( event );
+  this.element.classList.add('is-pointer-down');
+  this.dispatchEvent( 'pointerDown', event, [ pointer ] );
+};
+
+/**
+ * drag start
+ * @param {Event} event
+ * @param {[Event, Touch]} pointer
+ */
+proto.dragStart = function( event, pointer ) {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  this._getPosition();
+  this.measureContainment();
+  // position _when_ drag began
+  this.startPosition.x = this.position.x;
+  this.startPosition.y = this.position.y;
+  // reset left/top style
+  this.setLeftTop();
+
+  this.dragPoint.x = 0;
+  this.dragPoint.y = 0;
+
+  this.element.classList.add('is-dragging');
+  this.dispatchEvent( 'dragStart', event, [ pointer ] );
+  // start animation
+  this.animate();
+};
+
+proto.measureContainment = function() {
+  var container = this.getContainer();
+  if ( !container ) {
+    return;
+  }
+
+  var elemSize = getSize( this.element );
+  var containerSize = getSize( container );
+  var elemRect = this.element.getBoundingClientRect();
+  var containerRect = container.getBoundingClientRect();
+
+  var borderSizeX = containerSize.borderLeftWidth + containerSize.borderRightWidth;
+  var borderSizeY = containerSize.borderTopWidth + containerSize.borderBottomWidth;
+
+  var position = this.relativeStartPosition = {
+    x: elemRect.left - ( containerRect.left + containerSize.borderLeftWidth ),
+    y: elemRect.top - ( containerRect.top + containerSize.borderTopWidth ),
+  };
+
+  this.containSize = {
+    width: ( containerSize.width - borderSizeX ) - position.x - elemSize.width,
+    height: ( containerSize.height - borderSizeY ) - position.y - elemSize.height,
+  };
+};
+
+proto.getContainer = function() {
+  var containment = this.options.containment;
+  if ( !containment ) {
+    return;
+  }
+  var isElement = containment instanceof HTMLElement;
+  // use as element
+  if ( isElement ) {
+    return containment;
+  }
+  // querySelector if string
+  if ( typeof containment == 'string' ) {
+    return document.querySelector( containment );
+  }
+  // fallback to parent element
+  return this.element.parentNode;
+};
+
+// ----- move event ----- //
+
+proto.onPointerMove = function( event, pointer, moveVector ) {
+  this.dispatchJQueryEvent( 'pointerMove', event, [ pointer, moveVector ] );
+};
+
+/**
+ * drag move
+ * @param {Event} event
+ * @param {[Event, Touch]} pointer
+ * @param {Object} moveVector - x and y coordinates
+ */
+proto.dragMove = function( event, pointer, moveVector ) {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  var dragX = moveVector.x;
+  var dragY = moveVector.y;
+
+  var grid = this.options.grid;
+  var gridX = grid && grid[0];
+  var gridY = grid && grid[1];
+
+  dragX = applyGrid( dragX, gridX );
+  dragY = applyGrid( dragY, gridY );
+
+  dragX = this.containDrag( 'x', dragX, gridX );
+  dragY = this.containDrag( 'y', dragY, gridY );
+
+  // constrain to axis
+  dragX = this.options.axis == 'y' ? 0 : dragX;
+  dragY = this.options.axis == 'x' ? 0 : dragY;
+
+  this.position.x = this.startPosition.x + dragX;
+  this.position.y = this.startPosition.y + dragY;
+  // set dragPoint properties
+  this.dragPoint.x = dragX;
+  this.dragPoint.y = dragY;
+
+  this.dispatchEvent( 'dragMove', event, [ pointer, moveVector ] );
+};
+
+function applyGrid( value, grid, method ) {
+  method = method || 'round';
+  return grid ? Math[ method ]( value/grid ) * grid : value;
+}
+
+proto.containDrag = function( axis, drag, grid ) {
+  if ( !this.options.containment ) {
+    return drag;
+  }
+  var measure = axis == 'x' ? 'width' : 'height';
+
+  var rel = this.relativeStartPosition[ axis ];
+  var min = applyGrid( -rel, grid, 'ceil' );
+  var max = this.containSize[ measure ];
+  max = applyGrid( max, grid, 'floor' );
+  return Math.max( min, Math.min( max, drag ) );
+};
+
+// ----- end event ----- //
+
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {[Event, Touch]} pointer
+ */
+proto.onPointerUp = function( event, pointer ) {
+  this.element.classList.remove('is-pointer-down');
+  this.dispatchJQueryEvent( 'pointerUp', event, [ pointer ] );
+};
+
+/**
+ * drag end
+ * @param {Event} event
+ * @param {[Event, Touch]} pointer
+ */
+proto.dragEnd = function( event, pointer ) {
+  if ( !this.isEnabled ) {
+    return;
+  }
+  // use top left position when complete
+  this.element.style.transform = '';
+  this.setLeftTop();
+  this.element.classList.remove('is-dragging');
+  this.dispatchEvent( 'dragEnd', event, [ pointer ] );
+};
+
+// -------------------------- animation -------------------------- //
+
+proto.animate = function() {
+  // only render and animate if dragging
+  if ( !this.isDragging ) {
+    return;
+  }
+
+  this.positionDrag();
+
+  var _this = this;
+  requestAnimationFrame( function animateFrame() {
+    _this.animate();
+  } );
+
+};
+
+// left/top positioning
+proto.setLeftTop = function() {
+  this.element.style.left = this.position.x + 'px';
+  this.element.style.top = this.position.y + 'px';
+};
+
+proto.positionDrag = function() {
+  this.element.style.transform = 'translate3d( ' + this.dragPoint.x +
+    'px, ' + this.dragPoint.y + 'px, 0)';
+};
+
+// ----- staticClick ----- //
+
+proto.staticClick = function( event, pointer ) {
+  this.dispatchEvent( 'staticClick', event, [ pointer ] );
+};
+
+// ----- methods ----- //
+
+/**
+ * @param {Number} x
+ * @param {Number} y
+ */
+proto.setPosition = function( x, y ) {
+  this.position.x = x;
+  this.position.y = y;
+  this.setLeftTop();
+};
+
+proto.enable = function() {
+  this.isEnabled = true;
+};
+
+proto.disable = function() {
+  this.isEnabled = false;
+  if ( this.isDragging ) {
+    this.dragEnd();
+  }
+};
+
+proto.destroy = function() {
+  this.disable();
+  // reset styles
+  this.element.style.transform = '';
+  this.element.style.left = '';
+  this.element.style.top = '';
+  this.element.style.position = '';
+  // unbind handles
+  this.unbindHandles();
+  // remove jQuery data
+  if ( this.$element ) {
+    this.$element.removeData('draggabilly');
+  }
+};
+
+// ----- jQuery bridget ----- //
+
+// required for jQuery bridget
+proto._init = noop;
+
+if ( jQuery && jQuery.bridget ) {
+  jQuery.bridget( 'draggabilly', Draggabilly );
+}
+
+// -----  ----- //
+
+return Draggabilly;
+
+} ) );
+
+
+/***/ }),
+
+/***/ "./node_modules/ev-emitter/ev-emitter.js":
+/*!***********************************************!*\
+  !*** ./node_modules/ev-emitter/ev-emitter.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
+ * EvEmitter v1.1.0
+ * Lil' event emitter
+ * MIT License
+ */
+
+/* jshint unused: true, undef: true, strict: true */
+
+( function( global, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /* globals define, module, window */
+  if ( true ) {
+    // AMD - RequireJS
+    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( typeof window != 'undefined' ? window : this, function() {
+
+"use strict";
+
+function EvEmitter() {}
+
+var proto = EvEmitter.prototype;
+
+proto.on = function( eventName, listener ) {
+  if ( !eventName || !listener ) {
+    return;
+  }
+  // set events hash
+  var events = this._events = this._events || {};
+  // set listeners array
+  var listeners = events[ eventName ] = events[ eventName ] || [];
+  // only add once
+  if ( listeners.indexOf( listener ) == -1 ) {
+    listeners.push( listener );
+  }
+
+  return this;
+};
+
+proto.once = function( eventName, listener ) {
+  if ( !eventName || !listener ) {
+    return;
+  }
+  // add event
+  this.on( eventName, listener );
+  // set once flag
+  // set onceEvents hash
+  var onceEvents = this._onceEvents = this._onceEvents || {};
+  // set onceListeners object
+  var onceListeners = onceEvents[ eventName ] = onceEvents[ eventName ] || {};
+  // set flag
+  onceListeners[ listener ] = true;
+
+  return this;
+};
+
+proto.off = function( eventName, listener ) {
+  var listeners = this._events && this._events[ eventName ];
+  if ( !listeners || !listeners.length ) {
+    return;
+  }
+  var index = listeners.indexOf( listener );
+  if ( index != -1 ) {
+    listeners.splice( index, 1 );
+  }
+
+  return this;
+};
+
+proto.emitEvent = function( eventName, args ) {
+  var listeners = this._events && this._events[ eventName ];
+  if ( !listeners || !listeners.length ) {
+    return;
+  }
+  // copy over to avoid interference if .off() in listener
+  listeners = listeners.slice(0);
+  args = args || [];
+  // once stuff
+  var onceListeners = this._onceEvents && this._onceEvents[ eventName ];
+
+  for ( var i=0; i < listeners.length; i++ ) {
+    var listener = listeners[i]
+    var isOnce = onceListeners && onceListeners[ listener ];
+    if ( isOnce ) {
+      // remove listener
+      // remove before trigger to prevent recursion
+      this.off( eventName, listener );
+      // unset once flag
+      delete onceListeners[ listener ];
+    }
+    // trigger listener
+    listener.apply( this, args );
+  }
+
+  return this;
+};
+
+proto.allOff = function() {
+  delete this._events;
+  delete this._onceEvents;
+};
+
+return EvEmitter;
+
+}));
+
+
+/***/ }),
+
+/***/ "./node_modules/get-size/get-size.js":
+/*!*******************************************!*\
+  !*** ./node_modules/get-size/get-size.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * getSize v2.0.3
+ * measure size of elements
+ * MIT license
+ */
+
+/* jshint browser: true, strict: true, undef: true, unused: true */
+/* globals console: false */
+
+( function( window, factory ) {
+  /* jshint strict: false */ /* globals define, module */
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+})( window, function factory() {
+'use strict';
+
+// -------------------------- helpers -------------------------- //
+
+// get a number from a string, not a percentage
+function getStyleSize( value ) {
+  var num = parseFloat( value );
+  // not a percent like '100%', and a number
+  var isValid = value.indexOf('%') == -1 && !isNaN( num );
+  return isValid && num;
+}
+
+function noop() {}
+
+var logError = typeof console == 'undefined' ? noop :
+  function( message ) {
+    console.error( message );
+  };
+
+// -------------------------- measurements -------------------------- //
+
+var measurements = [
+  'paddingLeft',
+  'paddingRight',
+  'paddingTop',
+  'paddingBottom',
+  'marginLeft',
+  'marginRight',
+  'marginTop',
+  'marginBottom',
+  'borderLeftWidth',
+  'borderRightWidth',
+  'borderTopWidth',
+  'borderBottomWidth'
+];
+
+var measurementsLength = measurements.length;
+
+function getZeroSize() {
+  var size = {
+    width: 0,
+    height: 0,
+    innerWidth: 0,
+    innerHeight: 0,
+    outerWidth: 0,
+    outerHeight: 0
+  };
+  for ( var i=0; i < measurementsLength; i++ ) {
+    var measurement = measurements[i];
+    size[ measurement ] = 0;
+  }
+  return size;
+}
+
+// -------------------------- getStyle -------------------------- //
+
+/**
+ * getStyle, get style of element, check for Firefox bug
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=548397
+ */
+function getStyle( elem ) {
+  var style = getComputedStyle( elem );
+  if ( !style ) {
+    logError( 'Style returned ' + style +
+      '. Are you running this code in a hidden iframe on Firefox? ' +
+      'See https://bit.ly/getsizebug1' );
+  }
+  return style;
+}
+
+// -------------------------- setup -------------------------- //
+
+var isSetup = false;
+
+var isBoxSizeOuter;
+
+/**
+ * setup
+ * check isBoxSizerOuter
+ * do on first getSize() rather than on page load for Firefox bug
+ */
+function setup() {
+  // setup once
+  if ( isSetup ) {
+    return;
+  }
+  isSetup = true;
+
+  // -------------------------- box sizing -------------------------- //
+
+  /**
+   * Chrome & Safari measure the outer-width on style.width on border-box elems
+   * IE11 & Firefox<29 measures the inner-width
+   */
+  var div = document.createElement('div');
+  div.style.width = '200px';
+  div.style.padding = '1px 2px 3px 4px';
+  div.style.borderStyle = 'solid';
+  div.style.borderWidth = '1px 2px 3px 4px';
+  div.style.boxSizing = 'border-box';
+
+  var body = document.body || document.documentElement;
+  body.appendChild( div );
+  var style = getStyle( div );
+  // round value for browser zoom. desandro/masonry#928
+  isBoxSizeOuter = Math.round( getStyleSize( style.width ) ) == 200;
+  getSize.isBoxSizeOuter = isBoxSizeOuter;
+
+  body.removeChild( div );
+}
+
+// -------------------------- getSize -------------------------- //
+
+function getSize( elem ) {
+  setup();
+
+  // use querySeletor if elem is string
+  if ( typeof elem == 'string' ) {
+    elem = document.querySelector( elem );
+  }
+
+  // do not proceed on non-objects
+  if ( !elem || typeof elem != 'object' || !elem.nodeType ) {
+    return;
+  }
+
+  var style = getStyle( elem );
+
+  // if hidden, everything is 0
+  if ( style.display == 'none' ) {
+    return getZeroSize();
+  }
+
+  var size = {};
+  size.width = elem.offsetWidth;
+  size.height = elem.offsetHeight;
+
+  var isBorderBox = size.isBorderBox = style.boxSizing == 'border-box';
+
+  // get all measurements
+  for ( var i=0; i < measurementsLength; i++ ) {
+    var measurement = measurements[i];
+    var value = style[ measurement ];
+    var num = parseFloat( value );
+    // any 'auto', 'medium' value will be 0
+    size[ measurement ] = !isNaN( num ) ? num : 0;
+  }
+
+  var paddingWidth = size.paddingLeft + size.paddingRight;
+  var paddingHeight = size.paddingTop + size.paddingBottom;
+  var marginWidth = size.marginLeft + size.marginRight;
+  var marginHeight = size.marginTop + size.marginBottom;
+  var borderWidth = size.borderLeftWidth + size.borderRightWidth;
+  var borderHeight = size.borderTopWidth + size.borderBottomWidth;
+
+  var isBorderBoxSizeOuter = isBorderBox && isBoxSizeOuter;
+
+  // overwrite width and height if we can get it from style
+  var styleWidth = getStyleSize( style.width );
+  if ( styleWidth !== false ) {
+    size.width = styleWidth +
+      // add padding and border unless it's already including it
+      ( isBorderBoxSizeOuter ? 0 : paddingWidth + borderWidth );
+  }
+
+  var styleHeight = getStyleSize( style.height );
+  if ( styleHeight !== false ) {
+    size.height = styleHeight +
+      // add padding and border unless it's already including it
+      ( isBorderBoxSizeOuter ? 0 : paddingHeight + borderHeight );
+  }
+
+  size.innerWidth = size.width - ( paddingWidth + borderWidth );
+  size.innerHeight = size.height - ( paddingHeight + borderHeight );
+
+  size.outerWidth = size.width + marginWidth;
+  size.outerHeight = size.height + marginHeight;
+
+  return size;
+}
+
+return getSize;
+
+});
 
 
 /***/ }),
@@ -72597,6 +73060,590 @@ function warning(condition, message) {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (warning);
+
+
+/***/ }),
+
+/***/ "./node_modules/unidragger/unidragger.js":
+/*!***********************************************!*\
+  !*** ./node_modules/unidragger/unidragger.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * Unidragger v2.3.1
+ * Draggable base class
+ * MIT license
+ */
+
+/*jshint browser: true, unused: true, undef: true, strict: true */
+
+( function( window, factory ) {
+  // universal module definition
+  /*jshint strict: false */ /*globals define, module, require */
+
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! unipointer/unipointer */ "./node_modules/unipointer/unipointer.js")
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( Unipointer ) {
+      return factory( window, Unipointer );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( window, function factory( window, Unipointer ) {
+
+'use strict';
+
+// -------------------------- Unidragger -------------------------- //
+
+function Unidragger() {}
+
+// inherit Unipointer & EvEmitter
+var proto = Unidragger.prototype = Object.create( Unipointer.prototype );
+
+// ----- bind start ----- //
+
+proto.bindHandles = function() {
+  this._bindHandles( true );
+};
+
+proto.unbindHandles = function() {
+  this._bindHandles( false );
+};
+
+/**
+ * Add or remove start event
+ * @param {Boolean} isAdd
+ */
+proto._bindHandles = function( isAdd ) {
+  // munge isAdd, default to true
+  isAdd = isAdd === undefined ? true : isAdd;
+  // bind each handle
+  var bindMethod = isAdd ? 'addEventListener' : 'removeEventListener';
+  var touchAction = isAdd ? this._touchActionValue : '';
+  for ( var i=0; i < this.handles.length; i++ ) {
+    var handle = this.handles[i];
+    this._bindStartEvent( handle, isAdd );
+    handle[ bindMethod ]( 'click', this );
+    // touch-action: none to override browser touch gestures. metafizzy/flickity#540
+    if ( window.PointerEvent ) {
+      handle.style.touchAction = touchAction;
+    }
+  }
+};
+
+// prototype so it can be overwriteable by Flickity
+proto._touchActionValue = 'none';
+
+// ----- start event ----- //
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+proto.pointerDown = function( event, pointer ) {
+  var isOkay = this.okayPointerDown( event );
+  if ( !isOkay ) {
+    return;
+  }
+  // track start event position
+  // Safari 9 overrides pageX and pageY. These values needs to be copied. flickity#842
+  this.pointerDownPointer = {
+    pageX: pointer.pageX,
+    pageY: pointer.pageY,
+  };
+
+  event.preventDefault();
+  this.pointerDownBlur();
+  // bind move and end events
+  this._bindPostStartEvents( event );
+  this.emitEvent( 'pointerDown', [ event, pointer ] );
+};
+
+// nodes that have text fields
+var cursorNodes = {
+  TEXTAREA: true,
+  INPUT: true,
+  SELECT: true,
+  OPTION: true,
+};
+
+// input types that do not have text fields
+var clickTypes = {
+  radio: true,
+  checkbox: true,
+  button: true,
+  submit: true,
+  image: true,
+  file: true,
+};
+
+// dismiss inputs with text fields. flickity#403, flickity#404
+proto.okayPointerDown = function( event ) {
+  var isCursorNode = cursorNodes[ event.target.nodeName ];
+  var isClickType = clickTypes[ event.target.type ];
+  var isOkay = !isCursorNode || isClickType;
+  if ( !isOkay ) {
+    this._pointerReset();
+  }
+  return isOkay;
+};
+
+// kludge to blur previously focused input
+proto.pointerDownBlur = function() {
+  var focused = document.activeElement;
+  // do not blur body for IE10, metafizzy/flickity#117
+  var canBlur = focused && focused.blur && focused != document.body;
+  if ( canBlur ) {
+    focused.blur();
+  }
+};
+
+// ----- move event ----- //
+
+/**
+ * drag move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+proto.pointerMove = function( event, pointer ) {
+  var moveVector = this._dragPointerMove( event, pointer );
+  this.emitEvent( 'pointerMove', [ event, pointer, moveVector ] );
+  this._dragMove( event, pointer, moveVector );
+};
+
+// base pointer move logic
+proto._dragPointerMove = function( event, pointer ) {
+  var moveVector = {
+    x: pointer.pageX - this.pointerDownPointer.pageX,
+    y: pointer.pageY - this.pointerDownPointer.pageY
+  };
+  // start drag if pointer has moved far enough to start drag
+  if ( !this.isDragging && this.hasDragStarted( moveVector ) ) {
+    this._dragStart( event, pointer );
+  }
+  return moveVector;
+};
+
+// condition if pointer has moved far enough to start drag
+proto.hasDragStarted = function( moveVector ) {
+  return Math.abs( moveVector.x ) > 3 || Math.abs( moveVector.y ) > 3;
+};
+
+// ----- end event ----- //
+
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+proto.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ event, pointer ] );
+  this._dragPointerUp( event, pointer );
+};
+
+proto._dragPointerUp = function( event, pointer ) {
+  if ( this.isDragging ) {
+    this._dragEnd( event, pointer );
+  } else {
+    // pointer didn't move enough for drag to start
+    this._staticClick( event, pointer );
+  }
+};
+
+// -------------------------- drag -------------------------- //
+
+// dragStart
+proto._dragStart = function( event, pointer ) {
+  this.isDragging = true;
+  // prevent clicks
+  this.isPreventingClicks = true;
+  this.dragStart( event, pointer );
+};
+
+proto.dragStart = function( event, pointer ) {
+  this.emitEvent( 'dragStart', [ event, pointer ] );
+};
+
+// dragMove
+proto._dragMove = function( event, pointer, moveVector ) {
+  // do not drag if not dragging yet
+  if ( !this.isDragging ) {
+    return;
+  }
+
+  this.dragMove( event, pointer, moveVector );
+};
+
+proto.dragMove = function( event, pointer, moveVector ) {
+  event.preventDefault();
+  this.emitEvent( 'dragMove', [ event, pointer, moveVector ] );
+};
+
+// dragEnd
+proto._dragEnd = function( event, pointer ) {
+  // set flags
+  this.isDragging = false;
+  // re-enable clicking async
+  setTimeout( function() {
+    delete this.isPreventingClicks;
+  }.bind( this ) );
+
+  this.dragEnd( event, pointer );
+};
+
+proto.dragEnd = function( event, pointer ) {
+  this.emitEvent( 'dragEnd', [ event, pointer ] );
+};
+
+// ----- onclick ----- //
+
+// handle all clicks and prevent clicks when dragging
+proto.onclick = function( event ) {
+  if ( this.isPreventingClicks ) {
+    event.preventDefault();
+  }
+};
+
+// ----- staticClick ----- //
+
+// triggered after pointer down & up with no/tiny movement
+proto._staticClick = function( event, pointer ) {
+  // ignore emulated mouse up clicks
+  if ( this.isIgnoringMouseUp && event.type == 'mouseup' ) {
+    return;
+  }
+
+  this.staticClick( event, pointer );
+
+  // set flag for emulated clicks 300ms after touchend
+  if ( event.type != 'mouseup' ) {
+    this.isIgnoringMouseUp = true;
+    // reset flag after 300ms
+    setTimeout( function() {
+      delete this.isIgnoringMouseUp;
+    }.bind( this ), 400 );
+  }
+};
+
+proto.staticClick = function( event, pointer ) {
+  this.emitEvent( 'staticClick', [ event, pointer ] );
+};
+
+// ----- utils ----- //
+
+Unidragger.getPointerPoint = Unipointer.getPointerPoint;
+
+// -----  ----- //
+
+return Unidragger;
+
+}));
+
+
+/***/ }),
+
+/***/ "./node_modules/unipointer/unipointer.js":
+/*!***********************************************!*\
+  !*** ./node_modules/unipointer/unipointer.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * Unipointer v2.3.0
+ * base class for doing one thing with pointer event
+ * MIT license
+ */
+
+/*jshint browser: true, undef: true, unused: true, strict: true */
+
+( function( window, factory ) {
+  // universal module definition
+  /* jshint strict: false */ /*global define, module, require */
+  if ( true ) {
+    // AMD
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+      __webpack_require__(/*! ev-emitter/ev-emitter */ "./node_modules/ev-emitter/ev-emitter.js")
+    ], __WEBPACK_AMD_DEFINE_RESULT__ = (function( EvEmitter ) {
+      return factory( window, EvEmitter );
+    }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  } else {}
+
+}( window, function factory( window, EvEmitter ) {
+
+'use strict';
+
+function noop() {}
+
+function Unipointer() {}
+
+// inherit EvEmitter
+var proto = Unipointer.prototype = Object.create( EvEmitter.prototype );
+
+proto.bindStartEvent = function( elem ) {
+  this._bindStartEvent( elem, true );
+};
+
+proto.unbindStartEvent = function( elem ) {
+  this._bindStartEvent( elem, false );
+};
+
+/**
+ * Add or remove start event
+ * @param {Boolean} isAdd - remove if falsey
+ */
+proto._bindStartEvent = function( elem, isAdd ) {
+  // munge isAdd, default to true
+  isAdd = isAdd === undefined ? true : isAdd;
+  var bindMethod = isAdd ? 'addEventListener' : 'removeEventListener';
+
+  // default to mouse events
+  var startEvent = 'mousedown';
+  if ( window.PointerEvent ) {
+    // Pointer Events
+    startEvent = 'pointerdown';
+  } else if ( 'ontouchstart' in window ) {
+    // Touch Events. iOS Safari
+    startEvent = 'touchstart';
+  }
+  elem[ bindMethod ]( startEvent, this );
+};
+
+// trigger handler methods for events
+proto.handleEvent = function( event ) {
+  var method = 'on' + event.type;
+  if ( this[ method ] ) {
+    this[ method ]( event );
+  }
+};
+
+// returns the touch that we're keeping track of
+proto.getTouch = function( touches ) {
+  for ( var i=0; i < touches.length; i++ ) {
+    var touch = touches[i];
+    if ( touch.identifier == this.pointerIdentifier ) {
+      return touch;
+    }
+  }
+};
+
+// ----- start event ----- //
+
+proto.onmousedown = function( event ) {
+  // dismiss clicks from right or middle buttons
+  var button = event.button;
+  if ( button && ( button !== 0 && button !== 1 ) ) {
+    return;
+  }
+  this._pointerDown( event, event );
+};
+
+proto.ontouchstart = function( event ) {
+  this._pointerDown( event, event.changedTouches[0] );
+};
+
+proto.onpointerdown = function( event ) {
+  this._pointerDown( event, event );
+};
+
+/**
+ * pointer start
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ */
+proto._pointerDown = function( event, pointer ) {
+  // dismiss right click and other pointers
+  // button = 0 is okay, 1-4 not
+  if ( event.button || this.isPointerDown ) {
+    return;
+  }
+
+  this.isPointerDown = true;
+  // save pointer identifier to match up touch events
+  this.pointerIdentifier = pointer.pointerId !== undefined ?
+    // pointerId for pointer events, touch.indentifier for touch events
+    pointer.pointerId : pointer.identifier;
+
+  this.pointerDown( event, pointer );
+};
+
+proto.pointerDown = function( event, pointer ) {
+  this._bindPostStartEvents( event );
+  this.emitEvent( 'pointerDown', [ event, pointer ] );
+};
+
+// hash of events to be bound after start event
+var postStartEvents = {
+  mousedown: [ 'mousemove', 'mouseup' ],
+  touchstart: [ 'touchmove', 'touchend', 'touchcancel' ],
+  pointerdown: [ 'pointermove', 'pointerup', 'pointercancel' ],
+};
+
+proto._bindPostStartEvents = function( event ) {
+  if ( !event ) {
+    return;
+  }
+  // get proper events to match start event
+  var events = postStartEvents[ event.type ];
+  // bind events to node
+  events.forEach( function( eventName ) {
+    window.addEventListener( eventName, this );
+  }, this );
+  // save these arguments
+  this._boundPointerEvents = events;
+};
+
+proto._unbindPostStartEvents = function() {
+  // check for _boundEvents, in case dragEnd triggered twice (old IE8 bug)
+  if ( !this._boundPointerEvents ) {
+    return;
+  }
+  this._boundPointerEvents.forEach( function( eventName ) {
+    window.removeEventListener( eventName, this );
+  }, this );
+
+  delete this._boundPointerEvents;
+};
+
+// ----- move event ----- //
+
+proto.onmousemove = function( event ) {
+  this._pointerMove( event, event );
+};
+
+proto.onpointermove = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerMove( event, event );
+  }
+};
+
+proto.ontouchmove = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerMove( event, touch );
+  }
+};
+
+/**
+ * pointer move
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+proto._pointerMove = function( event, pointer ) {
+  this.pointerMove( event, pointer );
+};
+
+// public
+proto.pointerMove = function( event, pointer ) {
+  this.emitEvent( 'pointerMove', [ event, pointer ] );
+};
+
+// ----- end event ----- //
+
+
+proto.onmouseup = function( event ) {
+  this._pointerUp( event, event );
+};
+
+proto.onpointerup = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerUp( event, event );
+  }
+};
+
+proto.ontouchend = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerUp( event, touch );
+  }
+};
+
+/**
+ * pointer up
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+proto._pointerUp = function( event, pointer ) {
+  this._pointerDone();
+  this.pointerUp( event, pointer );
+};
+
+// public
+proto.pointerUp = function( event, pointer ) {
+  this.emitEvent( 'pointerUp', [ event, pointer ] );
+};
+
+// ----- pointer done ----- //
+
+// triggered on pointer up & pointer cancel
+proto._pointerDone = function() {
+  this._pointerReset();
+  this._unbindPostStartEvents();
+  this.pointerDone();
+};
+
+proto._pointerReset = function() {
+  // reset properties
+  this.isPointerDown = false;
+  delete this.pointerIdentifier;
+};
+
+proto.pointerDone = noop;
+
+// ----- pointer cancel ----- //
+
+proto.onpointercancel = function( event ) {
+  if ( event.pointerId == this.pointerIdentifier ) {
+    this._pointerCancel( event, event );
+  }
+};
+
+proto.ontouchcancel = function( event ) {
+  var touch = this.getTouch( event.changedTouches );
+  if ( touch ) {
+    this._pointerCancel( event, touch );
+  }
+};
+
+/**
+ * pointer cancel
+ * @param {Event} event
+ * @param {Event or Touch} pointer
+ * @private
+ */
+proto._pointerCancel = function( event, pointer ) {
+  this._pointerDone();
+  this.pointerCancel( event, pointer );
+};
+
+// public
+proto.pointerCancel = function( event, pointer ) {
+  this.emitEvent( 'pointerCancel', [ event, pointer ] );
+};
+
+// -----  ----- //
+
+// utility function for getting x/y coords from event
+Unipointer.getPointerPoint = function( pointer ) {
+  return {
+    x: pointer.pageX,
+    y: pointer.pageY
+  };
+};
+
+// -----  ----- //
+
+return Unipointer;
+
+}));
 
 
 /***/ }),

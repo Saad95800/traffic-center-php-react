@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import $ from 'jQuery'
 import axios from 'axios'
+import Draggabilly from 'draggabilly'
 
 export default class Journey extends Component {
 
@@ -18,458 +19,168 @@ export default class Journey extends Component {
           city: '',
           country: '',
           zip_code: '',
-          id_space_block_html: ''
+          id_space_block_html: '',
+          id_pallet_edit: '',
+          date_delivery: '',
+          hour_delivery: ''
       }
-      this.draggedElement = null;
-      this.spacesWidth = 0
-      this.iteration = 0
+      this.id_space = 1
     }
 
     componentDidMount(){
-      $(document).on('click', '.btn-delete-line', function(){
-        $(this).parent().remove()
-        $("#drop-spaces-zone").css('display', 'flex')
-        let k = 0
-        $(".space-dropped").each(function(){
-          $(this).attr("id", "space-dropped-"+k)
-          k++
-        })
-        let l = 0
-        $(".drop-spaces-zone").each(function(){
-          if($(this).attr('id') != 'drop-spaces-zone'){
-            $(this).attr('data-col', l)
-            l++
-          }
-        })
-      })
-      let element1 = document.getElementById("space-draggable-horizontal-80-120")
-      let element2 = document.getElementById("space-draggable-vertical-80-120")
-      let element3 = document.getElementById("space-draggable-horizontal-100-120")
-      let element4 = document.getElementById("space-draggable-vertical-100-120")
-      this.initDraggable(element1)
-      this.initDraggable(element2)
-      this.initDraggable(element2)
-      this.initDraggable(element3)
-      this.initDraggable(element4)
-      let element5 = document.getElementById("drop-spaces-zone")
-      this.initDropZone(element5)
-
-      $(document).on('mouseenter', ".drop-spaces-zone", function(){
-        if($(this).attr('id') != 'drop-spaces-zone'){
-          $(".btn-delete-line").each(function(){
-            $(this).css("display", 'none')
-          })
-          $(this).find(".btn-delete-line").css('display', 'inline-block')
-          setTimeout(() => {
-            $(this).find(".btn-delete-line").css('display', 'none')
-          }, 3000)
-        }
-      })
-
-      // if(this.props.page == "edit-journey"){
-
-        let self = this
-        $(document).on('click', ".space-draggable", function(){
-          if($(this).parent().attr("class") == "drop-spaces-zone" && !$(this).hasClass("new_element")){
-            console.log($(this).attr('data-number'))
-            self.setState({
-              viewSpaceForm: true,
-              pallet_number: ($(this).attr('data-number') == 'null' ? '' : $(this).attr('data-number')),
-              customer_name: $(this).attr('data-customer_name'),
-              goods_nature: $(this).attr('data-goods_nature'),
-              delivery_address: $(this).attr('data-address'),
-              city: $(this).attr('data-city'),
-              country: $(this).attr('data-country'),
-              zip_code: $(this).attr('data-zip_code'),
-              id_space_block_html: $(this).attr('id')
-            })
-          }
-
-        })
-        
-      // }
 
     }
 
-    initDraggable(draggable) {
-      draggable.addEventListener("dragstart", (e) => {this.draggedElement = e.target});
-      draggable.addEventListener("drag", () => {})
-      draggable.addEventListener("dragend", () => {})
-      draggable.setAttribute("draggable", "true")
-  }
+    save(){
 
-    initDropZone(dropZone) {
-      dropZone.addEventListener("dragenter", this.dragenter.bind(this))
-      dropZone.addEventListener("dragover", this.dragover.bind(this))
-      dropZone.addEventListener("dragleave", this.dragleave.bind(this))
-      dropZone.addEventListener("drop", (ev) => {
-        this.dropElement(ev)
-      });
+      let spaces = []
     }
 
-    dragenter(e){
-      console.log('dragenter')
-      e.preventDefault()
-    }
 
-    dragover(e){
-      console.log('dragover')
-      e.preventDefault()
-      $("#drop-spaces-zone").css('background-color', 'yellow')
-    }
-
-    dragleave(e){
-      console.log('dragleave')
-      e.preventDefault()
-      $("#drop-spaces-zone").css('background-color', 'transparent')
-    }
-
-    createNemElement(ev, ){
-      let newElem = this.draggedElement.cloneNode(true)
-        $(".space-draggable").each(function(){
-          $(this).html("")
-        })
-      newElem.classList.add('space-dropped');
-      newElem.classList.add('new_element');
-      // $(newElem).attr("data-col", "toto")
-      ev.target.appendChild(newElem)
-      let i = 0
-      $(".space-dropped").each(function(){
-        $(this).attr("id", "space-dropped-"+i)
-        i++
-      })
-    }
-
-    dropElement(ev){
-
-        let withSpaces = this.calculSpacesWidth()
-
-        if($(ev.target).attr("class").indexOf('space-draggable') == -1){
-          withSpaces = this.calculSpacesWidth()
-          if(withSpaces <= 12.5){
-          let spacesDraggable = $("#drop-spaces-zone").find('.space-draggable')
-          let nbrSpaceDraggable = $("#drop-spaces-zone").find('.space-draggable').length
-          // console.log(nbrSpaceDraggable)
-          let validLine = false
-            ev.preventDefault();
-            if(nbrSpaceDraggable < 3){
-              if(nbrSpaceDraggable == 0){ // Si la dropzone est vide on autorise le drop
-                if(withSpaces <= 12.1){ // Si la largeur restante est inférieure ou égale à 12,1m
-                  this.createNemElement(ev)
-                }else{ // On refuse le drop si la largeur des palettes est supérieure à 12,1m et si la pallette à déposr est horizontale (parce qu'il n'y aura plus assez de place pour la poser)
-                  if($(this.draggedElement).data('position') == 'vertical'){
-                    console.log('vertical')
-                    if(withSpaces <= 12.3){
-                      this.createNemElement(ev)
-                    }else{
-                      if(withSpaces <= 12.5){
-                        if($(this.draggedElement).data('size') == '80-120'){
-                          this.createNemElement(ev)
-                        }else{
-                          this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette 100/120', true)
-                          validLine = false
-                        }
-                      }else{
-                        this.props.viewMessageFlash('Il n\'y a plus assez de place pour mettre de palette', true)
-                        validLine = false
-                      }
-                    }
-                  }else{
-                    this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette horizontale', true)
-                  }
-                }
-              }else if(nbrSpaceDraggable == 1){ // Si il n'y a qu'un seul élément dans la dropzone, on autorise le drop
-                if($(spacesDraggable[0]).data('position') == 'vertical' || $(spacesDraggable[0]).data('size') == '100-120'){ // Si on a que un élément qui est vertical on valide la ligne
-                  validLine = true
-                }
-                if($(this.draggedElement).data('size') == '100-120'){
-                  validLine = true
-                }
-                if(withSpaces <= 12.1){
-                  this.createNemElement(ev)
-                }else{
-                  if( $(this.draggedElement).data('position') == 'vertical' ){
-                    if(withSpaces <= 12.3){
-                      this.createNemElement(ev)
-                    }else{
-                      if(withSpaces <= 12.5){
-                        if($(this.draggedElement).data('size') == '80-120'){
-                          this.createNemElement(ev)
-                        }else{
-                          this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette 100/120', true)
-                          validLine = false
-                        }
-                      }else{
-                        this.props.viewMessageFlash('Il n\'y a plus assez de place pour mettre de palette', true)
-                        validLine = false
-                      }
-                    }
-                  }else{
-                    validLine = false
-                    this.props.viewMessageFlash('Il n\'y a plus assez de place pour une palette horizontale', true)
-                  }
-                }
-              }else if(nbrSpaceDraggable == 2){ // Si il y a 2 éléments dans la dropzone
-                let two80120Horizontal = true
-                spacesDraggable.each(function(){
-                  if($(this).data('size') != '80-120' && $(this).data('position') != 'horizontal'){
-                    two80120Horizontal = false
-                  }
-                })
-                if(two80120Horizontal){ // Si on a 2 éléments horizontaux validLine = true
-                  console.log('On a 2 élément précédent')
-                    validLine = true
-                }
-                  let hundred = false
-                  let positionOk = true
-                  spacesDraggable.each(function(){
-                    if($(this).data('size') == '100-120'){ // Si un des 2 élément est 100/120 on interdit le drop
-                      hundred = true
-                    }
-                    if($(this).data('position') == 'vertical'){ // Si un des éléments est vertical on interdit le drop
-                      positionOk = false
-                    }
-                  })
-                  if(hundred == false && positionOk == true && this.draggedElement.getAttribute('data-size') == '80-120'){ // Si les 2 éléments sont horizontaux et 80/120 et que l'élément à placer est 80/120 on autorise le drop
-                    this.createNemElement(ev)
-                  }
-              }
-            }
-            // Si ce drop est le dernier possible, on valide la ligne de drop
-            if(validLine){
-              this.validLine(ev)
-            }
-            $("#drop-spaces-zone").css('background-color', 'transparent')
-          }else{
-            this.props.viewMessageFlash('Il n\'y a plus assez de place pour mettre de palettes', true)
-          }        
-        }else{
-          console.log("Pas de drop pour cet élément")
-        }
-  }
-
-    cleanLine(e){
-      e.preventDefault()
-      $("#drop-spaces-zone").find('.space-draggable').each(function(){
-        $(this).remove()
-      })
-    }
-
-    validLine(e){
-      e.preventDefault()
-      this.iteration = 100
-      if($('#drop-spaces-zone').find('.space-draggable').length > 0){
-        $("#drop-spaces-zone").find('.new_element').each(function(){
-          $(this).removeClass('new_element')
-        })
-      let j = 0
-      $(".space-dropped").each(function(){
-        $(this).attr("id", "space-dropped-"+j)
-        j++
-      })
-
-        let newElement = document.querySelector("#drop-spaces-zone").cloneNode(true)
-        let html = ''
-        let i = 0
-        $(".drop-spaces-zone").each(function(){
-          html += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+i+'" data-col="'+i+'" style="border: 3px solid grey;"></span>'+$(this).html()+'</div>'
-          i++
-        })
-        $("#block-spaces").html(html)
-        newElement.innerHTML = ''
-        this.initDropZone(newElement)
-
-        this.setState({spacesWidth: this.calculSpacesWidth()})
-        document.querySelector("#block-spaces").appendChild(newElement)
-        newElement.setAttribute('id', 'drop-spaces-zone')
-        $("#drop-spaces-zone").css('width', '63px')
-        $('.btn-delete-line').each(function(){
-          $(this).css('width', $(this).parent().css('width'))
-          $(this).css('display', 'inline-block')
-        })
-        $("#drop-spaces-zone").append('<span class="btn-delete-line" style="display:none;"></span>')
-        if(this.calculSpacesWidth() > 12.5){
-          $("#drop-spaces-zone").css('display', 'none')
-        }
-
+    createBox(b){
+      console.log('createBox')
+      let size_css = 'width:80px;height:50px;'
+      let size = ''
+      let position = ''
+      switch(b){
+        case 'b1':
+          size_css = 'width:70px;height:45px;background-color:rgb(100, 117, 161);'
+          size = '80-120'
+          position = 'horizontal'
+          break;
+        case 'b2':
+          size_css = 'width:70px;height:60px;background-color:rgb(100 156 161);'          
+          size = '100-120'
+          position = 'horizontal'
+          break;
+        case 'b3':
+          size_css = 'width:45px;height:70px;background-color:rgb(100, 117, 161);'          
+          size = '80-120'
+          position = 'vertical'
+          break;
+        case 'b4':
+          size_css = 'width:60px;height:70px;background-color:rgb(100 156 161);'          
+          size = '100-120'
+          position = 'vertical'
+          break;
+        default:
+          break;
       }
 
-      this.updateSpaces()
-    }
+      let elem = $('<div draggable="true" class="draggable-space box-space" id="space-'+this.id_space+'" data-pallet_number="'+this.id_space+'" data-customer_name="" data-goods_nature="" data-size="'+size+'" data-position="'+position+'" data-address="" data-date_delivery="" data-hour_delivery="" style="'+size_css+'"><div style="width:100%;height:100%;display:flex;flex-direction: column;justify-content: space-between;"><div style="width:100%;height:20px;"><div class="img-space-info"></div></div><div class="space-number">'+this.id_space+'</div><div class="width100" style="height:20px;"><div class="img-space-rotate"></div><div class="img-space-trash"></div></div></div></div>')
+      
+      $('#block-spaces').append(elem[0])
 
-    calculSpacesWidth(){
-      let withSpaces = 0
-      $(".drop-spaces-zone").each(function(){
-        if($(this).attr("id") != "drop-spaces-zone"){
-          console.log(Math.round($(this).css('width').replace("px", "")))
-          switch(Math.round($(this).css('width').replace("px", ""))){
-            case 51:
-              withSpaces += 1
-              break;
-            case 63:
-              withSpaces += 1.2
-              break;
-            case 44:
-              withSpaces += 0.8
-              break;
-            default:
-              break;
-          }          
+      var draggie = new Draggabilly( elem[0], {
+        containment: true,
+        grid: [ 5, 5 ]
+      });
+
+      elem.mousemove( (e) => {
+        e.stopPropagation();
+        let $this = $(e.target).parent()
+        $($this).attr("data-top", $($this).css("top").replace("px", ""))
+        $($this).attr("data-left", $($this).css("left").replace("px", ""))
+
+        let collision = false
+        $(".box-space").each(function(){
+          if( $(".box-space").length > 1 ){
+            // console.log($(this).attr('id') + '==' + $this.attr("id"))
+            if($(this).attr('id') != $this.attr("id")){
+              let boxMoveLeft = parseInt($($this).css('left').replace("px", ""))
+              let boxMoveTop = parseInt($($this).css('top').replace("px", ""))
+              let boxMoveWidth = parseInt($($this).css('width').replace("px", ""))
+              let boxMoveHeight = parseInt($($this).css('height').replace("px", ""))
+              let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
+              let boxFixTop = parseInt($(this).css('top').replace("px", ""))
+              let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
+              let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
+
+              if( $($this).css('left').replace("px", "") != 'auto'){
+                if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
+                  boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
+                    console.log("Collision entre "+$(this).attr('id')+' et '+$this.attr('id'))
+                    console.log($(e.target).parent().attr('id'))
+                    collision = true
+                  }
+              }              
+            }
+          }
+       
+        })
+
+        if(collision){
+          $('#'+$this.attr('id')).css("background-color", 'red')
+        }else{
+          if($('#'+$this.attr('id')).attr("data-size") == '80-120'){
+            $('#'+$this.attr('id')).css("background-color", 'rgb(100, 117, 161)')
+          }else{
+            $('#'+$this.attr('id')).css("background-color", 'rgb(100 156 161)')
+          }
         }
+        
+        collision = false
 
       })
-      return withSpaces
+
+      $(elem).find(".img-space-info").click( (e)=>{
+        this.setState({viewSpaceForm: true});
+        console.log(e.target)
+        console.log($(e.target).parent().parent().parent().attr('id'))
+        this.setState({id_pallet_edit: $(e.target).parent().parent().parent().attr('id')})
+      })
+      
+      $(elem).find(".img-space-trash").click( function(){
+        $(this).parent().parent().parent().remove()
+      })
+
+      $(elem).find(".img-space-rotate").click( function(){
+        console.log('rotate')
+        let width = $(this).parent().parent().parent().css("width")
+        let height = $(this).parent().parent().parent().css("height")
+        console.log(width)
+        console.log(height)
+        $(this).parent().parent().parent().css("width", height) 
+        $(this).parent().parent().parent().css("height", width)
+        let pos = $(this).parent().parent().parent().attr("data-position")
+        if(pos == 'vertical'){
+          $(this).parent().parent().parent().attr("data-position", 'horizontal')
+        }else{
+          $(this).parent().parent().parent().attr("data-position", 'vertical')
+        }
+      })
+
+      this.id_space = this.id_space + 1
+
     }
 
-    updateSpaces(){
-      let spaces = []
-      let lineSpace = []
-      $(".drop-spaces-zone").each(function(){
-        if($(this).attr("id") != "drop-spaces-zone"){
-          lineSpace = []
-          let id_col = $(this).attr("id").replace("drop-spaces-zone-", "")
-          $(this).find(".space-draggable").each(function(){
-            let space = {}
-            space.col = id_col
-            space.size = $(this).data('size')
-            space.position = $(this).data('position')
-            spaces.push(space)
-          })
-          
-        }
-
-      })
-      this.props.updateSpaces(spaces)
+    hideSpaceForm(e){
+      e.preventDefault()
+      this.setState({viewSpaceForm: false})
     }
 
     updateSpaceData(e){
-
       e.preventDefault()
 
-      // if(this.state.id_space != ""){
-
-        // let formData = new FormData();
-        // formData.append('pallet_number', this.state.pallet_number);
-        // formData.append('customer_name', this.state.customer_name);
-        // formData.append('goods_nature', this.state.goods_nature);
-        // formData.append('address', this.state.delivery_address);
-        // formData.append('zip_code', this.state.zip_code);
-        // formData.append('city', this.state.city);
-        // formData.append('country', this.state.country);
-        // formData.append('id_space', this.state.id_space);
-
-        // axios({
-        //   method: 'POST',
-        //   url: '/update-space-ajax',
-        //   responseType: 'json',
-        //   headers: {
-        //     'Content-Type': 'application/x-www-form-urlencoded'
-        //   },
-        //   data: formData
-        // })
-        // .then((response) => {
-        //   console.log(response);
-        //   if(response.statusText == 'OK'){
-        //     this.props.viewMessageFlash(response.data.msg, response.data.error);
-        //     let space = $("#block-spaces").find('[data-id_space='+this.state.id_space+']')
-        //     space.attr('data-number', this.state.pallet_number)
-        //     space.attr('data-customer_name', this.state.customer_name)
-        //     space.attr('data-goods_nature', this.state.goods_nature)
-        //     space.attr('data-address', this.state.delivery_address)
-        //     space.attr('data-zip_code', this.state.zip_code)
-        //     space.attr('data-city', this.state.city)
-        //     space.attr('data-country', this.state.country)
-        //   }else{
-        //     this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
-        //   }
-        // })
-        // .catch( (error) => {
-        //   console.log(error);
-        //   this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
-        // });
-
-      // }else{
-
-        let space = $("#"+this.state.id_space_block_html)
-        space.attr('data-number', this.state.pallet_number)
-        space.attr('data-customer_name', this.state.customer_name)
-        space.attr('data-goods_nature', this.state.goods_nature)
-        space.attr('data-address', this.state.delivery_address)
-        space.attr('data-zip_code', this.state.zip_code)
-        space.attr('data-city', this.state.city)
-        space.attr('data-country', this.state.country)
-
-        this.hideSpaceForm()
-      // }
-
-    }
-
-    hideSpaceForm(){
-
-      this.setState({
-        viewSpaceForm: false,
-        id_space: '',
-        pallet_number: '',
-        customer_name: '',
-        goods_nature: '',
-        delivery_address: '',
-        city: '',
-        country: '',
-        zip_code: '',
-        id_space_block_html: ''
-      })
-
-    }
-
-    toggleSpaceList(e){
-      e.preventDefault()
-      if($("#spaces-lines-table").css("display") == 'none'){
-        $("#spaces-lines-table").slideDown()
-        $("#btn-view-spaces-list").text('Masquer la liste des palettes')
-      }else{
-      $("#spaces-lines-table").slideUp()
-      $("#btn-view-spaces-list").text('Voir la liste des palettes')
-      }
+      let space = $("#"+this.state.id_pallet_edit)
+      space.attr('data-pallet_number', this.state.pallet_number)
+      space.attr('data-customer_name', this.state.customer_name)
+      space.attr('data-goods_nature', this.state.goods_nature)
+      space.attr('data-date_delivery', this.state.date_delivery)
+      space.attr('data-hour_delivery', this.state.hour_delivery)
+      space.attr('data-address', this.state.delivery_address)
+      this.setState({viewSpaceForm: false})
     }
 
     render() {
 
       if(this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0){
-        
-        let spaces = ''
-        let spacesLines = ''
-        let colMoins1 = null
-        let i = 0
-        // console.log(this.props.spaces.length)
 
-          this.props.spaces.map( (space, index) => {
-              if(colMoins1 != space.col){
-                if(i > 0){
-                  spaces += '</div>'
-                }
-                spaces += '<div class="drop-spaces-zone" id="drop-spaces-zone-'+space.col+'" data-col="'+space.col+'" style="border: 3px solid grey;">'
-                spaces += '<span class="btn-delete-line" style="display: none;"></span>'
-              }
-
-              spaces += '<div class="space-draggable space-dropped space-draggable-'+space.position+'-'+space.size+'" id="space-dropped-'+i+'" data-id_space="'+space.id_space+'" data-number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-address="'+space.address+'" data-city="'+space.city+'" data-country="'+space.country+'" data-zip_code="'+space.zip_code+'" data-size="'+space.size+'" data-position="'+space.position+'" data-col="'+space.col+'" draggable="true"></div>'
-              spacesLines += '<tr><td>'+space.pallet_number+'</td><td>'+space.customer_name+'</td><td>'+space.date_delivery+'</td><td>'+space.hour_delivery+'</td><td>'+space.goods_nature+'</td><td>'+space.address+'</td></tr>'
-              colMoins1 = space.col;
-              i++
-          } )
-          spaces += '</div>'
-          $("#drop-spaces-zone").before(spaces)
-          $("#spaces-lines").html(spacesLines)
-          this.spacesWidth = this.calculSpacesWidth()
-        
-        $('.btn-delete-line').each(function(){
-          $(this).css('width', $(this).parent().css('width'))
-        })
-        this.iteration = 100
       }
 
       let spaceForm = ''
       if(this.state.viewSpaceForm){
-        spaceForm = <div className="container-space-form" onClick={this.hideSpaceForm.bind(this)}>
+        spaceForm = <div className="container-space-form" onClick={(e) => {this.hideSpaceForm(e)} }>
                       <form method="POST" className="space-form" id="space-form" onClick={(e)=>{e.stopPropagation()}}>
                         <div className="">
                           <input type="hidden" className="form-control form-control-sm" id="id_space" value={this.state.id_space} name="id_space" />
@@ -488,18 +199,18 @@ export default class Journey extends Component {
                         </div>
                         <div className="">
                           <label htmlFor="delivery_address">Date de livraison</label>
-                          <input type="date" className="form-control form-control-sm" id="delivery_address" value={this.state.date_delivery} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                          <input type="date" className="form-control form-control-sm" id="date_delivery"  onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
                         </div>
                         <div className="">
                           <label htmlFor="delivery_address">Heure de chargement</label>
-                          <input type="time" className="form-control form-control-sm" id="delivery_address" value={this.state.hour_delivery} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                          <input type="time" className="form-control form-control-sm" id="hour_delivery" onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
                         </div>
                         <div className="">
                           <label htmlFor="delivery_address">Adresse de livraison</label>
                           <input type="text" className="form-control form-control-sm" id="delivery_address" value={this.state.delivery_address} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
                         </div>
                         <div className="display-flex-center">
-                          <button type="submit" onClick={this.updateSpaceData.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
+                          <button type="submit" onClick={(e)=>{this.updateSpaceData(e)} } className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
                         </div>
                       </form>
                     </div>
@@ -512,7 +223,7 @@ export default class Journey extends Component {
                   <div className="text-center">Palettes 80/120</div>
                   <div className="row" style={{height: "100%"}}>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
                         <div 
                           className="space-draggable space-draggable-horizontal-80-120" 
                           id="space-draggable-horizontal-80-120" 
@@ -526,12 +237,13 @@ export default class Journey extends Component {
                           data-city=""
                           data-zip_code=""
                           data-country=""
-                          draggable="true">
+                          draggable="true"
+                          onClick={()=>{this.createBox('b1')}}>
                         </div>
                       </div>
                     </div>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
                         <div 
                           className="space-draggable space-draggable-vertical-80-120" 
                           id="space-draggable-vertical-80-120" 
@@ -545,17 +257,18 @@ export default class Journey extends Component {
                           data-city=""
                           data-zip_code="" 
                           data-country=""
-                          draggable="true">
+                          draggable="true"
+                          onClick={()=>{this.createBox('b3')}}>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-6" style={{border: "3px solid black"}}>
+                <div className="col-6" style={{border: "3px solid black", padding: "10px"}}>
                   <div className="text-center">Palettes 100/120</div>
                   <div className="row" style={{height: "100%"}}>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
                         <div 
                           className="space-draggable space-draggable-horizontal-100-120" 
                           id="space-draggable-horizontal-100-120" 
@@ -569,12 +282,13 @@ export default class Journey extends Component {
                           data-city=""
                           data-zip_code=""
                           data-country=""
-                          draggable="true">
+                          draggable="true"
+                          onClick={()=>{this.createBox('b2')}}>
                         </div>
                       </div>
                     </div>
                     <div className="col-6">
-                      <div className="display-flex-center" style={{width: '100%', height: '60%'}}>
+                      <div className="display-flex-center" style={{width: '100%', height: '100%'}}>
                         <div 
                           className="space-draggable space-draggable-vertical-100-120" 
                           id="space-draggable-vertical-100-120" 
@@ -588,26 +302,20 @@ export default class Journey extends Component {
                           data-city=""
                           data-zip_code=""
                           data-country=""
-                          draggable="true">
+                          draggable="true"
+                          onClick={()=>{this.createBox('b4')}}>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <a href="" onClick={(e) => {this.cleanLine(e)}} style={{display: 'inline-block', marginTop: '15px'}}>Vider la ligne</a>
-              <a href="" onClick={(e) => {this.validLine(e)}} style={{display: 'inline-block', marginTop: '15px', marginLeft: '15px'}}>Valider la ligne</a>
-              <div style={{display: 'inline-block', marginTop: '15px', marginLeft: '15px'}}>Largeur totale des palettes : <span style={{fontWeight: '800', fontSize: '1.2em', color: 'rgb(100 156 161)'}}>{this.calculSpacesWidth().toFixed(2)} m</span> (Max 13,310 m) - Place restante : <span style={{fontWeight: '800', fontSize: '1.2em', color: 'rgb(100 156 161)'}}>{(13.310 - this.calculSpacesWidth()).toFixed(2)} m</span></div>
               <div className="display-flex-center height100">
-                <div className="flex-row width100" style={{minHeight: '100px'}}>
-                  <div className="block-spaces" id="block-spaces" style={{marginRight: '-16px', height: '130px'}}>
-                    <div className="drop-spaces-zone" id="drop-spaces-zone">
-                      <span className="btn-delete-line"></span>
-                    </div>
+                <div className="width100 display-flex-center" style={{minHeight: '100px', flexDirection: 'row'}}>
+                  <div className="d-none d-sm-block" style={{margin: '50px 10px 50px 50px'}}>
+                    <img src="http://traffic-center.local/public/img/front-truck.png" style={{transform: "rotate(180deg)"}}/>
                   </div>
-                  <div className="col-3 d-none d-sm-block" style={{flex: 2}}>
-                    <img src="http://traffic-center.local/public/img/front-truck.png" />
-                  </div>
+                  <div className="block-spaces" id="block-spaces"></div>
                 </div>
               </div>
               <button 
@@ -617,7 +325,7 @@ export default class Journey extends Component {
                 style={{margin: '20px 0px'}}
                 onClick={(e)=> {this.toggleSpaceList(e)}}>Voir la liste des palettes</button>
               <div className="table-responsive" id="spaces-lines-table" style={{display: 'none'}}>
-                <table class="table">
+                <table className="table">
                   <thead>
                     <tr>
                       <th  scope="col">N° de palette</th>

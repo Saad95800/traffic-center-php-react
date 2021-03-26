@@ -306,7 +306,7 @@ export default class JourneyList extends Component {
                     }}/>
                       </div>
                       <div className="col-sm-3">
-                        <label htmlFor="search-arrival">Ville de départ</label>
+                        <label htmlFor="search-arrival">Ville d'arrivée</label>
                         <input type="text" className="form-control form-control-sm" id="search-arrival" value={this.state.keywordSearchArrival} placeholder="Arrivée" onChange={()=>{
                     this.setState({keywordSearchArrival: $('#search-arrival').val()})
                     this.filter()

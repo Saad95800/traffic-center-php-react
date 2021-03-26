@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="<?= URLROOT ?>/public/index.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://unpkg.com/draggabilly@2/dist/draggabilly.pkgd.min.js"></script>
     <title>Document</title>
 </head>
 <body id="page-top">

@@ -25,6 +25,7 @@
     "bootstrap": "^4.5.3",
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^5.0.1",
+    "draggabilly": "^2.3.0",
     "extract-domain": "^2.2.1",
     "jquery": "^3.5.1",
     "moment": "^2.29.1",
