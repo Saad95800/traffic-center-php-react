@@ -462,18 +462,16 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
       var spaces = [];
-      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".space-dropped").each(function () {
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".box-space").each(function () {
         spaces.push({
           pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('number'),
           customer_name: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('customer_name'),
           goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('goods_nature'),
           address: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('address'),
-          city: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('city'),
-          country: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('country'),
-          zip_code: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('zip_code'),
+          date_delivery: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('date_delivery'),
+          hour_delivery: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('hour_delivery'),
           size: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('size'),
-          position: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('position'),
-          col: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).parent().data('col')
+          position: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('position')
         });
       });
       formData.append('spaces', JSON.stringify(spaces));
@@ -1165,15 +1163,16 @@ var Journey = /*#__PURE__*/function (_Component) {
       customer_name: '',
       goods_nature: '',
       delivery_address: '',
-      city: '',
-      country: '',
-      zip_code: '',
+      date_delivery: '',
+      hour_delivery: '',
       id_space_block_html: '',
       id_pallet_edit: '',
-      date_delivery: '',
-      hour_delivery: ''
+      collision: false
     };
     _this.id_space = 1;
+    document.addEventListener('click', function () {
+      console.log("Ta relaché le click sur n'importe");
+    });
     return _this;
   }
 
@@ -1230,58 +1229,40 @@ var Journey = /*#__PURE__*/function (_Component) {
         containment: true,
         grid: [5, 5]
       });
-      elem.mousemove(function (e) {
-        e.stopPropagation();
-        var $this = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent();
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-top", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("top").replace("px", ""));
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-left", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("left").replace("px", ""));
-        var collision = false;
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
-          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").length > 1) {
-            // console.log($(this).attr('id') + '==' + $this.attr("id"))
-            if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != $this.attr("id")) {
-              var boxMoveLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", ""));
-              var boxMoveTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('top').replace("px", ""));
-              var boxMoveWidth = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('width').replace("px", ""));
-              var boxMoveHeight = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('height').replace("px", ""));
-              var boxFixLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('left').replace("px", ""));
-              var boxFixTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('top').replace("px", ""));
-              var boxFixWidth = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", ""));
-              var boxFixHeight = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('height').replace("px", ""));
+      elem.on('mouseleave', function (e) {
+        // console.log("mouseleave")
+        _this2.setEventCollision(e);
+      });
+      elem.on('mouseenter', function (e) {
+        // console.log("mouseenter")
+        _this2.setEventCollision(e);
+      });
+      elem.on('mouseout', function (e) {
+        // console.log("mouseout")
+        _this2.setEventCollision(e);
+      });
+      elem.on('mouseover', function (e) {
+        // console.log("mouseover")
+        _this2.setEventCollision(e); // elem.trigger('click')
 
-              if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", "") != 'auto') {
-                if (boxMoveLeft < boxFixLeft + boxFixWidth && boxMoveLeft + boxMoveWidth > boxFixLeft && boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop) {
-                  console.log("Collision entre " + jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') + ' et ' + $this.attr('id'));
-                  console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().attr('id'));
-                  collision = true;
-                }
-              }
-            }
-          }
-        });
+      });
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', function (e) {
+        console.log("click");
 
-        if (collision) {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'red');
-        } else {
-          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).attr("data-size") == '80-120') {
-            jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100, 117, 161)');
-          } else {
-            jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100 156 161)');
-          }
-        }
-
-        collision = false;
+        _this2.setEventCollision(e, elem);
       });
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-info").click(function (e) {
-        _this2.setState({
-          viewSpaceForm: true
-        });
-
-        console.log(e.target);
-        console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent().attr('id'));
+        var element = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent();
 
         _this2.setState({
-          id_pallet_edit: jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent().attr('id')
+          viewSpaceForm: true,
+          id_pallet_edit: element.attr('id'),
+          pallet_number: element.attr('data-pallet_number'),
+          customer_name: element.attr('data-customer_name'),
+          goods_nature: element.attr('data-goods_nature'),
+          delivery_address: element.attr('data-address'),
+          date_delivery: element.attr('data-date_delivery'),
+          hour_delivery: element.attr('data-hour_delivery')
         });
       });
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-trash").click(function () {
@@ -1306,6 +1287,83 @@ var Journey = /*#__PURE__*/function (_Component) {
       this.id_space = this.id_space + 1;
     }
   }, {
+    key: "setEventCollision",
+    value: function setEventCollision(e) {
+      var elem = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      e.stopPropagation();
+      var $this1 = '';
+      var $this = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent();
+
+      if (elem !== '') {
+        $this = elem;
+      }
+
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-top", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("top").replace("px", ""));
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-left", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("left").replace("px", ""));
+      var collision = false; // $(".box-space").each(function(){
+      //   $this1 = $(this)
+
+      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
+        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").length > 1) {
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != $this.attr("id")) {
+            var boxMoveLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", ""));
+            var boxMoveTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('top').replace("px", ""));
+            var boxMoveWidth = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('width').replace("px", ""));
+            var boxMoveHeight = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('height').replace("px", ""));
+            var boxFixLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('left').replace("px", ""));
+            var boxFixTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('top').replace("px", ""));
+            var boxFixWidth = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('width').replace("px", ""));
+            var boxFixHeight = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('height').replace("px", ""));
+
+            if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", "") != 'auto') {
+              if (boxMoveLeft < boxFixLeft + boxFixWidth && boxMoveLeft + boxMoveWidth > boxFixLeft && boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop) {
+                // console.log("Collision entre "+$(this).attr('id')+' et '+$this.attr('id'))
+                // console.log($(e.target).parent().attr('id'))
+                collision = true;
+              }
+            }
+          } // if($(this).attr('id') != $this1.attr("id")){
+          //   let boxMoveLeft = parseInt($($this1).css('left').replace("px", ""))
+          //   let boxMoveTop = parseInt($($this1).css('top').replace("px", ""))
+          //   let boxMoveWidth = parseInt($($this1).css('width').replace("px", ""))
+          //   let boxMoveHeight = parseInt($($this1).css('height').replace("px", ""))
+          //   let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
+          //   let boxFixTop = parseInt($(this).css('top').replace("px", ""))
+          //   let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
+          //   let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
+          //   if( $($this1).css('left').replace("px", "") != 'auto'){
+          //     if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
+          //       boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
+          //         console.log("Collision entre "+$(this).attr('id')+' et '+$this1.attr('id'))
+          //         console.log($(e.target).parent().attr('id'))
+          //         collision = true
+          //       }
+          //   }              
+          // }
+
+        }
+      }); // })
+
+      if (collision) {
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'red');
+        this.setState({
+          collision: true
+        });
+      } else {
+        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).attr("data-size") == '80-120') {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100, 117, 161)');
+        } else {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100 156 161)');
+        }
+
+        this.setState({
+          collision: false
+        });
+      }
+
+      collision = false;
+    }
+  }, {
     key: "hideSpaceForm",
     value: function hideSpaceForm(e) {
       e.preventDefault();
@@ -1327,6 +1385,7 @@ var Journey = /*#__PURE__*/function (_Component) {
       this.setState({
         viewSpaceForm: false
       });
+      space.find(".space-number").text(this.state.pallet_number);
     }
   }, {
     key: "render",
@@ -1408,9 +1467,10 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "date",
           className: "form-control form-control-sm",
           id: "date_delivery",
+          value: this.state.date_delivery,
           onChange: function onChange() {
             _this3.setState({
-              delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
+              date_delivery: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#date_delivery").val()
             });
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -1421,10 +1481,13 @@ var Journey = /*#__PURE__*/function (_Component) {
           type: "time",
           className: "form-control form-control-sm",
           id: "hour_delivery",
+          value: this.state.hour_delivery,
           onChange: function onChange() {
             _this3.setState({
-              delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
+              hour_delivery: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#hour_delivery").val()
             });
+
+            console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#hour_delivery").val());
           }
         })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: ""

@@ -57,18 +57,16 @@ export default class AddJourney extends Component {
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
       let spaces = []
-      $(".space-dropped").each(function(){
+      $(".box-space").each(function(){
         spaces.push({
           pallet_number: $(this).data('number'),
           customer_name: $(this).data('customer_name'),
           goods_nature: $(this).data('goods_nature'),
           address: $(this).data('address'),
-          city: $(this).data('city'),
-          country: $(this).data('country'),
-          zip_code: $(this).data('zip_code'),
+          date_delivery: $(this).data('date_delivery'),
+          hour_delivery: $(this).data('hour_delivery'),
           size: $(this).data('size'),
-          position: $(this).data('position'),
-          col: $(this).parent().data('col'),
+          position: $(this).data('position')
         })
       })
       formData.append('spaces', JSON.stringify(spaces));

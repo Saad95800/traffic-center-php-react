@@ -16,15 +16,17 @@ export default class Journey extends Component {
           customer_name: '',
           goods_nature: '',
           delivery_address: '',
-          city: '',
-          country: '',
-          zip_code: '',
+          date_delivery: '',
+          hour_delivery: '',
           id_space_block_html: '',
           id_pallet_edit: '',
-          date_delivery: '',
-          hour_delivery: ''
+          collision: false
       }
       this.id_space = 1
+
+      document.addEventListener('click', function(){
+        console.log("Ta relaché le click sur n'importe")
+      })
     }
 
     componentDidMount(){
@@ -75,59 +77,40 @@ export default class Journey extends Component {
         containment: true,
         grid: [ 5, 5 ]
       });
-
-      elem.mousemove( (e) => {
-        e.stopPropagation();
-        let $this = $(e.target).parent()
-        $($this).attr("data-top", $($this).css("top").replace("px", ""))
-        $($this).attr("data-left", $($this).css("left").replace("px", ""))
-
-        let collision = false
-        $(".box-space").each(function(){
-          if( $(".box-space").length > 1 ){
-            // console.log($(this).attr('id') + '==' + $this.attr("id"))
-            if($(this).attr('id') != $this.attr("id")){
-              let boxMoveLeft = parseInt($($this).css('left').replace("px", ""))
-              let boxMoveTop = parseInt($($this).css('top').replace("px", ""))
-              let boxMoveWidth = parseInt($($this).css('width').replace("px", ""))
-              let boxMoveHeight = parseInt($($this).css('height').replace("px", ""))
-              let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
-              let boxFixTop = parseInt($(this).css('top').replace("px", ""))
-              let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
-              let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
-
-              if( $($this).css('left').replace("px", "") != 'auto'){
-                if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
-                  boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
-                    console.log("Collision entre "+$(this).attr('id')+' et '+$this.attr('id'))
-                    console.log($(e.target).parent().attr('id'))
-                    collision = true
-                  }
-              }              
-            }
-          }
-       
-        })
-
-        if(collision){
-          $('#'+$this.attr('id')).css("background-color", 'red')
-        }else{
-          if($('#'+$this.attr('id')).attr("data-size") == '80-120'){
-            $('#'+$this.attr('id')).css("background-color", 'rgb(100, 117, 161)')
-          }else{
-            $('#'+$this.attr('id')).css("background-color", 'rgb(100 156 161)')
-          }
-        }
-        
-        collision = false
-
+      elem.on('mouseleave', (e) => {
+        // console.log("mouseleave")
+        this.setEventCollision(e)
+      })
+      elem.on('mouseenter', (e) => {
+        // console.log("mouseenter")
+        this.setEventCollision(e)
+      })
+      elem.on('mouseout', (e) => {
+        // console.log("mouseout")
+        this.setEventCollision(e)
+      })
+      elem.on('mouseover', (e) => {
+        // console.log("mouseover")
+        this.setEventCollision(e)
+        // elem.trigger('click')
+      })
+      $(document).on('click', (e) => {
+        console.log("click")
+        this.setEventCollision(e, elem)
       })
 
       $(elem).find(".img-space-info").click( (e)=>{
-        this.setState({viewSpaceForm: true});
-        console.log(e.target)
-        console.log($(e.target).parent().parent().parent().attr('id'))
-        this.setState({id_pallet_edit: $(e.target).parent().parent().parent().attr('id')})
+        let element = $(e.target).parent().parent().parent()
+        this.setState({
+          viewSpaceForm: true,
+          id_pallet_edit: element.attr('id'),
+          pallet_number: element.attr('data-pallet_number'),
+          customer_name: element.attr('data-customer_name'),
+          goods_nature: element.attr('data-goods_nature'),
+          delivery_address: element.attr('data-address'),
+          date_delivery: element.attr('data-date_delivery'),
+          hour_delivery: element.attr('data-hour_delivery')
+        });
       })
       
       $(elem).find(".img-space-trash").click( function(){
@@ -154,6 +137,83 @@ export default class Journey extends Component {
 
     }
 
+    setEventCollision(e, elem = ''){
+      
+      e.stopPropagation();
+      let $this1 = ''
+      let $this = $(e.target).parent()
+      if(elem !== ''){
+        $this = elem
+      }
+      $($this).attr("data-top", $($this).css("top").replace("px", ""))
+      $($this).attr("data-left", $($this).css("left").replace("px", ""))
+
+      let collision = false
+      // $(".box-space").each(function(){
+      //   $this1 = $(this)
+        $(".box-space").each(function(){
+
+        if( $(".box-space").length > 1 ){
+          if($(this).attr('id') != $this.attr("id")){
+            let boxMoveLeft = parseInt($($this).css('left').replace("px", ""))
+            let boxMoveTop = parseInt($($this).css('top').replace("px", ""))
+            let boxMoveWidth = parseInt($($this).css('width').replace("px", ""))
+            let boxMoveHeight = parseInt($($this).css('height').replace("px", ""))
+            let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
+            let boxFixTop = parseInt($(this).css('top').replace("px", ""))
+            let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
+            let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
+
+            if( $($this).css('left').replace("px", "") != 'auto'){
+              if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
+                boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
+                  // console.log("Collision entre "+$(this).attr('id')+' et '+$this.attr('id'))
+                  // console.log($(e.target).parent().attr('id'))
+                  collision = true
+                }
+            }              
+          }
+
+          // if($(this).attr('id') != $this1.attr("id")){
+          //   let boxMoveLeft = parseInt($($this1).css('left').replace("px", ""))
+          //   let boxMoveTop = parseInt($($this1).css('top').replace("px", ""))
+          //   let boxMoveWidth = parseInt($($this1).css('width').replace("px", ""))
+          //   let boxMoveHeight = parseInt($($this1).css('height').replace("px", ""))
+          //   let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
+          //   let boxFixTop = parseInt($(this).css('top').replace("px", ""))
+          //   let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
+          //   let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
+
+          //   if( $($this1).css('left').replace("px", "") != 'auto'){
+          //     if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
+          //       boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
+          //         console.log("Collision entre "+$(this).attr('id')+' et '+$this1.attr('id'))
+          //         console.log($(e.target).parent().attr('id'))
+          //         collision = true
+          //       }
+          //   }              
+          // }
+
+        }
+     
+      })
+    // })
+
+      if(collision){
+        $('#'+$this.attr('id')).css("background-color", 'red')
+        this.setState({collision: true})
+      }else{
+        if($('#'+$this.attr('id')).attr("data-size") == '80-120'){
+          $('#'+$this.attr('id')).css("background-color", 'rgb(100, 117, 161)')
+        }else{
+          $('#'+$this.attr('id')).css("background-color", 'rgb(100 156 161)')
+        }
+        this.setState({collision: false})
+      }
+      
+      collision = false
+    }
+
     hideSpaceForm(e){
       e.preventDefault()
       this.setState({viewSpaceForm: false})
@@ -170,6 +230,8 @@ export default class Journey extends Component {
       space.attr('data-hour_delivery', this.state.hour_delivery)
       space.attr('data-address', this.state.delivery_address)
       this.setState({viewSpaceForm: false})
+
+      space.find(".space-number").text(this.state.pallet_number)
     }
 
     render() {
@@ -187,27 +249,27 @@ export default class Journey extends Component {
                         </div>
                         <div className="">
                           <label htmlFor="pallet_number">Numéro de palette</label>
-                          <input type="text" className="form-control form-control-sm" id="pallet_number" value={this.state.pallet_number} onChange={() => {this.setState({pallet_number: $("#pallet_number").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="pallet_number" value={this.state.pallet_number} onChange={() => { this.setState({pallet_number: $("#pallet_number").val()}) }} />
                         </div>
                         <div className="">
                           <label htmlFor="customer_name">Nom du client</label>
-                          <input type="text" className="form-control form-control-sm" id="customer_name" value={this.state.customer_name} onChange={() => {this.setState({customer_name: $("#customer_name").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="customer_name" value={this.state.customer_name} onChange={() => { this.setState({customer_name: $("#customer_name").val()}) }} />
                         </div>
                         <div className="">
                           <label htmlFor="goods_nature">Nature de la marchandise</label>
-                          <input type="text" className="form-control form-control-sm" id="goods_nature" value={this.state.goods_nature} onChange={() => {this.setState({goods_nature: $("#goods_nature").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="goods_nature" value={this.state.goods_nature} onChange={() => { this.setState({goods_nature: $("#goods_nature").val()}) }} />
                         </div>
                         <div className="">
                           <label htmlFor="delivery_address">Date de livraison</label>
-                          <input type="date" className="form-control form-control-sm" id="date_delivery"  onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                          <input type="date" className="form-control form-control-sm" id="date_delivery"  value={this.state.date_delivery} onChange={() => { this.setState({date_delivery: $("#date_delivery").val()}) }} />
                         </div>
                         <div className="">
                           <label htmlFor="delivery_address">Heure de chargement</label>
-                          <input type="time" className="form-control form-control-sm" id="hour_delivery" onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                          <input type="time" className="form-control form-control-sm" id="hour_delivery" value={this.state.hour_delivery} onChange={() => { this.setState({hour_delivery: $("#hour_delivery").val()}); console.log($("#hour_delivery").val()); }} />
                         </div>
                         <div className="">
                           <label htmlFor="delivery_address">Adresse de livraison</label>
-                          <input type="text" className="form-control form-control-sm" id="delivery_address" value={this.state.delivery_address} onChange={() => {this.setState({delivery_address: $("#delivery_address").val()})}} />
+                          <input type="text" className="form-control form-control-sm" id="delivery_address" value={this.state.delivery_address} onChange={() => { this.setState({delivery_address: $("#delivery_address").val()}) }} />
                         </div>
                         <div className="display-flex-center">
                           <button type="submit" onClick={(e)=>{this.updateSpaceData(e)} } className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>

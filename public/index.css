@@ -217,6 +217,8 @@ a:hover{
     top:0px;
     left:720px;
     position:absolute;
+    /* background-image: url(https://thumbs.dreamstime.com/b/palette-en-bois-41242631.jpg);
+    background-size: 70px; */
 }
 .space-draggable-vertical-80-120{
     background-color: rgb(100, 117, 161);
