@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import $ from 'jQuery'
 import axios from 'axios'
 import Draggabilly from 'draggabilly'
+import moment from 'moment'
 
 export default class Journey extends Component {
 
@@ -24,20 +25,169 @@ export default class Journey extends Component {
       }
       this.id_space = 1
 
-      document.addEventListener('click', function(){
-        console.log("Ta relaché le click sur n'importe")
-      })
     }
 
     componentDidMount(){
 
+      if(this.props.page == "edit-journey"){
+
+        let data = {};
+        let id_journey = document.location.href.split('/')[5]
+        this.id_journey = id_journey
+          axios({
+            method: 'POST',
+            url: '/get-journey/'+id_journey,
+            responseType: 'json',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+          })
+          .then((response) => {
+            console.log(response)
+            if(response.statusText == 'OK'){
+              if(response.data.error == true){
+                this.viewMessageFlash('Erreur lors de la récupération des données', true);
+              }else{
+                this.displayJourneyData({
+                  journey: response.data,
+                  departure: response.data.departure.charAt(0).toUpperCase() + response.data.departure.slice(1),
+                  arrival: response.data.arrival.charAt(0).toUpperCase() + response.data.arrival.slice(1),
+                  date_departure: moment.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
+                  time_departure: moment.unix(parseInt(response.data.date_departure)).format("HH:mm"),
+                  date_arrival: moment.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
+                  spaces: response.data.spaces,
+                  stopovers: response.data.stopovers
+                })
+
+                ///////////////////////////////////////////
+
+                  // block-spaces
+                  
+                  console.log(this.state.spaces)
+                  for(let space of response.data.spaces){
+                    console.log("space")
+                    let position = ''
+                    let size_css = ''
+                    switch(space.size){
+                      case '80-120':
+                        position = 'width:45px;height:70px;'
+                        if(space.position == 'horizontal'){
+                          position = 'width:70px;height:45px;'
+                        }
+                        size_css = position+'background-color:rgb(100, 117, 161);'
+                        break;
+                      case '100-120':
+                        position = 'width:60px;height:70px;'
+                        if(space.position == 'horizontal'){
+                          position = 'width:70px;height:60px;'
+                        }
+                        size_css = position+'background-color:rgb(100 156 161);'          
+                        break;
+                      default:
+                        break;
+                    }
+                    
+                    let date_delivery = moment.unix(parseInt(space.date_delivery)).format("YYYY-MM-DD")
+                    let elem = ''
+                    elem = $('<div draggable="true" class="draggable-space box-space" id="space-'+this.id_space+'" data-id_space="'+space.id_space+'" data-pallet_number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-size="'+space.size+'" data-position="'+space.position+'" data-address="'+space.address+'" data-date_delivery="'+date_delivery+'" data-hour_delivery="'+space.hour_delivery+'" data-top="'+space._top+'" data-left="'+space._left+'" style="'+size_css+'top:'+space._top+'px;left:'+space._left+'px"><div style="width:100%;height:100%;display:flex;flex-direction: column;justify-content: space-between;"><div style="width:100%;height:20px;"><div class="img-space-info"></div></div><div class="space-number">'+space.pallet_number+'</div><div class="width100" style="height:20px;"><div class="img-space-rotate"></div><div class="img-space-trash"></div></div></div></div>')
+                    console.log('appended')
+                    $('#block-spaces').append(elem[0])
+    
+                    var draggie = new Draggabilly( elem[0], {
+                      containment: true,
+                      grid: [ 5, 5 ]
+                    });
+    
+                    $(elem).find(".img-space-info").click( (e)=>{
+                      let element = $(e.target).parent().parent().parent()
+                      this.setState({
+                        viewSpaceForm: true,
+                        id_pallet_edit: element.attr('id'),
+                        pallet_number: element.attr('data-pallet_number'),
+                        customer_name: element.attr('data-customer_name'),
+                        goods_nature: element.attr('data-goods_nature'),
+                        delivery_address: element.attr('data-address'),
+                        date_delivery: element.attr('data-date_delivery'),
+                        hour_delivery: element.attr('data-hour_delivery')
+                      });
+                    })
+                  
+                    $(elem).find(".img-space-trash").click( function(){
+                      $(this).parent().parent().parent().remove()
+                    })
+    
+                    $(elem).find(".img-space-rotate").click( function(){
+                      console.log('rotate')
+                      let width = $(this).parent().parent().parent().css("width")
+                      let height = $(this).parent().parent().parent().css("height")
+                      console.log(width)
+                      console.log(height)
+                      $(this).parent().parent().parent().css("width", height) 
+                      $(this).parent().parent().parent().css("height", width)
+                      let pos = $(this).parent().parent().parent().attr("data-position")
+                      if(pos == 'vertical'){
+                        $(this).parent().parent().parent().attr("data-position", 'horizontal')
+                      }else{
+                        $(this).parent().parent().parent().attr("data-position", 'vertical')
+                      }
+                    })
+    
+                    // elem = ''
+                    this.id_space = this.id_space + 1
+                }
+
+                ///////////////////////////////////////////
+                let self = this
+                response.data.stopovers.map((stopover, index) => {
+                  $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+stopover.nb_stopover+'"><label for="stop-over-'+stopover.nb_stopover+'">Escale '+(parseInt(stopover.nb_stopover)+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="'+stopover.city+'" class="form-control form-control-sm stop-over-input" id="stop-over-'+stopover.nb_stopover+'" placeholder="Ex : Marseille" /></div>')
+                  self.setState({nbStopOver: this.state.nbStopOver +1})
+                })
+  
+                $(".btn-delete-stop-over").each(function(){
+                  console.log($(this).parent().attr('id'))
+                  console.log("block-stop-over-"+(self.state.nbStopOver-1) )
+                  if($(this).parent().attr('id') != "block-stop-over-"+(self.state.nbStopOver-1) ){
+                    $(this).css('display', 'none')
+                  }
+                })
+              
+              }
+            }else{
+              this.viewMessageFlash('Erreur lors de la récupération des données', true);
+            }
+  
+          })
+          .catch( (error) => {
+            console.log(error);
+          });
+
+      }
+
+      let self = this
+      document.addEventListener('click', function(){
+        let collision = false;
+        $(".box-space").each(function(){
+          if(self.setEventCollision($(this))){
+            collision = true
+          }
+        })
+        self.setState({collision: collision})
+        self.setCollision(collision)
+      })
     }
 
-    save(){
-
-      let spaces = []
+    setCollision(collision){
+      this.props.setCollision(collision)
     }
 
+    displayJourneyData(data){
+      this.props.displayJourneyData(data)
+    }
+
+    fillTruckBox(){
+      console.log("filled")
+    }
 
     createBox(b){
       console.log('createBox')
@@ -77,27 +227,6 @@ export default class Journey extends Component {
         containment: true,
         grid: [ 5, 5 ]
       });
-      elem.on('mouseleave', (e) => {
-        // console.log("mouseleave")
-        this.setEventCollision(e)
-      })
-      elem.on('mouseenter', (e) => {
-        // console.log("mouseenter")
-        this.setEventCollision(e)
-      })
-      elem.on('mouseout', (e) => {
-        // console.log("mouseout")
-        this.setEventCollision(e)
-      })
-      elem.on('mouseover', (e) => {
-        // console.log("mouseover")
-        this.setEventCollision(e)
-        // elem.trigger('click')
-      })
-      $(document).on('click', (e) => {
-        console.log("click")
-        this.setEventCollision(e, elem)
-      })
 
       $(elem).find(".img-space-info").click( (e)=>{
         let element = $(e.target).parent().parent().parent()
@@ -137,11 +266,10 @@ export default class Journey extends Component {
 
     }
 
-    setEventCollision(e, elem = ''){
+    setEventCollision(elem){
+      console.log(elem)
       
-      e.stopPropagation();
-      let $this1 = ''
-      let $this = $(e.target).parent()
+      let $this = elem
       if(elem !== ''){
         $this = elem
       }
@@ -149,11 +277,11 @@ export default class Journey extends Component {
       $($this).attr("data-left", $($this).css("left").replace("px", ""))
 
       let collision = false
-      // $(".box-space").each(function(){
-      //   $this1 = $(this)
-        $(".box-space").each(function(){
 
-        if( $(".box-space").length > 1 ){
+      if( $(".box-space").length > 1 ){
+
+          $(".box-space").each(function(){
+
           if($(this).attr('id') != $this.attr("id")){
             let boxMoveLeft = parseInt($($this).css('left').replace("px", ""))
             let boxMoveTop = parseInt($($this).css('top').replace("px", ""))
@@ -166,52 +294,32 @@ export default class Journey extends Component {
 
             if( $($this).css('left').replace("px", "") != 'auto'){
               if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
-                boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
-                  // console.log("Collision entre "+$(this).attr('id')+' et '+$this.attr('id'))
-                  // console.log($(e.target).parent().attr('id'))
+                  boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
+                    // $('#'+$this.attr('id')).css("background-color", 'red')
+                    // $('#'+$(this).attr('id')).css("background-color", 'red')
                   collision = true
-                }
+              }else{
+                // $('#'+$this.attr('id')).css("background-color", 'green')
+                // $('#'+$(this).attr('id')).css("background-color", 'green')
+              }
             }              
           }
 
-          // if($(this).attr('id') != $this1.attr("id")){
-          //   let boxMoveLeft = parseInt($($this1).css('left').replace("px", ""))
-          //   let boxMoveTop = parseInt($($this1).css('top').replace("px", ""))
-          //   let boxMoveWidth = parseInt($($this1).css('width').replace("px", ""))
-          //   let boxMoveHeight = parseInt($($this1).css('height').replace("px", ""))
-          //   let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
-          //   let boxFixTop = parseInt($(this).css('top').replace("px", ""))
-          //   let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
-          //   let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
+        })
 
-          //   if( $($this1).css('left').replace("px", "") != 'auto'){
-          //     if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
-          //       boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
-          //         console.log("Collision entre "+$(this).attr('id')+' et '+$this1.attr('id'))
-          //         console.log($(e.target).parent().attr('id'))
-          //         collision = true
-          //       }
-          //   }              
-          // }
-
-        }
-     
-      })
-    // })
-
-      if(collision){
-        $('#'+$this.attr('id')).css("background-color", 'red')
-        this.setState({collision: true})
-      }else{
-        if($('#'+$this.attr('id')).attr("data-size") == '80-120'){
-          $('#'+$this.attr('id')).css("background-color", 'rgb(100, 117, 161)')
+        if(collision){
+          $('#'+$this.attr('id')).css("background-color", 'red')
         }else{
-          $('#'+$this.attr('id')).css("background-color", 'rgb(100 156 161)')
+          if($('#'+$this.attr('id')).attr("data-size") == '80-120'){
+            $('#'+$this.attr('id')).css("background-color", 'rgb(100, 117, 161)')
+          }else{
+            $('#'+$this.attr('id')).css("background-color", 'rgb(100 156 161)')
+          }
         }
-        this.setState({collision: false})
+        // collision = false
       }
       
-      collision = false
+      return collision
     }
 
     hideSpaceForm(e){
@@ -236,6 +344,7 @@ export default class Journey extends Component {
 
     render() {
 
+      let spaces = ''
       if(this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0){
 
       }
@@ -377,7 +486,7 @@ export default class Journey extends Component {
                   <div className="d-none d-sm-block" style={{margin: '50px 10px 50px 50px'}}>
                     <img src="http://traffic-center.local/public/img/front-truck.png" style={{transform: "rotate(180deg)"}}/>
                   </div>
-                  <div className="block-spaces" id="block-spaces"></div>
+                  <div className="block-spaces" id="block-spaces">{spaces}</div>
                 </div>
               </div>
               <button 

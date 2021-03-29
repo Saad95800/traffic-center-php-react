@@ -420,7 +420,8 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       time_departure: '',
       spaces: [],
       redirect: null,
-      nbStopOver: 0
+      nbStopOver: 0,
+      collision: false
     };
     return _this;
   }
@@ -454,6 +455,11 @@ var AddJourney = /*#__PURE__*/function (_Component) {
         return;
       }
 
+      if (this.state.collision) {
+        this.props.viewMessageFlash('Il y a une ou plusieurs collisions entre vos palettes !', true);
+        return;
+      }
+
       var formData = new FormData();
       formData.append('delivery_company', this.state.delivery_company);
       formData.append('departure', this.state.departure);
@@ -464,12 +470,14 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       var spaces = [];
       jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".box-space").each(function () {
         spaces.push({
-          pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('number'),
+          pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('pallet_number'),
           customer_name: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('customer_name'),
           goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('goods_nature'),
           address: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('address'),
           date_delivery: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('date_delivery'),
           hour_delivery: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('hour_delivery'),
+          _top: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('top'),
+          _left: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('left'),
           size: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('size'),
           position: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('position')
         });
@@ -505,8 +513,7 @@ var AddJourney = /*#__PURE__*/function (_Component) {
 
             _this2.setState({
               redirect: '/app'
-            }); // document.location.href="/app";
-
+            });
           }
         } else {
           _this2.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
@@ -540,6 +547,13 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
       this.setState({
         nbStopOver: this.state.nbStopOver + 1
+      });
+    }
+  }, {
+    key: "setCollision",
+    value: function setCollision(collision) {
+      this.setState({
+        collision: collision
       });
     }
   }, {
@@ -672,6 +686,7 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "avalaible_places"
       }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        setCollision: this.setCollision.bind(this),
         spaces: this.state.spaces,
         page: "add-journey",
         updateSpaces: this.updateSpaces.bind(this),
@@ -712,10 +727,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
-/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jQuery */ "./node_modules/jQuery/dist/jquery.js");
+/* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -746,7 +759,6 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
 var EditJourney = /*#__PURE__*/function (_Component) {
   _inherits(EditJourney, _Component);
 
@@ -768,90 +780,41 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       date_departure: '',
       date_arrival: '',
       time_departure: ''
-    }, _defineProperty(_this$state, "date_arrival", ''), _defineProperty(_this$state, "spaces", []), _defineProperty(_this$state, "nbStopOver", 0), _this$state);
-    _this.id_journey = null;
+    }, _defineProperty(_this$state, "date_arrival", ''), _defineProperty(_this$state, "spaces", []), _defineProperty(_this$state, "nbStopOver", 0), _defineProperty(_this$state, "collision", false), _this$state);
+    _this.id_journey = document.location.href.split('/')[5];
     return _this;
   }
 
   _createClass(EditJourney, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
-
-      var data = {};
-      var id_journey = document.location.href.split('/')[5];
-      this.id_journey = id_journey;
-      axios__WEBPACK_IMPORTED_MODULE_3___default()({
-        method: 'POST',
-        url: '/get-journey/' + id_journey,
-        responseType: 'json',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: data
-      }).then(function (response) {
-        console.log(response);
-
-        if (response.statusText == 'OK') {
-          if (response.data.error == true) {
-            _this2.viewMessageFlash('Erreur lors de la récupération des données', true);
-          } else {
-            _this2.setState({
-              journey: response.data,
-              departure: response.data.departure.charAt(0).toUpperCase() + response.data.departure.slice(1),
-              arrival: response.data.arrival.charAt(0).toUpperCase() + response.data.arrival.slice(1),
-              date_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
-              time_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("HH:mm"),
-              date_arrival: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
-              spaces: response.data.spaces,
-              stopovers: response.data.stopovers
-            });
-
-            var _self = _this2;
-            response.data.stopovers.map(function (stopover, index) {
-              jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + stopover.nb_stopover + '"><label for="stop-over-' + stopover.nb_stopover + '">Escale ' + (parseInt(stopover.nb_stopover) + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="' + stopover.city + '" class="form-control form-control-sm stop-over-input" id="stop-over-' + stopover.nb_stopover + '" placeholder="Ex : Marseille" /></div>');
-
-              _self.setState({
-                nbStopOver: _this2.state.nbStopOver + 1
-              });
-            });
-            jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
-              console.log(jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().attr('id'));
-              console.log("block-stop-over-" + (_self.state.nbStopOver - 1));
-
-              if (jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().attr('id') != "block-stop-over-" + (_self.state.nbStopOver - 1)) {
-                jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
-              }
-            });
-          }
-        } else {
-          _this2.viewMessageFlash('Erreur lors de la récupération des données', true);
-        }
-      })["catch"](function (error) {
-        console.log(error);
-      });
       var self = this;
-      jQuery__WEBPACK_IMPORTED_MODULE_5___default()(document).on('click', '.btn-delete-stop-over', function () {
-        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().remove();
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(document).on('click', '.btn-delete-stop-over', function () {
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).parent().remove();
         self.setState({
           nbStopOver: self.state.nbStopOver - 1
         });
-        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
-          jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".btn-delete-stop-over").each(function () {
+          jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).css('display', 'none');
         });
-        jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#block-stop-over-" + (self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block");
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#block-stop-over-" + (self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block");
         console.log('stop over removed');
       });
     }
   }, {
     key: "updateJourney",
     value: function updateJourney(e) {
-      var _this3 = this;
+      var _this2 = this;
 
       e.preventDefault();
 
       if (this.state.delivery_company == '' || this.state.departure == '' || this.state.arrival == '' || this.state.date_departure == '' || this.state.date_arrival == '' || this.state.time_departure == '') {
         this.props.viewMessageFlash('Tout les champs doivent être remplis', true);
+        return;
+      }
+
+      if (this.state.collision) {
+        this.props.viewMessageFlash('Il y a une ou plusieurs collisions entre vos palettes !', true);
         return;
       }
 
@@ -863,28 +826,29 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
       var spaces = [];
-      jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".space-dropped").each(function () {
-        console.log(jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent());
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".box-space").each(function () {
+        console.log(jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).parent());
         spaces.push({
-          pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('number'),
-          customer_name: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('customer_name'),
-          goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('goods_nature'),
-          date_delivery: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('date_delivery'),
-          hour_delivery: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('hour_delivery'),
-          address: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('address'),
-          size: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('size'),
-          position: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).data('position'),
-          col: jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).parent().attr('data-col')
+          pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('pallet_number'),
+          customer_name: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('customer_name'),
+          goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('goods_nature'),
+          address: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('address'),
+          date_delivery: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).attr('data-date_delivery'),
+          hour_delivery: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).attr('data-hour_delivery'),
+          _top: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('top'),
+          _left: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('left'),
+          size: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('size'),
+          position: jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).data('position')
         });
       });
       formData.append('spaces', JSON.stringify(spaces));
       formData.append('id_journey', this.id_journey);
       console.log(spaces);
 
-      if (jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".stop-over-input").length > 0) {
+      if (jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".stop-over-input").length > 0) {
         var i = 0;
-        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".stop-over-input").each(function () {
-          formData.append('stop-over-' + i, jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).val());
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".stop-over-input").each(function () {
+          formData.append('stop-over-' + i, jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).val());
           i++;
         });
       }
@@ -902,47 +866,62 @@ var EditJourney = /*#__PURE__*/function (_Component) {
 
         if (response.statusText == 'OK') {
           if (response.data.error == true) {
-            _this3.props.viewMessageFlash(response.data.msg, true);
+            _this2.props.viewMessageFlash(response.data.msg, true);
           } else {
-            _this3.props.viewMessageFlash(response.data.msg, false, false);
+            _this2.props.viewMessageFlash(response.data.msg, false, false);
 
-            _this3.setState({
+            _this2.setState({
               redirect: '/app'
             }); // document.location.href="/app";
 
           }
         } else {
-          _this3.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+          _this2.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
         }
       })["catch"](function (error) {
         console.log(error);
 
-        _this3.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
+        _this2.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
       });
-    }
+    } // updateSpaces(newSpaces){
+    //   this.setState({spaces: newSpaces})
+    // }
+
   }, {
-    key: "updateSpaces",
-    value: function updateSpaces(newSpaces) {
+    key: "displayJourneyData",
+    value: function displayJourneyData(data) {
       this.setState({
-        spaces: newSpaces
+        departure: data.departure,
+        arrival: data.arrival,
+        date_departure: data.date_departure,
+        date_arrival: data.date_arrival,
+        time_departure: data.time_departure,
+        spaces: data.spaces
       });
     }
   }, {
     key: "addStopover",
     value: function addStopover(e) {
       e.preventDefault();
-      jQuery__WEBPACK_IMPORTED_MODULE_5___default()(".btn-delete-stop-over").each(function () {
-        jQuery__WEBPACK_IMPORTED_MODULE_5___default()(this).css('display', 'none');
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".btn-delete-stop-over").each(function () {
+        jQuery__WEBPACK_IMPORTED_MODULE_4___default()(this).css('display', 'none');
       });
-      jQuery__WEBPACK_IMPORTED_MODULE_5___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control form-control-sm stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
+      jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + this.state.nbStopOver + '"><label for="stop-over-' + this.state.nbStopOver + '">Escale ' + (this.state.nbStopOver + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control form-control-sm stop-over-input" id="stop-over-' + this.state.nbStopOver + '" placeholder="Ex : Marseille" /></div>');
       this.setState({
         nbStopOver: this.state.nbStopOver + 1
       });
     }
   }, {
+    key: "setCollision",
+    value: function setCollision(collision) {
+      this.setState({
+        collision: collision
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this4 = this,
+      var _this3 = this,
           _React$createElement;
 
       if (this.state.redirect) {
@@ -974,7 +953,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         className: "form-control form-control-sm",
         id: "select-delivery-company",
         onChange: function onChange() {
-          _this4.setState({
+          _this3.setState({
             delivery_company: document.querySelector('#select-delivery-company').value
           });
         }
@@ -990,7 +969,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         id: "departure",
         value: this.state.departure,
         onChange: function onChange() {
-          _this4.setState({
+          _this3.setState({
             departure: document.querySelector('#departure').value
           });
         },
@@ -998,7 +977,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "",
         onClick: function onClick(e) {
-          _this4.addStopover(e);
+          _this3.addStopover(e);
         },
         style: {
           display: 'inline-block',
@@ -1020,7 +999,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         id: "arrival",
         value: this.state.arrival,
         onChange: function onChange() {
-          _this4.setState({
+          _this3.setState({
             arrival: document.querySelector('#arrival').value
           });
         },
@@ -1036,7 +1015,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         id: "date-departure",
         value: this.state.date_departure,
         onChange: function onChange() {
-          _this4.setState({
+          _this3.setState({
             date_departure: document.querySelector('#date-departure').value
           });
         }
@@ -1051,7 +1030,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         id: "time-departure",
         value: this.state.time_departure,
         onChange: function onChange() {
-          _this4.setState({
+          _this3.setState({
             time_departure: document.querySelector('#time-departure').value
           });
         }
@@ -1066,7 +1045,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         id: "date-arrival",
         value: this.state.date_arrival,
         onChange: function onChange() {
-          _this4.setState({
+          _this3.setState({
             date_arrival: document.querySelector('#date-arrival').value
           });
         }
@@ -1075,9 +1054,12 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "avalaible_places"
       }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], (_React$createElement = {
+        setCollision: this.setCollision.bind(this),
         spaces: this.state.spaces,
         page: "edit-journey",
-        updateSpaces: this.updateSpaces.bind(this)
+        displayJourneyData: this.displayJourneyData.bind(this)
+        /*updateSpaces={this.updateSpaces.bind(this)}*/
+
       }, _defineProperty(_React$createElement, "spaces", this.state.spaces), _defineProperty(_React$createElement, "viewMessageFlash", this.props.viewMessageFlash), _React$createElement))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
@@ -1116,7 +1098,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var draggabilly__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! draggabilly */ "./node_modules/draggabilly/draggabilly.js");
 /* harmony import */ var draggabilly__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(draggabilly__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1137,6 +1127,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -1170,24 +1161,193 @@ var Journey = /*#__PURE__*/function (_Component) {
       collision: false
     };
     _this.id_space = 1;
-    document.addEventListener('click', function () {
-      console.log("Ta relaché le click sur n'importe");
-    });
     return _this;
   }
 
   _createClass(Journey, [{
     key: "componentDidMount",
-    value: function componentDidMount() {}
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      if (this.props.page == "edit-journey") {
+        var data = {};
+        var id_journey = document.location.href.split('/')[5];
+        this.id_journey = id_journey;
+        axios__WEBPACK_IMPORTED_MODULE_2___default()({
+          method: 'POST',
+          url: '/get-journey/' + id_journey,
+          responseType: 'json',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: data
+        }).then(function (response) {
+          console.log(response);
+
+          if (response.statusText == 'OK') {
+            if (response.data.error == true) {
+              _this2.viewMessageFlash('Erreur lors de la récupération des données', true);
+            } else {
+              _this2.displayJourneyData({
+                journey: response.data,
+                departure: response.data.departure.charAt(0).toUpperCase() + response.data.departure.slice(1),
+                arrival: response.data.arrival.charAt(0).toUpperCase() + response.data.arrival.slice(1),
+                date_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
+                time_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("HH:mm"),
+                date_arrival: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
+                spaces: response.data.spaces,
+                stopovers: response.data.stopovers
+              }); ///////////////////////////////////////////
+              // block-spaces
+
+
+              console.log(_this2.state.spaces);
+
+              var _iterator = _createForOfIteratorHelper(response.data.spaces),
+                  _step;
+
+              try {
+                for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                  var space = _step.value;
+                  console.log("space");
+                  var position = '';
+                  var size_css = '';
+
+                  switch (space.size) {
+                    case '80-120':
+                      position = 'width:45px;height:70px;';
+
+                      if (space.position == 'horizontal') {
+                        position = 'width:70px;height:45px;';
+                      }
+
+                      size_css = position + 'background-color:rgb(100, 117, 161);';
+                      break;
+
+                    case '100-120':
+                      position = 'width:60px;height:70px;';
+
+                      if (space.position == 'horizontal') {
+                        position = 'width:70px;height:60px;';
+                      }
+
+                      size_css = position + 'background-color:rgb(100 156 161);';
+                      break;
+
+                    default:
+                      break;
+                  }
+
+                  var date_delivery = moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(space.date_delivery)).format("YYYY-MM-DD");
+                  var elem = '';
+                  elem = jQuery__WEBPACK_IMPORTED_MODULE_1___default()('<div draggable="true" class="draggable-space box-space" id="space-' + _this2.id_space + '" data-id_space="' + space.id_space + '" data-pallet_number="' + space.pallet_number + '" data-customer_name="' + space.customer_name + '" data-goods_nature="' + space.goods_nature + '" data-size="' + space.size + '" data-position="' + space.position + '" data-address="' + space.address + '" data-date_delivery="' + date_delivery + '" data-hour_delivery="' + space.hour_delivery + '" data-top="' + space._top + '" data-left="' + space._left + '" style="' + size_css + 'top:' + space._top + 'px;left:' + space._left + 'px"><div style="width:100%;height:100%;display:flex;flex-direction: column;justify-content: space-between;"><div style="width:100%;height:20px;"><div class="img-space-info"></div></div><div class="space-number">' + space.pallet_number + '</div><div class="width100" style="height:20px;"><div class="img-space-rotate"></div><div class="img-space-trash"></div></div></div></div>');
+                  console.log('appended');
+                  jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#block-spaces').append(elem[0]);
+                  var draggie = new draggabilly__WEBPACK_IMPORTED_MODULE_3___default.a(elem[0], {
+                    containment: true,
+                    grid: [5, 5]
+                  });
+                  jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-info").click(function (e) {
+                    var element = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent();
+
+                    _this2.setState({
+                      viewSpaceForm: true,
+                      id_pallet_edit: element.attr('id'),
+                      pallet_number: element.attr('data-pallet_number'),
+                      customer_name: element.attr('data-customer_name'),
+                      goods_nature: element.attr('data-goods_nature'),
+                      delivery_address: element.attr('data-address'),
+                      date_delivery: element.attr('data-date_delivery'),
+                      hour_delivery: element.attr('data-hour_delivery')
+                    });
+                  });
+                  jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-trash").click(function () {
+                    jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().remove();
+                  });
+                  jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-rotate").click(function () {
+                    console.log('rotate');
+                    var width = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("width");
+                    var height = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("height");
+                    console.log(width);
+                    console.log(height);
+                    jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("width", height);
+                    jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().css("height", width);
+                    var pos = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().attr("data-position");
+
+                    if (pos == 'vertical') {
+                      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().attr("data-position", 'horizontal');
+                    } else {
+                      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().parent().parent().attr("data-position", 'vertical');
+                    }
+                  }); // elem = ''
+
+                  _this2.id_space = _this2.id_space + 1;
+                } ///////////////////////////////////////////
+
+              } catch (err) {
+                _iterator.e(err);
+              } finally {
+                _iterator.f();
+              }
+
+              var _self = _this2;
+              response.data.stopovers.map(function (stopover, index) {
+                jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-' + stopover.nb_stopover + '"><label for="stop-over-' + stopover.nb_stopover + '">Escale ' + (parseInt(stopover.nb_stopover) + 1) + '</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="' + stopover.city + '" class="form-control form-control-sm stop-over-input" id="stop-over-' + stopover.nb_stopover + '" placeholder="Ex : Marseille" /></div>');
+
+                _self.setState({
+                  nbStopOver: _this2.state.nbStopOver + 1
+                });
+              });
+              jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".btn-delete-stop-over").each(function () {
+                console.log(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr('id'));
+                console.log("block-stop-over-" + (_self.state.nbStopOver - 1));
+
+                if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr('id') != "block-stop-over-" + (_self.state.nbStopOver - 1)) {
+                  jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'none');
+                }
+              });
+            }
+          } else {
+            _this2.viewMessageFlash('Erreur lors de la récupération des données', true);
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
+
+      var self = this;
+      document.addEventListener('click', function () {
+        var collision = false;
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
+          if (self.setEventCollision(jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this))) {
+            collision = true;
+          }
+        });
+        self.setState({
+          collision: collision
+        });
+        self.setCollision(collision);
+      });
+    }
   }, {
-    key: "save",
-    value: function save() {
-      var spaces = [];
+    key: "setCollision",
+    value: function setCollision(collision) {
+      this.props.setCollision(collision);
+    }
+  }, {
+    key: "displayJourneyData",
+    value: function displayJourneyData(data) {
+      this.props.displayJourneyData(data);
+    }
+  }, {
+    key: "fillTruckBox",
+    value: function fillTruckBox() {
+      console.log("filled");
     }
   }, {
     key: "createBox",
     value: function createBox(b) {
-      var _this2 = this;
+      var _this3 = this;
 
       console.log('createBox');
       var size_css = 'width:80px;height:50px;';
@@ -1229,32 +1389,10 @@ var Journey = /*#__PURE__*/function (_Component) {
         containment: true,
         grid: [5, 5]
       });
-      elem.on('mouseleave', function (e) {
-        // console.log("mouseleave")
-        _this2.setEventCollision(e);
-      });
-      elem.on('mouseenter', function (e) {
-        // console.log("mouseenter")
-        _this2.setEventCollision(e);
-      });
-      elem.on('mouseout', function (e) {
-        // console.log("mouseout")
-        _this2.setEventCollision(e);
-      });
-      elem.on('mouseover', function (e) {
-        // console.log("mouseover")
-        _this2.setEventCollision(e); // elem.trigger('click')
-
-      });
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', function (e) {
-        console.log("click");
-
-        _this2.setEventCollision(e, elem);
-      });
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()(elem).find(".img-space-info").click(function (e) {
         var element = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent().parent().parent();
 
-        _this2.setState({
+        _this3.setState({
           viewSpaceForm: true,
           id_pallet_edit: element.attr('id'),
           pallet_number: element.attr('data-pallet_number'),
@@ -1288,11 +1426,9 @@ var Journey = /*#__PURE__*/function (_Component) {
     }
   }, {
     key: "setEventCollision",
-    value: function setEventCollision(e) {
-      var elem = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
-      e.stopPropagation();
-      var $this1 = '';
-      var $this = jQuery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).parent();
+    value: function setEventCollision(elem) {
+      console.log(elem);
+      var $this = elem;
 
       if (elem !== '') {
         $this = elem;
@@ -1300,11 +1436,10 @@ var Journey = /*#__PURE__*/function (_Component) {
 
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-top", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("top").replace("px", ""));
       jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).attr("data-left", jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css("left").replace("px", ""));
-      var collision = false; // $(".box-space").each(function(){
-      //   $this1 = $(this)
+      var collision = false;
 
-      jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
-        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").length > 1) {
+      if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").length > 1) {
+        jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
           if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id') != $this.attr("id")) {
             var boxMoveLeft = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", ""));
             var boxMoveTop = parseInt(jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('top').replace("px", ""));
@@ -1317,51 +1452,29 @@ var Journey = /*#__PURE__*/function (_Component) {
 
             if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()($this).css('left').replace("px", "") != 'auto') {
               if (boxMoveLeft < boxFixLeft + boxFixWidth && boxMoveLeft + boxMoveWidth > boxFixLeft && boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop) {
-                // console.log("Collision entre "+$(this).attr('id')+' et '+$this.attr('id'))
-                // console.log($(e.target).parent().attr('id'))
+                // $('#'+$this.attr('id')).css("background-color", 'red')
+                // $('#'+$(this).attr('id')).css("background-color", 'red')
                 collision = true;
+              } else {// $('#'+$this.attr('id')).css("background-color", 'green')
+                // $('#'+$(this).attr('id')).css("background-color", 'green')
               }
             }
-          } // if($(this).attr('id') != $this1.attr("id")){
-          //   let boxMoveLeft = parseInt($($this1).css('left').replace("px", ""))
-          //   let boxMoveTop = parseInt($($this1).css('top').replace("px", ""))
-          //   let boxMoveWidth = parseInt($($this1).css('width').replace("px", ""))
-          //   let boxMoveHeight = parseInt($($this1).css('height').replace("px", ""))
-          //   let boxFixLeft = parseInt($(this).css('left').replace("px", ""))
-          //   let boxFixTop = parseInt($(this).css('top').replace("px", ""))
-          //   let boxFixWidth = parseInt($(this).css('width').replace("px", ""))
-          //   let boxFixHeight = parseInt($(this).css('height').replace("px", ""))
-          //   if( $($this1).css('left').replace("px", "") != 'auto'){
-          //     if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
-          //       boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
-          //         console.log("Collision entre "+$(this).attr('id')+' et '+$this1.attr('id'))
-          //         console.log($(e.target).parent().attr('id'))
-          //         collision = true
-          //       }
-          //   }              
-          // }
-
-        }
-      }); // })
-
-      if (collision) {
-        jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'red');
-        this.setState({
-          collision: true
+          }
         });
-      } else {
-        if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).attr("data-size") == '80-120') {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100, 117, 161)');
+
+        if (collision) {
+          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'red');
         } else {
-          jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100 156 161)');
-        }
+          if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).attr("data-size") == '80-120') {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100, 117, 161)');
+          } else {
+            jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#' + $this.attr('id')).css("background-color", 'rgb(100 156 161)');
+          }
+        } // collision = false
 
-        this.setState({
-          collision: false
-        });
       }
 
-      collision = false;
+      return collision;
     }
   }, {
     key: "hideSpaceForm",
@@ -1390,7 +1503,9 @@ var Journey = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
+
+      var spaces = '';
 
       if (this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0) {}
 
@@ -1400,7 +1515,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         spaceForm = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
           className: "container-space-form",
           onClick: function onClick(e) {
-            _this3.hideSpaceForm(e);
+            _this4.hideSpaceForm(e);
           }
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
           method: "POST",
@@ -1427,7 +1542,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "pallet_number",
           value: this.state.pallet_number,
           onChange: function onChange() {
-            _this3.setState({
+            _this4.setState({
               pallet_number: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#pallet_number").val()
             });
           }
@@ -1441,7 +1556,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "customer_name",
           value: this.state.customer_name,
           onChange: function onChange() {
-            _this3.setState({
+            _this4.setState({
               customer_name: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#customer_name").val()
             });
           }
@@ -1455,7 +1570,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "goods_nature",
           value: this.state.goods_nature,
           onChange: function onChange() {
-            _this3.setState({
+            _this4.setState({
               goods_nature: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#goods_nature").val()
             });
           }
@@ -1469,7 +1584,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "date_delivery",
           value: this.state.date_delivery,
           onChange: function onChange() {
-            _this3.setState({
+            _this4.setState({
               date_delivery: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#date_delivery").val()
             });
           }
@@ -1483,7 +1598,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "hour_delivery",
           value: this.state.hour_delivery,
           onChange: function onChange() {
-            _this3.setState({
+            _this4.setState({
               hour_delivery: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#hour_delivery").val()
             });
 
@@ -1499,7 +1614,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           id: "delivery_address",
           value: this.state.delivery_address,
           onChange: function onChange() {
-            _this3.setState({
+            _this4.setState({
               delivery_address: jQuery__WEBPACK_IMPORTED_MODULE_1___default()("#delivery_address").val()
             });
           }
@@ -1508,7 +1623,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           type: "submit",
           onClick: function onClick(e) {
-            _this3.updateSpaceData(e);
+            _this4.updateSpaceData(e);
           },
           className: "btn btn-primary",
           style: {
@@ -1560,7 +1675,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-country": "",
         draggable: "true",
         onClick: function onClick() {
-          _this3.createBox('b1');
+          _this4.createBox('b1');
         }
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
@@ -1585,7 +1700,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-country": "",
         draggable: "true",
         onClick: function onClick() {
-          _this3.createBox('b3');
+          _this4.createBox('b3');
         }
       }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6",
@@ -1623,7 +1738,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-country": "",
         draggable: "true",
         onClick: function onClick() {
-          _this3.createBox('b2');
+          _this4.createBox('b2');
         }
       }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-6"
@@ -1648,7 +1763,7 @@ var Journey = /*#__PURE__*/function (_Component) {
         "data-country": "",
         draggable: "true",
         onClick: function onClick() {
-          _this3.createBox('b4');
+          _this4.createBox('b4');
         }
       })))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center height100"
@@ -1671,7 +1786,7 @@ var Journey = /*#__PURE__*/function (_Component) {
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "block-spaces",
         id: "block-spaces"
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+      }, spaces))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         type: "button",
         className: "btn btn btn-light form-control-sm display-flex-center",
         id: "btn-view-spaces-list",
@@ -1679,7 +1794,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           margin: '20px 0px'
         },
         onClick: function onClick(e) {
-          _this3.toggleSpaceList(e);
+          _this4.toggleSpaceList(e);
         }
       }, "Voir la liste des palettes"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "table-responsive",

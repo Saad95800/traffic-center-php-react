@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Journey from './Journey'
 import { Redirect } from "react-router-dom"
 import axios from 'axios'
-import moment from 'moment'
 import $ from 'jQuery'
 
 export default class EditJourney extends Component {
@@ -19,65 +18,13 @@ export default class EditJourney extends Component {
         time_departure: '',
         date_arrival: '',
         spaces: [],
-        nbStopOver: 0
+        nbStopOver: 0,
+        collision: false
       }
-      this.id_journey = null
+      this.id_journey = document.location.href.split('/')[5]
     }
 
     componentDidMount(){
-
-      let data = {};
-      let id_journey = document.location.href.split('/')[5]
-      this.id_journey = id_journey
-        axios({
-          method: 'POST',
-          url: '/get-journey/'+id_journey,
-          responseType: 'json',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          data: data
-        })
-        .then((response) => {
-          console.log(response)
-          if(response.statusText == 'OK'){
-            if(response.data.error == true){
-              this.viewMessageFlash('Erreur lors de la récupération des données', true);
-            }else{
-              this.setState({
-                journey: response.data,
-                departure: response.data.departure.charAt(0).toUpperCase() + response.data.departure.slice(1),
-                arrival: response.data.arrival.charAt(0).toUpperCase() + response.data.arrival.slice(1),
-                date_departure: moment.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
-                time_departure: moment.unix(parseInt(response.data.date_departure)).format("HH:mm"),
-                date_arrival: moment.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
-                spaces: response.data.spaces,
-                stopovers: response.data.stopovers
-              })
-
-              let self = this
-              response.data.stopovers.map((stopover, index) => {
-                $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+stopover.nb_stopover+'"><label for="stop-over-'+stopover.nb_stopover+'">Escale '+(parseInt(stopover.nb_stopover)+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="'+stopover.city+'" class="form-control form-control-sm stop-over-input" id="stop-over-'+stopover.nb_stopover+'" placeholder="Ex : Marseille" /></div>')
-                self.setState({nbStopOver: this.state.nbStopOver +1})
-              })
-
-              $(".btn-delete-stop-over").each(function(){
-                console.log($(this).parent().attr('id'))
-                console.log("block-stop-over-"+(self.state.nbStopOver-1) )
-                if($(this).parent().attr('id') != "block-stop-over-"+(self.state.nbStopOver-1) ){
-                  $(this).css('display', 'none')
-                }
-              })
-              
-            }
-          }else{
-            this.viewMessageFlash('Erreur lors de la récupération des données', true);
-          }
-
-        })
-        .catch( (error) => {
-          console.log(error);
-        });
 
         let self = this
         $(document).on('click', '.btn-delete-stop-over', function(){
@@ -105,6 +52,11 @@ export default class EditJourney extends Component {
           return;
         }
 
+        if(this.state.collision){
+          this.props.viewMessageFlash('Il y a une ou plusieurs collisions entre vos palettes !', true)
+          return;
+        }
+
         let formData = new FormData();
         formData.append('delivery_company', this.state.delivery_company);
         formData.append('departure', this.state.departure);
@@ -113,18 +65,19 @@ export default class EditJourney extends Component {
         formData.append('date_arrival', this.state.date_arrival);
         formData.append('time_departure', this.state.time_departure);
         let spaces = []
-        $(".space-dropped").each(function(){
+        $(".box-space").each(function(){
           console.log($(this).parent())
           spaces.push({
-            pallet_number: $(this).data('number'),
+            pallet_number: $(this).data('pallet_number'),
             customer_name: $(this).data('customer_name'),
             goods_nature: $(this).data('goods_nature'),
-            date_delivery: $(this).data('date_delivery'),
-            hour_delivery: $(this).data('hour_delivery'),
             address: $(this).data('address'),
+            date_delivery: $(this).attr('data-date_delivery'),
+            hour_delivery: $(this).attr('data-hour_delivery'),
+            _top: $(this).data('top'),
+            _left: $(this).data('left'),
             size: $(this).data('size'),
-            position: $(this).data('position'),
-            col: $(this).parent().attr('data-col'),
+            position: $(this).data('position')
           })
         })
         formData.append('spaces', JSON.stringify(spaces));
@@ -167,8 +120,20 @@ export default class EditJourney extends Component {
   
     }
 
-    updateSpaces(newSpaces){
-      this.setState({spaces: newSpaces})
+    // updateSpaces(newSpaces){
+    //   this.setState({spaces: newSpaces})
+    // }
+
+    displayJourneyData(data){
+
+      this.setState({
+        departure: data.departure,
+        arrival: data.arrival,
+        date_departure: data.date_departure,
+        date_arrival: data.date_arrival,
+        time_departure: data.time_departure,
+        spaces: data.spaces,
+      })
     }
 
     addStopover(e){
@@ -178,6 +143,10 @@ export default class EditJourney extends Component {
       })
       $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+this.state.nbStopOver+'"><label for="stop-over-'+this.state.nbStopOver+'">Escale '+(this.state.nbStopOver+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" class="form-control form-control-sm stop-over-input" id="stop-over-'+this.state.nbStopOver+'" placeholder="Ex : Marseille" /></div>')
       this.setState({nbStopOver: this.state.nbStopOver +1})
+    }
+
+    setCollision(collision){
+      this.setState({collision: collision})
     }
 
     render() {
@@ -220,7 +189,7 @@ export default class EditJourney extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
-                  <Journey spaces={this.state.spaces} page="edit-journey" updateSpaces={this.updateSpaces.bind(this)} spaces={this.state.spaces} viewMessageFlash={this.props.viewMessageFlash}/>
+                  <Journey setCollision={this.setCollision.bind(this)} spaces={this.state.spaces} page="edit-journey" displayJourneyData={this.displayJourneyData.bind(this)}/*updateSpaces={this.updateSpaces.bind(this)}*/ spaces={this.state.spaces} viewMessageFlash={this.props.viewMessageFlash}/>
                 </div>
                 <div className="display-flex-center">
                   <button type="submit" onClick={this.updateJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>

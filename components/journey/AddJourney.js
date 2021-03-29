@@ -18,7 +18,8 @@ export default class AddJourney extends Component {
         time_departure: '',
         spaces: [],
         redirect: null,
-        nbStopOver: 0
+        nbStopOver: 0,
+        collision: false
       }
     }
 
@@ -49,6 +50,11 @@ export default class AddJourney extends Component {
         return;
       }
 
+      if(this.state.collision){
+        this.props.viewMessageFlash('Il y a une ou plusieurs collisions entre vos palettes !', true)
+        return;
+      }
+
       let formData = new FormData();
       formData.append('delivery_company', this.state.delivery_company);
       formData.append('departure', this.state.departure);
@@ -59,12 +65,14 @@ export default class AddJourney extends Component {
       let spaces = []
       $(".box-space").each(function(){
         spaces.push({
-          pallet_number: $(this).data('number'),
+          pallet_number: $(this).data('pallet_number'),
           customer_name: $(this).data('customer_name'),
           goods_nature: $(this).data('goods_nature'),
           address: $(this).data('address'),
           date_delivery: $(this).data('date_delivery'),
           hour_delivery: $(this).data('hour_delivery'),
+          _top: $(this).data('top'),
+          _left: $(this).data('left'),
           size: $(this).data('size'),
           position: $(this).data('position')
         })
@@ -97,7 +105,6 @@ export default class AddJourney extends Component {
           }else{
             this.props.viewMessageFlash(response.data.msg, false, false);
             this.setState({redirect: '/app'})
-            // document.location.href="/app";
           }
         }else{
           this.props.viewMessageFlash('Erreur lors de l\'enregistrement', true);
@@ -128,6 +135,10 @@ export default class AddJourney extends Component {
       this.setState({nbStopOver: this.state.nbStopOver +1})
     }
 
+    setCollision(collision){
+      this.setState({collision: collision})
+    }
+    
     render() {
 
       if (this.state.redirect) {
@@ -168,7 +179,7 @@ export default class AddJourney extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
-                  <Journey spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}  viewMessageFlash={this.viewMessageFlash.bind(this)}/>
+                  <Journey setCollision={this.setCollision.bind(this)} spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}  viewMessageFlash={this.viewMessageFlash.bind(this)}/>
                 </div>
                 <div className="display-flex-center">
                   <button type="submit" onClick={this.saveJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
