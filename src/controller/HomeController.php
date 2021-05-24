@@ -15,4 +15,12 @@ class HomeController extends Controller {
 
     }
 
+    public function templatemapaction(){
+        
+        // $display['content'] = $this->_view->render( 'templatemap.php' , []);
+
+        include VIEW . 'templatemap.php';
+
+    }
+
 }

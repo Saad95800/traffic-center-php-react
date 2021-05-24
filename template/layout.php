@@ -22,6 +22,5 @@
 </head>
 <body id="page-top">
     <main id="main"><?php echo $display['content']; ?></main>
-    
 </body>
 </html>

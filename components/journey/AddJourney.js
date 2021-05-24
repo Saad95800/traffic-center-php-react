@@ -31,7 +31,6 @@ export default class AddJourney extends Component {
         $(this).parent().remove()
         self.setState({nbStopOver: self.state.nbStopOver - 1})
         $("#block-stop-over-"+(self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block")
-        console.log('stop over removed')
       })
 
     }
@@ -69,6 +68,11 @@ export default class AddJourney extends Component {
           customer_name: $(this).data('customer_name'),
           goods_nature: $(this).data('goods_nature'),
           address: $(this).data('address'),
+          delivery_city: $(this).data('delivery_city'),
+          delivery_country: $(this).data('delivery_country'),
+          loading_address: $(this).data('loading_address'),
+          loading_city: $(this).data('loading_city'),
+          loading_country: $(this).data('loading_country'),
           date_delivery: $(this).data('date_delivery'),
           hour_delivery: $(this).data('hour_delivery'),
           _top: $(this).data('top'),
@@ -79,7 +83,6 @@ export default class AddJourney extends Component {
       })
       formData.append('spaces', JSON.stringify(spaces));
       formData.append('id_journey', this.id_journey);
-      console.log(spaces)
 
       if($(".stop-over-input").length > 0){
         let i = 0
@@ -98,7 +101,6 @@ export default class AddJourney extends Component {
         data: formData
       })
       .then((response) => {
-        console.log(response);
         if(response.statusText == 'OK'){
           if(response.data.error == true){
             this.props.viewMessageFlash(response.data.msg, true);
@@ -126,7 +128,6 @@ export default class AddJourney extends Component {
     }
 
     addStopover(e){
-      console.log("add stop over")
       e.preventDefault()
       $(".btn-delete-stop-over").each(function(){
         $(this).css('display', 'none')
@@ -147,7 +148,7 @@ export default class AddJourney extends Component {
         return (
           <div className="display-flex-center" style={{marginBottom: '100px'}}>
             <h1 className="mgtop50">Ajouter un trajet</h1>
-            <div className="form-container" style={{minWidth: '70%'}}>
+            <div className="form-container" id="form-container" style={{minWidth: '70%'}}>
               <form method="POST" encType="multipart/form-data">
                 <div className="form-group">
                   <label htmlFor="select-delivery-company">Entreprise de livraison</label>

@@ -3,6 +3,8 @@ import $ from 'jQuery'
 import axios from 'axios'
 import Draggabilly from 'draggabilly'
 import moment from 'moment'
+import uniqid from 'uniqid'
+import html2pdf from 'html2pdf.js'
 
 export default class Journey extends Component {
 
@@ -12,22 +14,32 @@ export default class Journey extends Component {
           spaces: this.props.spaces,
           dropSpaceZone: null,
           viewSpaceForm: false,
+          viewTrashForm: false,
           id_space: '',
           pallet_number: '',
           customer_name: '',
           goods_nature: '',
-          delivery_address: '',
+          address: '',
+          delivery_city:'',
+          delivery_country: '',
+          loading_address: '',
+          loading_city: '',
+          loading_country: '',
           date_delivery: '',
           hour_delivery: '',
           id_space_block_html: '',
           id_pallet_edit: '',
-          collision: false
+          collision: false,
+          id_space_trash: ''
       }
-      this.id_space = 1
+      this.id_space_html = 1
+      this.iteration = 0
 
     }
 
     componentDidMount(){
+
+      let self = this
 
       if(this.props.page == "edit-journey"){
 
@@ -44,7 +56,7 @@ export default class Journey extends Component {
             data: data
           })
           .then((response) => {
-            console.log(response)
+            
             if(response.statusText == 'OK'){
               if(response.data.error == true){
                 this.viewMessageFlash('Erreur lors de la récupération des données', true);
@@ -59,99 +71,79 @@ export default class Journey extends Component {
                   spaces: response.data.spaces,
                   stopovers: response.data.stopovers
                 })
+                let spaces = []
+                response.data.spaces.map((space, index)=>{
+                  space.id_space_html = uniqid('space-')
+                  space.date_delivery = moment.unix(parseInt(space.date_delivery)).format("YYYY-MM-DD")
+                  spaces.push(space)
+                })
+                this.setState({spaces: spaces})
 
-                ///////////////////////////////////////////
-
-                  // block-spaces
-                  
-                  console.log(this.state.spaces)
-                  for(let space of response.data.spaces){
-                    console.log("space")
-                    let position = ''
-                    let size_css = ''
-                    switch(space.size){
-                      case '80-120':
-                        position = 'width:45px;height:70px;'
-                        if(space.position == 'horizontal'){
-                          position = 'width:70px;height:45px;'
-                        }
-                        size_css = position+'background-color:rgb(100, 117, 161);'
-                        break;
-                      case '100-120':
-                        position = 'width:60px;height:70px;'
-                        if(space.position == 'horizontal'){
-                          position = 'width:70px;height:60px;'
-                        }
-                        size_css = position+'background-color:rgb(100 156 161);'          
-                        break;
-                      default:
-                        break;
-                    }
-                    
-                    let date_delivery = moment.unix(parseInt(space.date_delivery)).format("YYYY-MM-DD")
-                    let elem = ''
-                    elem = $('<div draggable="true" class="draggable-space box-space" id="space-'+this.id_space+'" data-id_space="'+space.id_space+'" data-pallet_number="'+space.pallet_number+'" data-customer_name="'+space.customer_name+'" data-goods_nature="'+space.goods_nature+'" data-size="'+space.size+'" data-position="'+space.position+'" data-address="'+space.address+'" data-date_delivery="'+date_delivery+'" data-hour_delivery="'+space.hour_delivery+'" data-top="'+space._top+'" data-left="'+space._left+'" style="'+size_css+'top:'+space._top+'px;left:'+space._left+'px"><div style="width:100%;height:100%;display:flex;flex-direction: column;justify-content: space-between;"><div style="width:100%;height:20px;"><div class="img-space-info"></div></div><div class="space-number">'+space.pallet_number+'</div><div class="width100" style="height:20px;"><div class="img-space-rotate"></div><div class="img-space-trash"></div></div></div></div>')
-                    console.log('appended')
-                    $('#block-spaces').append(elem[0])
-    
-                    var draggie = new Draggabilly( elem[0], {
-                      containment: true,
-                      grid: [ 5, 5 ]
-                    });
-    
-                    $(elem).find(".img-space-info").click( (e)=>{
-                      let element = $(e.target).parent().parent().parent()
-                      this.setState({
-                        viewSpaceForm: true,
-                        id_pallet_edit: element.attr('id'),
-                        pallet_number: element.attr('data-pallet_number'),
-                        customer_name: element.attr('data-customer_name'),
-                        goods_nature: element.attr('data-goods_nature'),
-                        delivery_address: element.attr('data-address'),
-                        date_delivery: element.attr('data-date_delivery'),
-                        hour_delivery: element.attr('data-hour_delivery')
-                      });
-                    })
-                  
-                    $(elem).find(".img-space-trash").click( function(){
-                      $(this).parent().parent().parent().remove()
-                    })
-    
-                    $(elem).find(".img-space-rotate").click( function(){
-                      console.log('rotate')
-                      let width = $(this).parent().parent().parent().css("width")
-                      let height = $(this).parent().parent().parent().css("height")
-                      console.log(width)
-                      console.log(height)
-                      $(this).parent().parent().parent().css("width", height) 
-                      $(this).parent().parent().parent().css("height", width)
-                      let pos = $(this).parent().parent().parent().attr("data-position")
-                      if(pos == 'vertical'){
-                        $(this).parent().parent().parent().attr("data-position", 'horizontal')
-                      }else{
-                        $(this).parent().parent().parent().attr("data-position", 'vertical')
-                      }
-                    })
-    
-                    // elem = ''
-                    this.id_space = this.id_space + 1
-                }
-
-                ///////////////////////////////////////////
-                let self = this
                 response.data.stopovers.map((stopover, index) => {
                   $("#container-stop-over").append('<div class="block-stop-over" id="block-stop-over-'+stopover.nb_stopover+'"><label for="stop-over-'+stopover.nb_stopover+'">Escale '+(parseInt(stopover.nb_stopover)+1)+'</label><button type="button" class="close btn-delete-stop-over" aria-label="Close" style="display: inline-block;position:inherit;right:0px;"><span aria-hidden="true">×</span></button><input type="text" value="'+stopover.city+'" class="form-control form-control-sm stop-over-input" id="stop-over-'+stopover.nb_stopover+'" placeholder="Ex : Marseille" /></div>')
                   self.setState({nbStopOver: this.state.nbStopOver +1})
                 })
   
                 $(".btn-delete-stop-over").each(function(){
-                  console.log($(this).parent().attr('id'))
-                  console.log("block-stop-over-"+(self.state.nbStopOver-1) )
                   if($(this).parent().attr('id') != "block-stop-over-"+(self.state.nbStopOver-1) ){
                     $(this).css('display', 'none')
                   }
                 })
               
+                // $(".img-space-info").each(function(){
+                //   $(this).click( (e)=>{
+                //     let element = $(e.target).parent().parent().parent()
+                //     self.setState({
+                //       viewSpaceForm: true,
+                //       id_pallet_edit: element.attr('id'),
+                //       id_space_html: element.attr('id'),
+                //       pallet_number: element.attr('data-pallet_number'),
+                //       customer_name: element.attr('data-customer_name'),
+                //       goods_nature: element.attr('data-goods_nature'),
+                //       address: element.attr('data-address'),
+                //       date_delivery: element.attr('data-date_delivery'),
+                //       hour_delivery: element.attr('data-hour_delivery'),
+                //       id_space: element.attr("data-id_space")
+                //     });
+                //   })        
+                // })
+
+                // $(".img-space-trash").each(function(){
+                //   $(document).on('click', $(this), function(){
+                //     self.setState({
+                //       id_space_trash: $(this).parent().parent().parent().attr("id"), 
+                //       viewTrashForm: true
+                //     })
+                //   })
+                // })
+
+                // $(".img-space-rotate").each(function(){
+                //   console.log('rotate')
+                //   $(this).click( function(){
+                //     let width = $(this).parent().parent().parent().css("width")
+                //     let height = $(this).parent().parent().parent().css("height")
+                //     $(this).parent().parent().parent().css("width", height) 
+                //     $(this).parent().parent().parent().css("height", width)
+                //     let pos = $(this).parent().parent().parent().attr("data-position")
+                //     if(pos == 'vertical'){
+                //       $(this).parent().parent().parent().attr("data-position", 'horizontal')
+                //     }else{
+                //       $(this).parent().parent().parent().attr("data-position", 'vertical')
+                //     }
+                //   })                  
+                // })
+
+                document.addEventListener('click', function(){
+                  let collision = false;
+                  $(".box-space").each(function(){
+                    if(self.setEventCollision($(this))){
+                      collision = true
+                    }
+                  })
+                  self.setState({collision: collision})
+                  self.setCollision(collision)
+                })
+
               }
             }else{
               this.viewMessageFlash('Erreur lors de la récupération des données', true);
@@ -164,18 +156,92 @@ export default class Journey extends Component {
 
       }
 
-      let self = this
       document.addEventListener('click', function(){
         let collision = false;
+        let newSpaces = []
         $(".box-space").each(function(){
           if(self.setEventCollision($(this))){
             collision = true
           }
+          let th = this
+          self.state.spaces.map((space, index) => {
+            if(space.id_space_html == $(th).attr('id')){
+              space._top = $(th).css('top').replace("px", "")
+              space._left = $(th).css('left').replace("px", "")
+              newSpaces.push(space)
+            }
+          })
         })
-        self.setState({collision: collision})
+        self.setState({collision: collision/*, spaces: newSpaces*/})
         self.setCollision(collision)
       })
+
     }
+
+    componentDidUpdate(){
+      $(".box-space").each(function(){
+        var draggie = new Draggabilly( $(this)[0], {
+          containment: true,
+          grid: [ 20, 20 ]
+        });                  
+      })
+      let self = this
+      
+      $(".img-space-info").each(function(){
+        if( $._data($(this).get(0), "events") == undefined ){
+          $(this).click( (e)=>{
+            let element = $(e.target).parent().parent().parent()
+            self.setState({
+              viewSpaceForm: true,
+              id_pallet_edit: element.attr('id'),
+              pallet_number: element.attr('data-pallet_number'),
+              customer_name: element.attr('data-customer_name'),
+              goods_nature: element.attr('data-goods_nature'),
+              address: element.attr('data-address'),
+              delivery_city: element.attr('data-delivery_city'),
+              delivery_country: element.attr('data-delivery_country'),
+              loading_address: element.attr('data-loading_address'),
+              loading_city: element.attr('data-loading_city'),
+              loading_country: element.attr('data-loading_country'),
+              date_delivery: element.attr('data-date_delivery'),
+              hour_delivery: element.attr('data-hour_delivery'),
+              id_space: element.attr("data-id_space")
+            });
+          })            
+        }
+      
+      })
+
+      $(".img-space-trash").each(function(){
+        if( $._data($(this).get(0), "events") == undefined ){
+          $(this).click( function(){
+            // $(this).parent().parent().parent().remove()
+            self.setState({
+              id_space_trash: $(this).parent().parent().parent().attr("id"), 
+              viewTrashForm: true})
+          })
+        }
+      })
+
+      $(".img-space-rotate").each(function(){
+        if( $._data($(this).get(0), "events") == undefined ){
+          $(this).click( function(){
+            let width = $(this).parent().parent().parent().css("width")
+            let height = $(this).parent().parent().parent().css("height")
+            $(this).parent().parent().parent().css("width", height) 
+            $(this).parent().parent().parent().css("height", width)
+            let pos = $(this).parent().parent().parent().attr("data-position")
+            if(pos == 'vertical'){
+              $(this).parent().parent().parent().attr("data-position", 'horizontal')
+            }else{
+              $(this).parent().parent().parent().attr("data-position", 'vertical')
+            }
+          })   
+        }               
+      })
+      
+    }
+    
 
     setCollision(collision){
       this.props.setCollision(collision)
@@ -185,33 +251,25 @@ export default class Journey extends Component {
       this.props.displayJourneyData(data)
     }
 
-    fillTruckBox(){
-      console.log("filled")
-    }
-
     createBox(b){
-      console.log('createBox')
-      let size_css = 'width:80px;height:50px;'
+
+      console.log("create box")
       let size = ''
       let position = ''
       switch(b){
         case 'b1':
-          size_css = 'width:70px;height:45px;background-color:rgb(100, 117, 161);'
           size = '80-120'
           position = 'horizontal'
           break;
-        case 'b2':
-          size_css = 'width:70px;height:60px;background-color:rgb(100 156 161);'          
+        case 'b2':        
           size = '100-120'
           position = 'horizontal'
           break;
-        case 'b3':
-          size_css = 'width:45px;height:70px;background-color:rgb(100, 117, 161);'          
+        case 'b3':        
           size = '80-120'
           position = 'vertical'
           break;
-        case 'b4':
-          size_css = 'width:60px;height:70px;background-color:rgb(100 156 161);'          
+        case 'b4':         
           size = '100-120'
           position = 'vertical'
           break;
@@ -219,60 +277,37 @@ export default class Journey extends Component {
           break;
       }
 
-      let elem = $('<div draggable="true" class="draggable-space box-space" id="space-'+this.id_space+'" data-pallet_number="'+this.id_space+'" data-customer_name="" data-goods_nature="" data-size="'+size+'" data-position="'+position+'" data-address="" data-date_delivery="" data-hour_delivery="" style="'+size_css+'"><div style="width:100%;height:100%;display:flex;flex-direction: column;justify-content: space-between;"><div style="width:100%;height:20px;"><div class="img-space-info"></div></div><div class="space-number">'+this.id_space+'</div><div class="width100" style="height:20px;"><div class="img-space-rotate"></div><div class="img-space-trash"></div></div></div></div>')
-      
-      $('#block-spaces').append(elem[0])
+      let newSpaces = this.state.spaces
+      let newSpace = {
+        _left: 0,
+        _top: 1220,
+        address: "",
+        created_at: "",
+        customer_name: "",
+        date_delivery: "",
+        fk_id_company: "",
+        fk_id_journey: "",
+        goods_nature: "",
+        hour_delivery: "",
+        id_space: "",
+        id_space_html: uniqid('space-') /*"space-"+this.id_space_html*/,
+        pallet_number: this.state.spaces.length+1,
+        position: position,
+        size: size
+      }
 
-      var draggie = new Draggabilly( elem[0], {
-        containment: true,
-        grid: [ 5, 5 ]
-      });
-
-      $(elem).find(".img-space-info").click( (e)=>{
-        let element = $(e.target).parent().parent().parent()
-        this.setState({
-          viewSpaceForm: true,
-          id_pallet_edit: element.attr('id'),
-          pallet_number: element.attr('data-pallet_number'),
-          customer_name: element.attr('data-customer_name'),
-          goods_nature: element.attr('data-goods_nature'),
-          delivery_address: element.attr('data-address'),
-          date_delivery: element.attr('data-date_delivery'),
-          hour_delivery: element.attr('data-hour_delivery')
-        });
-      })
-      
-      $(elem).find(".img-space-trash").click( function(){
-        $(this).parent().parent().parent().remove()
+      newSpaces.push(newSpace)
+      this.setState({
+        spaces: newSpaces
       })
 
-      $(elem).find(".img-space-rotate").click( function(){
-        console.log('rotate')
-        let width = $(this).parent().parent().parent().css("width")
-        let height = $(this).parent().parent().parent().css("height")
-        console.log(width)
-        console.log(height)
-        $(this).parent().parent().parent().css("width", height) 
-        $(this).parent().parent().parent().css("height", width)
-        let pos = $(this).parent().parent().parent().attr("data-position")
-        if(pos == 'vertical'){
-          $(this).parent().parent().parent().attr("data-position", 'horizontal')
-        }else{
-          $(this).parent().parent().parent().attr("data-position", 'vertical')
-        }
-      })
-
-      this.id_space = this.id_space + 1
+      this.id_space_html = this.id_space_html + 1
+      console.log("incremented")
 
     }
 
-    setEventCollision(elem){
-      console.log(elem)
-      
-      let $this = elem
-      if(elem !== ''){
-        $this = elem
-      }
+    setEventCollision($this){
+
       $($this).attr("data-top", $($this).css("top").replace("px", ""))
       $($this).attr("data-left", $($this).css("left").replace("px", ""))
 
@@ -295,12 +330,7 @@ export default class Journey extends Component {
             if( $($this).css('left').replace("px", "") != 'auto'){
               if (boxMoveLeft < boxFixLeft + boxFixWidth  && boxMoveLeft + boxMoveWidth  > boxFixLeft &&
                   boxMoveTop < boxFixTop + boxFixHeight && boxMoveTop + boxMoveHeight > boxFixTop){
-                    // $('#'+$this.attr('id')).css("background-color", 'red')
-                    // $('#'+$(this).attr('id')).css("background-color", 'red')
                   collision = true
-              }else{
-                // $('#'+$this.attr('id')).css("background-color", 'green')
-                // $('#'+$(this).attr('id')).css("background-color", 'green')
               }
             }              
           }
@@ -316,7 +346,6 @@ export default class Journey extends Component {
             $('#'+$this.attr('id')).css("background-color", 'rgb(100 156 161)')
           }
         }
-        // collision = false
       }
       
       return collision
@@ -324,7 +353,33 @@ export default class Journey extends Component {
 
     hideSpaceForm(e){
       e.preventDefault()
-      this.setState({viewSpaceForm: false})
+      this.setState({
+        id_space: '',
+        id_space_html: '',
+        pallet_number: '',
+        customer_name: '',
+        goods_nature: '',
+        date_delivery: '',
+        hour_delivery: '',
+        address: '',
+        viewSpaceForm: false
+      })
+    }
+
+    hideTrashForm(){
+
+      this.setState({
+        id_space: '',
+        id_space_html: '',
+        pallet_number: '',
+        customer_name: '',
+        goods_nature: '',
+        date_delivery: '',
+        hour_delivery: '',
+        address: '',
+        viewTrashForm: false,
+        id_space_trash: ''
+      })
     }
 
     updateSpaceData(e){
@@ -336,49 +391,223 @@ export default class Journey extends Component {
       space.attr('data-goods_nature', this.state.goods_nature)
       space.attr('data-date_delivery', this.state.date_delivery)
       space.attr('data-hour_delivery', this.state.hour_delivery)
-      space.attr('data-address', this.state.delivery_address)
-      this.setState({viewSpaceForm: false})
+      space.attr('data-address', this.state.address)
+      space.attr('data-delivery_city', this.state.delivery_city)
+      space.attr('data-delivery_country', this.state.delivery_country)
+      space.attr('data-loading_address', this.state.loading_address)
+      space.attr('data-loading_city', this.state.loading_city)
+      space.attr('data-loading_country', this.state.loading_country)
 
       space.find(".space-number").text(this.state.pallet_number)
+
+      let newSpaces = []
+      this.state.spaces.map((sp)=>{
+
+        console.log(space.attr("id"))
+        console.log(sp.id_space_html)
+        if(space.attr("id") == sp.id_space_html){
+          sp.pallet_number = this.state.pallet_number
+          sp.customer_name = this.state.customer_name
+          sp.goods_nature = this.state.goods_nature
+          sp.date_delivery = this.state.date_delivery
+          sp.hour_delivery = this.state.hour_delivery
+          sp.address = this.state.address          
+        }
+
+        newSpaces.push(sp)
+      })
+
+      console.log(newSpaces)
+      this.setState({
+        id_space: '',
+        spaces: newSpaces,
+        pallet_number: '',
+        customer_name: '',
+        goods_nature: '',
+        date_delivery: '',
+        hour_delivery: '',
+        address: '',
+        viewSpaceForm: false
+      })
     }
 
+    toggleSpaceList(e){
+      e.preventDefault()
+      if($("#spaces-lines-table").css("display") == 'none'){
+        $("#spaces-lines-table").slideDown()
+        $("#btn-view-spaces-list").text('Masquer la liste des palettes')
+      }else{
+      $("#spaces-lines-table").slideUp()
+      $("#btn-view-spaces-list").text('Voir la liste des palettes')
+      }
+    }
+
+    deleteSpace(e){
+      e.preventDefault()
+      this.hideTrashForm()
+      let newSpaces = []
+      this.state.spaces.map((space, index)=>{
+
+        if(space.id_space_html != this.state.id_space_trash){
+          console.log(space)
+          newSpaces.push(space)
+        }
+
+      })
+
+      this.setState({spaces: newSpaces})
+
+    }
+
+    getPDF(e){
+      e.preventDefault()
+      var element = document.getElementById('app_root')
+      let my_pdf = html2pdf(element)
+      console.log(my_pdf)
+    }
     render() {
 
-      let spaces = ''
-      if(this.props.page == "edit-journey" && this.iteration == 0 && this.props.spaces.length > 0){
+      let spacesLines = ''
+      let spacesBox = ''
+      // if(this.props.page == "edit-journey" && this.props.spaces.length > 0){
+        
+        let i = 0
 
-      }
+        spacesLines = this.state.spaces.map( (space, index) => {
+
+              let date_delivery = space.date_delivery == null || space.date_delivery == undefined || space.date_delivery == '' || space.date_delivery == 'Invalid date' ? '-' : moment(space.date_delivery).format("DD/MM/YYYY")
+              let hour_delivery = space.hour_delivery == null || space.hour_delivery == '' ? '-' : space.hour_delivery
+              let customer_name = space.customer_name == null || space.customer_name == '' ? '-' : space.customer_name
+              let goods_nature = space.goods_nature == null || space.goods_nature == '' ? '-' : space.goods_nature
+              let address = space.address == null || space.address == '' ? '-' : space.address
+
+              return <tr key={index}><td>{space.pallet_number}</td><td>{customer_name}</td><td>{goods_nature}</td><td>{date_delivery}</td><td>{hour_delivery}</td><td>{address}</td></tr>
+              i++
+          } )
+
+        spacesBox = this.state.spaces.map((space, index)=>{
+
+          let style = {}
+          let width = ''
+          let height = ''
+          switch(space.size){
+            case '80-120':
+              width = '80px'
+              height = '120px'
+              if(space.position == 'horizontal'){
+                width = '120px'
+                height = '80px'
+              }
+              style = {width: width, height: height, backgroundColor: 'rgb(100, 117, 161)', top: space._top+'px', left: space._left+'px'}
+              break;
+            case '100-120':
+              width = '100px'
+              height = '120px'
+              if(space.position == 'horizontal'){
+                width = '120px'
+                height = '100px'
+              }
+              style = {width: width, height: height, backgroundColor: 'rgb(100 156 161)', top: space._top+'px', left: space._left+'px'}     
+              break;
+            default:
+              break;
+          }
+          
+          // let date_delivery = moment.unix(parseInt(space.date_delivery)).format("YYYY-MM-DD")
+          let date_delivery = space.date_delivery == null || space.date_delivery == '' || space.date_delivery == 'Invalid date' ? '-' : moment(space.date_delivery).format("YYYY-MM-DD")
+          let id = space.id_space_html
+
+          return <div draggable="true"
+                      key={index}
+                      className="draggable-space box-space"
+                      id={id}
+                      data-id_space={space.id_space} 
+                      data-pallet_number={space.pallet_number} 
+                      data-customer_name={space.customer_name} 
+                      data-goods_nature={space.goods_nature} 
+                      data-size={space.size} 
+                      data-position={space.position} 
+                      data-address={space.address} 
+                      data-delivery_city={space.delivery_city} 
+                      data-delivery_country={space.delivery_country} 
+                      data-loading_address={space.loading_address} 
+                      data-loading_city={space.loading_city} 
+                      data-loading_country={space.loading_country}
+                      data-date_delivery={space.date_delivery == null ? 0 : date_delivery}
+                      data-hour_delivery={space.hour_delivery == null ? 0 : space.hour_delivery}
+                      data-top={space._top} 
+                      data-left={space._left} 
+                      style={style}>
+                  <div style={{width:'100%', height:'100%', display:'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                    <div style={{width:'100%', height:'20px'}}>
+                      <div className="img-space-info"></div>
+                    </div>
+                    <div className="space-number">{space.pallet_number}</div>
+                    <div className="width100" style={{height: '20px'}}>
+                      <div className="img-space-rotate"></div>
+                      <div className="img-space-trash"></div>
+                    </div>
+                  </div>
+                </div>
+
+        })
+
+      // }
+
 
       let spaceForm = ''
       if(this.state.viewSpaceForm){
         spaceForm = <div className="container-space-form" onClick={(e) => {this.hideSpaceForm(e)} }>
                       <form method="POST" className="space-form" id="space-form" onClick={(e)=>{e.stopPropagation()}}>
-                        <div className="">
+                        <div>
                           <input type="hidden" className="form-control form-control-sm" id="id_space" value={this.state.id_space} name="id_space" />
                         </div>
-                        <div className="">
+                        <div>
                           <label htmlFor="pallet_number">Numéro de palette</label>
                           <input type="text" className="form-control form-control-sm" id="pallet_number" value={this.state.pallet_number} onChange={() => { this.setState({pallet_number: $("#pallet_number").val()}) }} />
                         </div>
-                        <div className="">
+                        <div>
                           <label htmlFor="customer_name">Nom du client</label>
                           <input type="text" className="form-control form-control-sm" id="customer_name" value={this.state.customer_name} onChange={() => { this.setState({customer_name: $("#customer_name").val()}) }} />
                         </div>
-                        <div className="">
+                        <div>
                           <label htmlFor="goods_nature">Nature de la marchandise</label>
                           <input type="text" className="form-control form-control-sm" id="goods_nature" value={this.state.goods_nature} onChange={() => { this.setState({goods_nature: $("#goods_nature").val()}) }} />
                         </div>
-                        <div className="">
-                          <label htmlFor="delivery_address">Date de livraison</label>
-                          <input type="date" className="form-control form-control-sm" id="date_delivery"  value={this.state.date_delivery} onChange={() => { this.setState({date_delivery: $("#date_delivery").val()}) }} />
+                        <div>
+                          <label htmlFor="date_delivery">Date de livraison</label>
+                          <input type="date" className="form-control form-control-sm" id="date_delivery"  value={moment(this.state.date_delivery).format("YYYY-MM-DD")} onChange={() => { this.setState({date_delivery: $("#date_delivery").val()}) }} />
                         </div>
-                        <div className="">
-                          <label htmlFor="delivery_address">Heure de chargement</label>
-                          <input type="time" className="form-control form-control-sm" id="hour_delivery" value={this.state.hour_delivery} onChange={() => { this.setState({hour_delivery: $("#hour_delivery").val()}); console.log($("#hour_delivery").val()); }} />
+                        <div>
+                          <label htmlFor="hour_delivery">Heure de chargement</label>
+                          <input type="time" className="form-control form-control-sm" id="hour_delivery" value={this.state.hour_delivery} onChange={() => { this.setState({hour_delivery: $("#hour_delivery").val()}); }} />
                         </div>
-                        <div className="">
+                        <div>
+                          <label htmlFor="loading_address">Adresse de chargement</label>
+                          <div style={{display: 'flex', flexDirection: 'row'}}>
+                            <input type="text" className="form-control form-control-sm" id="loading_address" placeholder="adresse"  onChange={() => { this.setState({loading_address: $("#loading_address").val()}) }}  value={this.state.loading_address} style={{flex: 2,  borderRight: 'none', borderRadius: '0px'}}/>
+                            <input type="text" className="form-control form-control-sm" id="loading_city" placeholder="Ville"  onChange={() => { this.setState({loading_city: $("#loading_city").val()}) }}  value={this.state.loading_city} style={{flex: 1,  borderLeft: 'none', borderRight: 'none', borderRadius: '0px'}}/>
+                            <input type="text" className="form-control form-control-sm" id="loading_country" placeholder="Pays"  onChange={() => { this.setState({loading_country: $("#loading_country").val()}) }}  value={this.state.loading_country} style={{flex: 1,  borderLeft: 'none', borderRadius: '0px'}}/>
+                          </div>
+                        </div>
+                        <div>
                           <label htmlFor="delivery_address">Adresse de livraison</label>
-                          <input type="text" className="form-control form-control-sm" id="delivery_address" value={this.state.delivery_address} onChange={() => { this.setState({delivery_address: $("#delivery_address").val()}) }} />
+                          <div style={{display: 'flex', flexDirection: 'row'}}>
+                            <input type="text" className="form-control form-control-sm" id="delivery_address" placeholder="adresse"  onChange={() => { this.setState({address: $("#delivery_address").val()}) }}  value={this.state.address} style={{flex: 2,  borderRight: 'none', borderRadius: '0px'}}/>
+                            <input type="text" className="form-control form-control-sm" id="delivery_city" placeholder="Ville"  onChange={() => { this.setState({delivery_city: $("#delivery_city").val()}) }}  value={this.state.delivery_city} style={{flex: 1,  borderLeft: 'none', borderRight: 'none', borderRadius: '0px'}}/>
+                            <input type="text" className="form-control form-control-sm" id="delivery_country" placeholder="Pays"  onChange={() => { this.setState({delivery_country: $("#delivery_country").val()}) }}  value={this.state.delivery_country} style={{flex: 1,  borderLeft: 'none', borderRadius: '0px'}}/>
+                          </div>
+                        </div>
+                        <div className="map-journey">
+
+                        <iframe 
+                        id="iframe-map"
+                          src="http://traffic-center.local/templatemap" 
+                          data-start={this.state.loading_address +' '+this.state.loading_city}
+                          data-end={this.state.address +' '+this.state.delivery_city}
+                          style={{width: '100%', height: '400px'}}
+                          ></iframe>
+
                         </div>
                         <div className="display-flex-center">
                           <button type="submit" onClick={(e)=>{this.updateSpaceData(e)} } className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>
@@ -387,8 +616,22 @@ export default class Journey extends Component {
                     </div>
       }
 
+      let trashForm = ''
+      if(this.state.viewTrashForm){
+        trashForm = <div className="container-trash-form" onClick={(e) => {this.hideTrashForm(e)} }>
+                      <form method="POST" className="trash-form" id="trash-form" onClick={(e)=>{e.stopPropagation()}}>
+                        <div>
+                          <label>Etes-vous sûr de vouloir supprimer cette palette ?</label>
+                        </div>
+                        <div className="display-flex-center">
+                          <button type="submit" onClick={(e)=>{this.deleteSpace(e)} } className="btn btn-danger" style={{backgroundColor: 'red'}}>Supprimer</button>
+                        </div>
+                      </form>
+                    </div>
+      }
+
         return (
-            <div className="col-12">
+            <div className="col-12" id="journey-component-container">
               <div className="row" style={{border: "3px solid black", minHeight: "130px"}}>
                 <div className="col-6" style={{border: "3px solid black"}}>
                   <div className="text-center">Palettes 80/120</div>
@@ -405,9 +648,14 @@ export default class Journey extends Component {
                           data-customer_name=""
                           data-goods_nature=""
                           data-address=""
-                          data-city=""
-                          data-zip_code=""
-                          data-country=""
+                          data-delivery_city=""
+                          data-delivery_country=""
+                          data-loading_address=""
+                          data-loading_city=""
+                          data-loading_country=""
+                          // data-city=""
+                          // data-zip_code=""
+                          // data-country=""
                           draggable="true"
                           onClick={()=>{this.createBox('b1')}}>
                         </div>
@@ -425,9 +673,14 @@ export default class Journey extends Component {
                           data-customer_name=""
                           data-goods_nature=""
                           data-address=""
-                          data-city=""
-                          data-zip_code="" 
-                          data-country=""
+                          data-delivery_city=""
+                          data-delivery_country=""
+                          data-loading_address=""
+                          data-loading_city=""
+                          data-loading_country=""
+                          // data-city=""
+                          // data-zip_code="" 
+                          // data-country=""
                           draggable="true"
                           onClick={()=>{this.createBox('b3')}}>
                         </div>
@@ -450,9 +703,14 @@ export default class Journey extends Component {
                           data-customer_name=""
                           data-goods_nature=""
                           data-address=""
-                          data-city=""
-                          data-zip_code=""
-                          data-country=""
+                          data-delivery_city=""
+                          data-delivery_country=""
+                          data-loading_address=""
+                          data-loading_city=""
+                          data-loading_country=""
+                          // data-city=""
+                          // data-zip_code=""
+                          // data-country=""
                           draggable="true"
                           onClick={()=>{this.createBox('b2')}}>
                         </div>
@@ -470,9 +728,14 @@ export default class Journey extends Component {
                           data-customer_name=""
                           data-goods_nature=""
                           data-address=""
-                          data-city=""
-                          data-zip_code=""
-                          data-country=""
+                          data-delivery_city=""
+                          data-delivery_country=""
+                          data-loading_address=""
+                          data-loading_city=""
+                          data-loading_country=""
+                          // data-city=""
+                          // data-zip_code=""
+                          // data-country=""
                           draggable="true"
                           onClick={()=>{this.createBox('b4')}}>
                         </div>
@@ -482,11 +745,13 @@ export default class Journey extends Component {
                 </div>
               </div>
               <div className="display-flex-center height100">
-                <div className="width100 display-flex-center" style={{minHeight: '100px', flexDirection: 'row'}}>
-                  <div className="d-none d-sm-block" style={{margin: '50px 10px 50px 50px'}}>
-                    <img src="http://traffic-center.local/public/img/front-truck.png" style={{transform: "rotate(180deg)"}}/>
+                <div className="width100 display-flex-center" style={{minHeight: '100px', flexDirection: 'column'}}>
+                  <div className="d-sm-block" style={{marginTop: '20px'}}>
+                    <img src="http://traffic-center.local/public/img/front-truck.png" style={{transform: "rotate(270deg)"}}/>
                   </div>
-                  <div className="block-spaces" id="block-spaces">{spaces}</div>
+                  <div className="block-spaces" id="block-spaces">
+                    {spacesBox}
+                  </div>
                 </div>
               </div>
               <button 
@@ -507,12 +772,14 @@ export default class Journey extends Component {
                       <th  scope="col">Adresse livraison</th>
                     </tr>
                   </thead>
-                  <tbody id="spaces-lines"></tbody>
+                  <tbody id="spaces-lines">{spacesLines}</tbody>
                 </table>
               </div>
               
               {spaceForm}
+              {trashForm}
 
+            <button onClick={this.getPDF.bind(this)}>GET PDF</button>
             </div>
         );
       }

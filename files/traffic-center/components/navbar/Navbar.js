@@ -103,7 +103,7 @@ export default class NavBar extends Component {
       add_journey = <NavItem
                             url={'/add-journey'}
                             class="display-flex-center navbar-item add-journey"
-                            namelink="Ajouter un trajet"
+                            namelink="Ajouter un trajetttt"
                             text=""
                             imgClassName="size50 add-journey-img"
                           />      
@@ -123,7 +123,7 @@ export default class NavBar extends Component {
             <NavItem
                             url={'/app'}
                             class="display-flex-center navbar-item list-journey"
-                            namelink="Liste des trajets"
+                            namelink="Liste des trajetssss"
                             text=""
                             imgClassName="size50 list-journey-img"
                           />

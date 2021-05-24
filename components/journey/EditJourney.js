@@ -3,6 +3,7 @@ import Journey from './Journey'
 import { Redirect } from "react-router-dom"
 import axios from 'axios'
 import $ from 'jQuery'
+// import { Preview, print } from 'react-html2pdf';
 
 export default class EditJourney extends Component {
 
@@ -34,7 +35,6 @@ export default class EditJourney extends Component {
             $(this).css('display', 'none')
           })
           $("#block-stop-over-"+(self.state.nbStopOver - 1)).find(".btn-delete-stop-over").css("display", "inline-block")
-          console.log('stop over removed')
         })
     }
 
@@ -66,13 +66,17 @@ export default class EditJourney extends Component {
         formData.append('time_departure', this.state.time_departure);
         let spaces = []
         $(".box-space").each(function(){
-          console.log($(this).parent())
           spaces.push({
             pallet_number: $(this).data('pallet_number'),
             customer_name: $(this).data('customer_name'),
             goods_nature: $(this).data('goods_nature'),
             address: $(this).data('address'),
-            date_delivery: $(this).attr('data-date_delivery'),
+            delivery_city: $(this).data('delivery_city'),
+            delivery_country: $(this).data('delivery_country'),
+            loading_address: $(this).data('loading_address'),
+            loading_city: $(this).data('loading_city'),
+            loading_country: $(this).data('loading_country'),
+            date_delivery: $(this).attr('data-date_delivery') == 'Invalid date' ? '' : $(this).attr('data-date_delivery'),
             hour_delivery: $(this).attr('data-hour_delivery'),
             _top: $(this).data('top'),
             _left: $(this).data('left'),
@@ -82,7 +86,6 @@ export default class EditJourney extends Component {
         })
         formData.append('spaces', JSON.stringify(spaces));
         formData.append('id_journey', this.id_journey);
-        console.log(spaces)
         if($(".stop-over-input").length > 0){
           let i = 0
           $(".stop-over-input").each(function(){
@@ -100,7 +103,6 @@ export default class EditJourney extends Component {
           data: formData
         })
         .then((response) => {
-          console.log(response);
           if(response.statusText == 'OK'){
             if(response.data.error == true){
               this.props.viewMessageFlash(response.data.msg, true);
@@ -157,7 +159,7 @@ export default class EditJourney extends Component {
         return (
           <div className="display-flex-center" style={{marginBottom: '100px'}}>
             <h1 className="mgtop50">Modifier un trajet</h1>
-            <div className="form-container" style={{minWidth: '70%'}}>
+            <div className="form-container" id="form-container" style={{minWidth: '70%'}}>
               <form method="POST" encType="multipart/form-data">
                 <div className="form-group">
                   <label htmlFor="select-delivery-company">Entreprise de livraison</label>
@@ -196,6 +198,12 @@ export default class EditJourney extends Component {
                 </div>
               </form>
             </div>
+
+            {/* <Preview id={'jsx-template'} >
+                  <p>adsf</p>
+              </Preview>
+              <button onClick={(e)=>{e.preventDefault();print('a', 'jsx-template')}}> print</button> */}
+
           </div>
         );
       }

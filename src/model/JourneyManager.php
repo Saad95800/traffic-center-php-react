@@ -124,17 +124,17 @@ class JourneyManager extends Model {
                     }     
                 }
             }
-            $sql = "INSERT INTO `space`(`size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`, `date_delivery`, `hour_delivery`, `_top`, `_left`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
-                    VALUES (:size, :position, :pallet_number, :customer_name, :goods_nature, :address, :date_delivery, :hour_delivery, :_top, :_left, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
-// var_dump($data['spaces']);die;
+            $sql = "INSERT INTO `space`(`size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`,`delivery_city`, `delivery_country`, `loading_address`,`loading_city`, `loading_country`, `date_delivery`, `hour_delivery`, `_top`, `_left`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
+                    VALUES (:size, :position, :pallet_number, :customer_name, :goods_nature, :address, :delivery_city, :delivery_country, :loading_address, :loading_city, :loading_country, :date_delivery, :hour_delivery, :_top, :_left, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
+
             foreach($data['spaces'] as $key => $space){
 
-                if($space['date_delivery'] == ''){
+                if($space['date_delivery'] == 'null' || $space['date_delivery'] == '' || $space['date_delivery'] == 0){
                     $date_delivery = null;
                 }else{
                     $date_delivery = strtotime($space['date_delivery'].' 01:00');
                 }
-                if($space['hour_delivery'] == ''){
+                if($space['hour_delivery'] == 'null' || $space['hour_delivery'] == '' || $space['hour_delivery'] == 0){
                     $hour_delivery = null;
                 }else{
                     $hour_delivery = $space['hour_delivery'];
@@ -146,6 +146,11 @@ class JourneyManager extends Model {
                 $req->bindValue(':customer_name', htmlentities($space['customer_name']));
                 $req->bindValue(':goods_nature', htmlentities($space['goods_nature']));
                 $req->bindValue(':address', htmlentities($space['address']));
+                $req->bindValue(':delivery_city', htmlentities($space['delivery_city']));
+                $req->bindValue(':delivery_country', htmlentities($space['delivery_country']));
+                $req->bindValue(':loading_address', htmlentities($space['loading_address']));
+                $req->bindValue(':loading_city', htmlentities($space['loading_city']));
+                $req->bindValue(':loading_country', htmlentities($space['loading_country']));
                 $req->bindValue(':date_delivery', $date_delivery );
                 $req->bindValue(':hour_delivery', $hour_delivery );
                 $req->bindValue(':_top', htmlentities($space['_top']));
@@ -222,23 +227,17 @@ class JourneyManager extends Model {
 
             $id_journey = $data['id_journey'];
 
-            $sql = "INSERT INTO `space`(`size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`, `date_delivery`, `hour_delivery`, `_top`, `_left`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
-                    VALUES (:size, :position, :pallet_number, :customer_name, :goods_nature, :address, :date_delivery, :hour_delivery, :_top, :_left, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
+            $sql = "INSERT INTO `space`(`size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`,`delivery_city`, `delivery_country`, `loading_address`,`loading_city`, `loading_country`, `date_delivery`, `hour_delivery`, `_top`, `_left`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
+                    VALUES (:size, :position, :pallet_number, :customer_name, :goods_nature, :address, :delivery_city, :delivery_country, :loading_address, :loading_city, :loading_country, :date_delivery, :hour_delivery, :_top, :_left, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
 // var_dump($data['spaces']);die;
             foreach($data['spaces'] as $key => $space){
-                
-                if($space['date_delivery'] == ''){
+
+                if($space['date_delivery'] == 'null' || $space['date_delivery'] == '' || $space['date_delivery'] == '-' || $space['date_delivery'] == '0'){
                     $date_delivery = null;
                 }else{
                     $date_delivery = strtotime($space['date_delivery'].' 01:00');
-                    // echo '<br>---------------------<br>';
-                    // var_dump($space['pallet_number']);
-                    // var_dump($space['date_delivery']);
-                    // var_dump($space['date_delivery'].' 01:00');
-                    // var_dump($date_delivery );
-                    // echo '<br>---------------------<br>';
                 }
-                if($space['hour_delivery'] == ''){
+                if($space['hour_delivery'] == 'null' || $space['hour_delivery'] == '' || $space['hour_delivery'] == '-' || $space['hour_delivery'] == '0'){
                     $hour_delivery = null;
                 }else{
                     $hour_delivery = $space['hour_delivery'];
@@ -250,6 +249,11 @@ class JourneyManager extends Model {
                 $req->bindValue(':customer_name', htmlentities($space['customer_name']));
                 $req->bindValue(':goods_nature', htmlentities($space['goods_nature']));
                 $req->bindValue(':address', htmlentities($space['address']));
+                $req->bindValue(':delivery_city', htmlentities($space['delivery_city']));
+                $req->bindValue(':delivery_country', htmlentities($space['delivery_country']));
+                $req->bindValue(':loading_address', htmlentities($space['loading_address']));
+                $req->bindValue(':loading_city', htmlentities($space['loading_city']));
+                $req->bindValue(':loading_country', htmlentities($space['loading_country']));
                 $req->bindValue(':date_delivery', $date_delivery );
                 $req->bindValue(':hour_delivery', $hour_delivery );
                 $req->bindValue(':_top', htmlentities($space['_top']));
