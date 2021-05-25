@@ -4,7 +4,7 @@ import axios from 'axios'
 import Draggabilly from 'draggabilly'
 import moment from 'moment'
 import uniqid from 'uniqid'
-import html2pdf from 'html2pdf.js'
+import { jsPDF } from "jspdf";
 
 export default class Journey extends Component {
 
@@ -37,6 +37,95 @@ export default class Journey extends Component {
 
     }
 
+    getPDF(e){
+      
+      e.preventDefault()
+      const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "landscape" });
+
+      doc.setFont("times", "normal");
+      doc.text("Entreprise de livraison: "+$('#select-delivery-company').text(), 20, 20);
+
+      doc.setFont("times", "normal");
+      doc.text("Ville de départ: "+this.props.stateParent.departure, 20, 30);
+      
+      let stopovers_str = ''
+      if($(".stop-over-input").length > 0){
+        $(".stop-over-input").each(function(){
+          stopovers_str+= $(this).val()+', '
+        })
+        stopovers_str = stopovers_str.substring(0, stopovers_str.length - 2);        
+      }else{
+        stopovers_str = '-'
+      }
+      doc.setFont("times", "normal");
+      doc.text("Escales: "+stopovers_str, 20, 40);
+
+      doc.setFont("times", "normal");
+      doc.text("Ville d'arrivée: "+this.props.stateParent.arrival, 20, 50);
+      
+      doc.setFont("times", "normal");
+      doc.text("Date de départ: "+this.props.stateParent.date_departure, 20, 60);
+      
+      doc.setFont("times", "normal");
+      doc.text("Heure de départ: "+this.props.stateParent.time_departure, 20, 70);
+      
+      doc.setFont("times", "normal");
+      doc.text("Date d'arrivée: "+this.props.stateParent.date_arrival, 20, 80);
+
+      var generateData = () => {
+
+        var result = [];
+        var data = {};
+
+        for (var i = 0; i < this.state.spaces.length; i += 1) {
+          console.log(this.state.spaces[i])
+          let space = this.state.spaces[i]
+          data = {
+            Numero: (space.pallet_number == null || space.pallet_number == '')? '-' : space.pallet_number,
+            client: (space.customer_name == null || space.customer_name == '')? '-' : space.customer_name,
+            Nature: (space.goods_nature == null || space.goods_nature == '')? '-' : space.goods_nature,
+            Date_livraison: (space.date_delivery == null || space.date_delivery == "Invalid date")? '-' :moment(space.date_delivery).format("DD/MM/YYYY"),
+            Heure_chargement: (space.hour_delivery == null)? '-' : space.hour_delivery,
+            Adresse_chargement: space.loading_address +' '+ space.loading_city,
+            Adresse_livraison: space.address +' '+ space.delivery_city
+          }
+          result.push(Object.assign({}, data));
+        }
+
+        return result;
+      };
+      
+      var createHeaders = function(keys) {
+        var result = [];
+        for (var i = 0; i < keys.length; i += 1) {
+          result.push({
+            id: keys[i],
+            name: keys[i],
+            prompt: keys[i],
+            width: 65,
+            align: "center",
+            padding: 0
+          });
+        }
+        return result;
+      }
+      
+      var headers = createHeaders([
+        "Numero",
+        "client",
+        "Nature",
+        "Date_livraison",
+        "Heure_chargement",
+        "Adresse_chargement",
+        "Adresse_livraison"
+      ]);
+
+      doc.table(10, 100, generateData(), headers, { autoSize: true });
+      doc.save("a4.pdf");
+      
+      console.log(this.props.stateParent)
+      console.log(this.props.stateParent.departure)
+    }
     componentDidMount(){
 
       let self = this
@@ -282,6 +371,11 @@ export default class Journey extends Component {
         _left: 0,
         _top: 1220,
         address: "",
+        delivery_city: "",
+        delivery_country: "",
+        loading_address: "",
+        loading_city: "",
+        loading_country: "",
         created_at: "",
         customer_name: "",
         date_delivery: "",
@@ -459,12 +553,6 @@ export default class Journey extends Component {
 
     }
 
-    getPDF(e){
-      e.preventDefault()
-      var element = document.getElementById('app_root')
-      let my_pdf = html2pdf(element)
-      console.log(my_pdf)
-    }
     render() {
 
       let spacesLines = ''
@@ -779,7 +867,7 @@ export default class Journey extends Component {
               {spaceForm}
               {trashForm}
 
-            <button onClick={this.getPDF.bind(this)}>GET PDF</button>
+              <button onClick={this.getPDF.bind(this)}>Télécharger</button>
             </div>
         );
       }

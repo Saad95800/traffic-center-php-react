@@ -229,7 +229,7 @@ class JourneyManager extends Model {
 
             $sql = "INSERT INTO `space`(`size`, `position`, `pallet_number`, `customer_name`, `goods_nature`, `address`,`delivery_city`, `delivery_country`, `loading_address`,`loading_city`, `loading_country`, `date_delivery`, `hour_delivery`, `_top`, `_left`, `created_at`, `updated_at`, `fk_id_journey`, `fk_id_company`) 
                     VALUES (:size, :position, :pallet_number, :customer_name, :goods_nature, :address, :delivery_city, :delivery_country, :loading_address, :loading_city, :loading_country, :date_delivery, :hour_delivery, :_top, :_left, :created_at, :updated_at, :fk_id_journey, :fk_id_company)";
-// var_dump($data['spaces']);die;
+
             foreach($data['spaces'] as $key => $space){
 
                 if($space['date_delivery'] == 'null' || $space['date_delivery'] == '' || $space['date_delivery'] == '-' || $space['date_delivery'] == '0'){

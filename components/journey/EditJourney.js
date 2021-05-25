@@ -191,7 +191,7 @@ export default class EditJourney extends Component {
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
-                  <Journey setCollision={this.setCollision.bind(this)} spaces={this.state.spaces} page="edit-journey" displayJourneyData={this.displayJourneyData.bind(this)}/*updateSpaces={this.updateSpaces.bind(this)}*/ spaces={this.state.spaces} viewMessageFlash={this.props.viewMessageFlash}/>
+                  <Journey setCollision={this.setCollision.bind(this)} stateParent={this.state} spaces={this.state.spaces} page="edit-journey" displayJourneyData={this.displayJourneyData.bind(this)}/*updateSpaces={this.updateSpaces.bind(this)}*/ spaces={this.state.spaces} viewMessageFlash={this.props.viewMessageFlash}/>
                 </div>
                 <div className="display-flex-center">
                   <button type="submit" onClick={this.updateJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>

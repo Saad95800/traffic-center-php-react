@@ -18,6 +18,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
         <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-map.js?key=5pvztNnJuSsDdmCnRywYOWKDPKmx4hll"></script>
         <script src="https://www.mapquestapi.com/sdk/leaflet/v2.2/mq-routing.js?key=5pvztNnJuSsDdmCnRywYOWKDPKmx4hll"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
         <script>
 // https://www.mapquestapi.com/geocoding/v1/address?key=KEY&inFormat=json&outFormat=json&json={"location":{"street":"9 rue louis de bonnefoy perpignan"},"options":{"thumbMaps":true}}
             // default map layer

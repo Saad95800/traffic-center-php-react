@@ -313,7 +313,7 @@ a:hover{
     padding: 10px 20px 10px 20px;
     background-color: #fff;
     border: 5px solid #d0d0d0;
-    height: 550px;
+    height: 95%;
     overflow: scroll;
 }
 .space-dropped:hover{
