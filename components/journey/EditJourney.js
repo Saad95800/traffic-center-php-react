@@ -18,6 +18,8 @@ export default class EditJourney extends Component {
         date_arrival: '',
         time_departure: '',
         date_arrival: '',
+        truck_registration: '',
+        tractor_registration: '',
         spaces: [],
         nbStopOver: 0,
         collision: false
@@ -64,6 +66,8 @@ export default class EditJourney extends Component {
         formData.append('date_departure', this.state.date_departure);
         formData.append('date_arrival', this.state.date_arrival);
         formData.append('time_departure', this.state.time_departure);
+        formData.append('truck_registration', this.state.truck_registration);
+        formData.append('tractor_registration', this.state.tractor_registration);
         let spaces = []
         $(".box-space").each(function(){
           spaces.push({
@@ -133,6 +137,8 @@ export default class EditJourney extends Component {
         arrival: data.arrival,
         date_departure: data.date_departure,
         date_arrival: data.date_arrival,
+        truck_registration: data.truck_registration,
+        tractor_registration: data.tractor_registration,
         time_departure: data.time_departure,
         spaces: data.spaces,
       })
@@ -188,6 +194,14 @@ export default class EditJourney extends Component {
                 <div className="form-group" id="container-picky-date-time">
                   <label htmlFor="hour-departure">Date d'arrivée</label>
                   <input type="date" className="form-control form-control-sm" id="date-arrival" value={this.state.date_arrival} onChange={() => {this.setState({date_arrival: document.querySelector('#date-arrival').value})}} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="truck_registration">Immatriculation du camion</label>
+                  <input type="text" className="form-control form-control-sm" id="truck_registration" value={this.state.truck_registration} onChange={() => {this.setState({truck_registration: document.querySelector('#truck_registration').value})}} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="tractor_registration">Immatriculation du tracteur</label>
+                  <input type="text" className="form-control form-control-sm" id="tractor_registration" value={this.state.tractor_registration} onChange={() => {this.setState({tractor_registration: document.querySelector('#tractor_registration').value})}} />
                 </div>
                 <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>

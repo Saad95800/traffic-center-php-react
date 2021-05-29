@@ -1,20 +1,43 @@
+.container-app{
+    color: black;
+    font-weight: 600;
+}
+.container-app input{
+    height: 25px;
+}
+.container-app select{
+    height: 25px;
+    padding: 2px;
+}
+.container-app label{
+    margin-bottom: 0px !important;
+}
 .navbar-app{
     position: fixed;
     top: 0px;
     left: 0px;
-    width: 120px;
+    width: 40px;
     height: 100%;
-    background-color: #1c2d79;
+    background-color: rgb(94 102 122);
     transition: left 0.5s;
+}
+.navbar-app-top{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 40px;
+    background-color: rgb(255 252 246);
+    border-bottom: 1px solid #bababa;
 }
 body{
     background-color: #f9f9ff;
 }
 .navbar-item, .logo-item{
     width: 100%;
-    height: 110px;
+    height: 40px;
     cursor: pointer;
-    padding: 10px;
+    padding: 4px;
 }
 .navbar-item:hover{
     background-color: #384ca5;
@@ -26,15 +49,20 @@ body{
     align-items: center;
 }
 .logo-img{
-    color: #fff;
+    color: #000;
     font-style: oblique;
-    font-size: 20px;
+    font-size: 11px;
     font-weight: bold;
-    width: 100px !important;
-    height: 100px !important;
-    /* border: 1px solid #fff; */
-    /* border-radius: 60px; */
-    text-align: center;
+    width: 70px !important;
+    height: 50px !important;
+}
+.btn-pagination{
+    color: white;
+    font-size: 27px;
+    font-weight: bold;
+    background-color: rgb(94 102 122);
+    width: 40px;
+    height: 46px;
 }
 a:hover{
     text-decoration: none;
@@ -45,6 +73,9 @@ a:hover{
 .add-journey-img{
     background:url(./img/truck-plus.png) 0px 0px no-repeat;
 }
+.list-old-journey-img{
+    background:url(./img/old-truck2.png) 0px 0px no-repeat;
+}
 .logout-img{
     background:url(./img/logout.png) 0px 0px no-repeat;
 }
@@ -52,8 +83,13 @@ a:hover{
     width: 50px;
     height: 50px;
 }
+.size30{
+    width: 30px;
+    height: 30px;
+}
 .vitrine-item{
-    margin-bottom: 50px;
+    width: 50px;
+    float: right;
 }
 .logout{
     position: absolute;
@@ -305,16 +341,25 @@ a:hover{
     top: 0;
     left: 0;
 }
-.space-form,.trash-form{
+.space-form{
     width: 50%;
     min-width: 300px;
     margin: auto;
-    margin-top: 1%;
+    margin-top: 5%;
     padding: 10px 20px 10px 20px;
     background-color: #fff;
     border: 5px solid #d0d0d0;
-    height: 95%;
+    height: 93%;
     overflow: scroll;
+}
+.trash-form{
+    width: 50%;
+    min-width: 300px;
+    margin: auto;
+    margin-top: 5%;
+    padding: 10px 20px 10px 20px;
+    background-color: #fff;
+    border: 5px solid #d0d0d0;
 }
 .space-dropped:hover{
     opacity: 0.8;
@@ -335,6 +380,70 @@ a:hover{
     color: #aaa;
     margin-top: 8px;
     margin-left: 8px;
+}
+.navbar-item:hover .a1{
+    
+        display:flex;
+    
+}
+.a1{
+    margin-left: 49px;
+    margin-top: -28px;
+    position: fixed;
+    display: none;
+    flex-direction: row;
+    opacity: 0.7;
+}
+.a2{
+    border:1px solid #b7b7b7;
+    background-color:rgb(150 157 175);
+    width: 21.21px;
+    height: 21.21px;
+    display: inline-block;
+    transform: rotate(45deg);
+    margin-top: 4px;
+    position: absolute;
+}
+.a3{
+    width: 114px;
+    height:30px;
+    background-color:rgb(150 157 175);
+    color:#fff;
+    border: 1px solid #b7b7b7;
+    font-size: 11px;
+    text-align: center;
+    padding: 7px 0px;
+    display: inline-block;
+    margin-left: 11px;
+    position: absolute;
+    border-left: none;
+}
+.nav-item-company{
+    width: 150px;
+    height: 40px;
+    float: right;
+    font-size: 13px;
+    text-align: center;
+    padding: 3px 0px;
+    cursor: pointer;
+}
+.arrow-menu-top{
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 12px solid #ececec;
+    margin-left: 63px;
+    margin-top: -12px;
+}
+.menu-top{
+    background-color: #ececec;
+    border: 1px solid #e4e4e4;
+    margin-top: 30px;
+    display:none;
+}
+.nav-item-company:active .menu-top{
+    display:block;
 }
 @media screen and (max-width: 450px) {
     .nav-mobile{

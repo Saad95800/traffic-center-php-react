@@ -24,13 +24,19 @@ export default class JourneyList extends Component {
 
       this.journeys = []
       this.offset = 0
+      if(this.props.old == 'true'){
+        this.props.setColorNavItem('old-journey-list')
+      }else{
+        this.props.setColorNavItem('journey-list')
+      }
     }
 
     componentDidMount(){
+      console.log(this.props.old)
 
       this.props.hideMenu()
-      
-      let data = {}
+      let formData = new FormData();
+      formData.append('old', this.props.old);
       axios({
         method: 'POST',
         url: '/get-journey-list',
@@ -38,7 +44,7 @@ export default class JourneyList extends Component {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: data
+        data: formData
       })
       .then((response) => {
 
@@ -79,6 +85,7 @@ export default class JourneyList extends Component {
 
       let formData = new FormData();
       formData.append('offset', this.offset);
+      formData.append('old', this.props.old);
 
       axios({
         method: 'POST',
@@ -241,8 +248,12 @@ export default class JourneyList extends Component {
 
               }
 
-              return <Link to={link}>
-                    <div className="row line-journey">
+              let style = {}
+              if(this.props.old == 'true'){
+                style = {backgroundColor: 'rgb(216 228 229)'}
+              }
+              return <Link to={link} key={index}>
+                    <div className="row line-journey" style={style}>
                       <div className="col-md-4">
                         <div className="height33p row">
                           <div className="col-2 logo-green-point"></div>
@@ -285,12 +296,16 @@ export default class JourneyList extends Component {
 
           let nextButton = ''
           if(this.state.lastPage == false){
-            nextButton = <div><button onClick={() => { this.changePage('next') }}>{'>'}</button></div>
+            nextButton = <div><button className="btn-pagination"onClick={() => { this.changePage('next') }}>{'>'}</button></div>
           }
 
+          let title = "Trajets en cours"
+          if(this.props.old == 'true'){
+            title = "Trajets archivées"
+          }
         return (
           <div className="container-list-journey-page display-flex-center">
-                <h1 className="mgtop20">Liste des trajets</h1>
+                <h1 className="mgtop50">{title}</h1>
                 <div className="form-group has-search" style={{width: '96%'}}>
                   <span className="fa fa-search form-control-feedback"></span>
                   <input type="text" className="form-control form-control-sm" id="search-bar" style={{marginBottom: '10px'}} placeholder="Recherche" value={this.state.keywordSearch} /*onKeyPress={this.filter.bind(this)}*/ onChange={()=>{
@@ -329,7 +344,7 @@ export default class JourneyList extends Component {
                     </div>
                 </div>
                 <div className="display-flex-center" style={{flexDirection: 'row'}}>
-                    <div><button onClick={() => { this.changePage('previous') }}>{'<'}</button></div>
+                    <div><button className="btn-pagination" onClick={() => { this.changePage('previous') }}>{'<'}</button></div>
                     {nextButton}
                 </div>
                 <div>{this.offset+1}</div>

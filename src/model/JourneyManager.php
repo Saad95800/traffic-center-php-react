@@ -5,16 +5,27 @@ use lib\Model;
 
 class JourneyManager extends Model {
 
-    public function getJourneyList($offset){
-        
+    public function getJourneyList($offset, $old = 'false'){
+        // var_dump($timestamp = strtotime('today midnight'));
+        // die;
+        $sign = '>';
+        // var_dump($old);
+        // var_dump($offset);
+        // die;
+        if($old == 'true'){
+            $sign = '<';
+        }
 		$sql = "SELECT *
                 FROM journey as a
                 INNER JOIN company as b
                 ON b.id_company = a.fk_id_company
-                ORDER BY a.created_at DESC LIMIT 15 OFFSET ".($offset*15);				
+                WHERE date_arrival ".$sign." :today_midnight
+                ORDER BY a.created_at DESC
+                LIMIT 15 OFFSET ".($offset*15);				
 				
             // var_dump($sql);
 		$req = $this->dbh->prepare($sql);
+        $req->bindValue(':today_midnight', strtotime('today midnight'));
         $req->execute();
         $result = $req->fetchAll(\PDO::FETCH_OBJ);
 
@@ -90,14 +101,16 @@ class JourneyManager extends Model {
 
             $this->dbh->beginTransaction();
 
-            $sql = "INSERT INTO `journey`(`departure`, `arrival`, `date_departure`,`date_arrival`, `created_at`, `updated_at`, `fk_id_company`) 
-                    VALUES (:departure, :arrival, :date_departure, :date_arrival, :created_at, :updated_at, :fk_id_company)";
+            $sql = "INSERT INTO `journey`(`departure`, `arrival`, `date_departure`,`date_arrival`,`truck_registration`, `tractor_registration`, `created_at`, `updated_at`, `fk_id_company`) 
+                    VALUES (:departure, :arrival, :date_departure, :date_arrival, :truck_registration,:tractor_registration, :created_at, :updated_at, :fk_id_company)";
 
             $req = $this->dbh->prepare($sql);
             $req->bindValue(':departure', $data['departure']);
             $req->bindValue(':arrival', $data['arrival']);
             $req->bindValue(':date_departure', strtotime($_POST['date_departure'].''. $_POST['time_departure'].':00'));
             $req->bindValue(':date_arrival', strtotime($_POST['date_arrival'].'01:00'));
+            $req->bindValue(':truck_registration', $data['truck_registration']);
+            $req->bindValue(':tractor_registration', $data['tractor_registration']);
             $req->bindValue(':created_at', time());
             $req->bindValue(':updated_at', time());
             $req->bindValue(':fk_id_company', $data['delivery_company']);
@@ -140,21 +153,21 @@ class JourneyManager extends Model {
                     $hour_delivery = $space['hour_delivery'];
                 }
                 $req = $this->dbh->prepare($sql);
-                $req->bindValue(':size', htmlentities($space['size']));
-                $req->bindValue(':position', htmlentities($space['position']));
-                $req->bindValue(':pallet_number', htmlentities($space['pallet_number']));
-                $req->bindValue(':customer_name', htmlentities($space['customer_name']));
-                $req->bindValue(':goods_nature', htmlentities($space['goods_nature']));
-                $req->bindValue(':address', htmlentities($space['address']));
-                $req->bindValue(':delivery_city', htmlentities($space['delivery_city']));
-                $req->bindValue(':delivery_country', htmlentities($space['delivery_country']));
-                $req->bindValue(':loading_address', htmlentities($space['loading_address']));
-                $req->bindValue(':loading_city', htmlentities($space['loading_city']));
-                $req->bindValue(':loading_country', htmlentities($space['loading_country']));
+                $req->bindValue(':size', htmlspecialchars_decode($space['size']));
+                $req->bindValue(':position', htmlspecialchars_decode($space['position']));
+                $req->bindValue(':pallet_number', htmlspecialchars_decode($space['pallet_number']));
+                $req->bindValue(':customer_name', htmlspecialchars_decode($space['customer_name']));
+                $req->bindValue(':goods_nature', htmlspecialchars_decode($space['goods_nature']));
+                $req->bindValue(':address', htmlspecialchars_decode($space['address']));
+                $req->bindValue(':delivery_city', htmlspecialchars_decode($space['delivery_city']));
+                $req->bindValue(':delivery_country', htmlspecialchars_decode($space['delivery_country']));
+                $req->bindValue(':loading_address', htmlspecialchars_decode($space['loading_address']));
+                $req->bindValue(':loading_city', htmlspecialchars_decode($space['loading_city']));
+                $req->bindValue(':loading_country', htmlspecialchars_decode($space['loading_country']));
                 $req->bindValue(':date_delivery', $date_delivery );
                 $req->bindValue(':hour_delivery', $hour_delivery );
-                $req->bindValue(':_top', htmlentities($space['_top']));
-                $req->bindValue(':_left', htmlentities($space['_left']));
+                $req->bindValue(':_top', htmlspecialchars_decode($space['_top']));
+                $req->bindValue(':_left', htmlspecialchars_decode($space['_left']));
                 $req->bindValue(':created_at', time());
                 $req->bindValue(':updated_at', time());
                 $req->bindValue(':fk_id_journey', $id_journey);
@@ -207,6 +220,8 @@ class JourneyManager extends Model {
                          `arrival`=:arrival,
                          `date_departure`=:date_departure,
                          `date_arrival`=:date_arrival,
+                         `truck_registration`=:truck_registration,
+                         `tractor_registration`=:tractor_registration,
                          `updated_at`=:updated_at,
                          `fk_id_company`=:fk_id_company
                           WHERE id_journey = :id_journey";
@@ -216,6 +231,8 @@ class JourneyManager extends Model {
             $req->bindValue(':arrival', $data['arrival']);
             $req->bindValue(':date_departure', strtotime($_POST['date_departure'].''. $_POST['time_departure'].':00'));
             $req->bindValue(':date_arrival', strtotime($_POST['date_arrival'].'01:00:00'));
+            $req->bindValue(':truck_registration', $data['truck_registration']);
+            $req->bindValue(':tractor_registration', $data['tractor_registration']);
             $req->bindValue(':updated_at', time());
             $req->bindValue(':fk_id_company', $data['delivery_company']);
             $req->bindValue(':id_journey', $data['id_journey']);
@@ -243,21 +260,21 @@ class JourneyManager extends Model {
                     $hour_delivery = $space['hour_delivery'];
                 }
                 $req = $this->dbh->prepare($sql);
-                $req->bindValue(':size', htmlentities($space['size']));
-                $req->bindValue(':position', htmlentities($space['position']));
-                $req->bindValue(':pallet_number', htmlentities($space['pallet_number']));
-                $req->bindValue(':customer_name', htmlentities($space['customer_name']));
-                $req->bindValue(':goods_nature', htmlentities($space['goods_nature']));
-                $req->bindValue(':address', htmlentities($space['address']));
-                $req->bindValue(':delivery_city', htmlentities($space['delivery_city']));
-                $req->bindValue(':delivery_country', htmlentities($space['delivery_country']));
-                $req->bindValue(':loading_address', htmlentities($space['loading_address']));
-                $req->bindValue(':loading_city', htmlentities($space['loading_city']));
-                $req->bindValue(':loading_country', htmlentities($space['loading_country']));
+                $req->bindValue(':size', htmlspecialchars_decode($space['size']));
+                $req->bindValue(':position', htmlspecialchars_decode($space['position']));
+                $req->bindValue(':pallet_number', htmlspecialchars_decode($space['pallet_number']));
+                $req->bindValue(':customer_name', htmlspecialchars_decode($space['customer_name']));
+                $req->bindValue(':goods_nature', htmlspecialchars_decode($space['goods_nature']));
+                $req->bindValue(':address', htmlspecialchars_decode($space['address']));
+                $req->bindValue(':delivery_city', htmlspecialchars_decode($space['delivery_city']));
+                $req->bindValue(':delivery_country', htmlspecialchars_decode($space['delivery_country']));
+                $req->bindValue(':loading_address', htmlspecialchars_decode($space['loading_address']));
+                $req->bindValue(':loading_city', htmlspecialchars_decode($space['loading_city']));
+                $req->bindValue(':loading_country', htmlspecialchars_decode($space['loading_country']));
                 $req->bindValue(':date_delivery', $date_delivery );
                 $req->bindValue(':hour_delivery', $hour_delivery );
-                $req->bindValue(':_top', htmlentities($space['_top']));
-                $req->bindValue(':_left', htmlentities($space['_left']));
+                $req->bindValue(':_top', htmlspecialchars_decode($space['_top']));
+                $req->bindValue(':_left', htmlspecialchars_decode($space['_left']));
                 $req->bindValue(':created_at', time());
                 $req->bindValue(':updated_at', time());
                 $req->bindValue(':fk_id_journey', $id_journey);

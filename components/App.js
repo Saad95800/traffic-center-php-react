@@ -31,7 +31,8 @@ export default class App extends Component {
     super(props);
     this.state = {
       displayMessageFlash: 'none',
-      menuHidden: false
+      menuHidden: false,
+      navItemActive: 'list-journey'
     }
   }
 
@@ -57,6 +58,11 @@ export default class App extends Component {
   hideMenu(){
     console.log('click hide menu')
     this.setState({menuHidden: true})
+  }
+
+  setColorNavItem(navItem){
+    console.log(navItem)
+    this.setState({navItemActive: navItem})
   }
 
   render() {
@@ -85,17 +91,27 @@ export default class App extends Component {
                           <Route 
                             path="/app"
                             data={data}
-                            render={(props) => { return <JourneyList {...props} hideMenu={() => {this.hideMenu()}}/>}} 
+                            render={(props) => { return <JourneyList {...props} setColorNavItem={this.setColorNavItem.bind(this)} old="false" hideMenu={() => {this.hideMenu()}}/>}} 
                           />
-                          <Route 
+                           {/* <Route 
+                            path="/old-journey_list"
+                            data={data}
+                            render={(props) => { return <Toto {...props}/>}} 
+                          /> */}
+                          <Route
                             path="/add-journey"
                             data={data}
-                            render={(props) => { return <AddJourney {...props} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
+                            render={(props) => { return <AddJourney {...props} setColorNavItem={this.setColorNavItem.bind(this)} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
+                          />
+                          <Route 
+                            path="/old-journey-list"
+                            data={data}
+                            render={(props) => { return <JourneyList {...props} setColorNavItem={this.setColorNavItem.bind(this)} old="true" hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
                           />
                           <Route 
                             path="/journey/edit/:id_journey"
                             data={data}
-                            render={(props) => { return <EditJourney {...props} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
+                            render={(props) => { return <EditJourney {...props} setColorNavItem={this.setColorNavItem.bind(this)} hideMenu={() => {this.hideMenu()}} viewMessageFlash={this.viewMessageFlash.bind(this)} hideMessageFlash={this.hideMessageFlash.bind(this)} />}} 
                           />
                           {/* <Route 
                             path="/logout"
@@ -105,7 +121,7 @@ export default class App extends Component {
                   {/* </AnimatedSwitch> */}
                 </div>
                 <Route 
-                  render={ (props) => { return <NavBar {...props} menuHidden={this.state.menuHidden}/>} }
+                  render={ (props) => { return <NavBar navItemActive={this.state.navItemActive} {...props} menuHidden={this.state.menuHidden}/>} }
                 />
             </div>
       </BrowserRouter>

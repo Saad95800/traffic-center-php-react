@@ -54,7 +54,7 @@
                         var marker;
 
                         custom_icon = L.icon({
-                            iconUrl: 'http://traffic-center.local/public/img/red.png',
+                            iconUrl: '<?php echo URLROOT; ?>/public/img/red.png',
                             iconSize: [20, 29],
                             iconAnchor: [10, 29],
                             popupAnchor: [0, -29]
@@ -70,7 +70,7 @@
                         var marker;
 
                         custom_icon = L.icon({
-                            iconUrl: 'http://traffic-center.local/public/img/blue.png',
+                            iconUrl: '<?php echo URLROOT; ?>/public/img/blue.png',
                             iconSize: [20, 29],
                             iconAnchor: [10, 29],
                             popupAnchor: [0, -29]

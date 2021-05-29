@@ -15,12 +15,15 @@ export default class AddJourney extends Component {
         arrival: '',
         date_departure: '',
         date_arrival: '',
+        truck_registration: '',
+        tractor_registration: '',
         time_departure: '',
         spaces: [],
         redirect: null,
         nbStopOver: 0,
         collision: false
       }
+      this.props.setColorNavItem('add-journey')
     }
 
     componentDidMount(){
@@ -59,6 +62,8 @@ export default class AddJourney extends Component {
       formData.append('departure', this.state.departure);
       formData.append('arrival', this.state.arrival);
       formData.append('date_departure', this.state.date_departure);
+      formData.append('truck_registration', this.state.truck_registration);
+      formData.append('tractor_registration', this.state.tractor_registration);
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
       let spaces = []
@@ -153,7 +158,7 @@ export default class AddJourney extends Component {
                 <div className="form-group">
                   <label htmlFor="select-delivery-company">Entreprise de livraison</label>
                   <select className="form-control" id="select-delivery-company" onChange={() => {this.setState({delivery_company: document.querySelector('#select-delivery-company').value})}} >
-                    <option id="1">SDY Transport</option>
+                    <option id="1">Transport Milan</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -179,8 +184,16 @@ export default class AddJourney extends Component {
                   <input type="date" className="form-control" id="date-arrival" onChange={() => {this.setState({date_arrival: document.querySelector('#date-arrival').value})}} />
                 </div>
                 <div className="form-group">
+                  <label htmlFor="truck_registration">Immatriculation du camion</label>
+                  <input type="text" className="form-control form-control-sm" id="truck_registration" value={this.state.truck_registration} onChange={() => {this.setState({truck_registration: document.querySelector('#truck_registration').value})}} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="tractor_registration">Immatriculation du tracteur</label>
+                  <input type="text" className="form-control form-control-sm" id="tractor_registration" value={this.state.tractor_registration} onChange={() => {this.setState({tractor_registration: document.querySelector('#tractor_registration').value})}} />
+                </div>
+                <div className="form-group">
                   <label htmlFor="avalaible_places">Emplacements disponibles du camion</label>
-                  <Journey setCollision={this.setCollision.bind(this)} spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}  viewMessageFlash={this.viewMessageFlash.bind(this)}/>
+                  <Journey setCollision={this.setCollision.bind(this)} stateParent={this.state} spaces={this.state.spaces} page="add-journey" updateSpaces={this.updateSpaces.bind(this)}  viewMessageFlash={this.viewMessageFlash.bind(this)}/>
                 </div>
                 <div className="display-flex-center">
                   <button type="submit" onClick={this.saveJourney.bind(this)} className="btn btn-primary" style={{backgroundColor: '#6475a1'}}>Enregistrer</button>

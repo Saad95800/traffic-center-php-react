@@ -16,7 +16,8 @@ export default class NavBar extends Component {
     }
     this.state = {
       menuHidden: hidden,
-      companyName: ''
+      companyName: '',
+      displayMenuTop: 'none'
     }
     
   }
@@ -93,6 +94,15 @@ export default class NavBar extends Component {
 
   }
 
+  viewMenuTop(e){
+    e.preventDefault()
+    if(this.state.displayMenuTop == 'block'){
+      this.setState({displayMenuTop: 'none'})
+    }else{
+      this.setState({displayMenuTop: 'block'})
+    }
+  }
+
   render() {
 
     let cssNavbar = '-120px';
@@ -100,15 +110,29 @@ export default class NavBar extends Component {
       cssNavbar = '0px';
     }
     let add_journey = '';
+    let old_journey = '';
 
     if(localStorage.getItem('id_company') == 1){
       add_journey = <NavItem
                             url={'/add-journey'}
                             class="display-flex-center navbar-item add-journey"
-                            namelink="Ajouter un trajet"
+                            namelink=""
                             text=""
-                            imgClassName="size50 add-journey-img"
-                          />      
+                            imgClassName="size30 add-journey-img"
+                            style={{backgroundColor: (this.props.navItemActive =='add-journey')? '#76768a': 'transparent'}}
+                            nameItem="Ajouter un trajet"
+                            styleBlock={{}}
+                          />    
+      old_journey = <NavItem
+                          url={'/old-journey-list'}
+                          class="display-flex-center navbar-item list-old-journey"
+                          namelink=""
+                          text=""
+                          imgClassName="size30 list-old-journey-img"
+                          style={{backgroundColor: (this.props.navItemActive =='old-journey-list')? '#76768a': 'transparent'}}
+                          nameItem="Trajets archivés"
+                          styleBlock={{}}
+                        />        
     }
 
     return (
@@ -117,35 +141,45 @@ export default class NavBar extends Component {
         <nav className="navbar-app" style={{left: cssNavbar}}>
             <NavItem
                             url={'/app'}
-                            class="display-flex-center logo-item vitrine-item"
-                            namelink=""
-                            text={this.state.companyName}
-                            imgClassName="size50 logo-img display-flex-center"
-                          />
-            <NavItem
-                            url={'/app'}
                             class="display-flex-center navbar-item list-journey"
-                            namelink="Liste des trajets"
+                            namelink=""
                             text=""
-                            imgClassName="size50 list-journey-img"
+                            imgClassName="size30 list-journey-img"
+                            style={{marginTop: '75px', backgroundColor: (this.props.navItemActive =='journey-list')? '#76768a': 'transparent'}}
+                            nameItem="Trajets en cours"
+                            styleBlock={{}}
                           />
             {add_journey}
-            {/* <NavItem
-                            url={'/logout'}
-                            class="display-flex-center navbar-item logout"
-                            namelink="Se déconnecter"
-                            text=""
-                            imgClassName="size50 logout-img"
-                          /> */}
+            {old_journey}
             <div className="display-flex-center navbar-item logout">
                 <a href="/logout" onClick={this.logout.bind(this)}>
                   <div className="display-flex-center">
-                    <div className="size50 logout-img" style={{textAlign: 'center'}}></div>
-                    <span style={{textAlign: 'center', fontSize: '16px', color: '#fff'}}>Se déconnecter</span>
+                    <div className="size30 logout-img" style={{textAlign: 'center'}}></div>
+                    <span style={{textAlign: 'center', fontSize: '16px', color: '#fff'}}></span>
                   </div> 
                 </a>
             </div>
 
+        </nav>
+        <nav className="navbar-app-top">
+          {/* <NavItem
+              url={'/app'}
+              class="logo-item vitrine-item"
+              namelink=""
+              text={this.state.companyName}
+              imgClassName="size30 logo-img"
+              style={{}}
+              styleBlock={{alignItems: 'flex-end'}}
+            /> */}
+            <div className="nav-item-company" onClick={this.viewMenuTop.bind(this)}>
+              {this.state.companyName}
+                <div className="menu-top" style={{display: this.state.displayMenuTop}}>
+                    <div className="arrow-menu-top"></div>
+                    <div>Item 1</div>
+                    <div>Item 2</div>
+                    <div>Item 3</div>
+                </div>
+            </div>
         </nav>
       </div>
     );

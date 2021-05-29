@@ -10,8 +10,7 @@ use App\Controller\AuthenticationController;
 class AppController extends Controller {
 
     public function indexaction(){
-// var_dump($_SESSION);
-// var_dump($_COOKIE);die('toto');
+
         $auth = new AuthenticationController();
         // if(!$auth->is_connected()){
         //     header('location: /');
@@ -41,11 +40,45 @@ class AppController extends Controller {
             $offset = $_POST['offset'];
         }
 
+        $old = 'false';
+        if(isset($_POST['old'])){
+            $old = $_POST['old'];
+        }
+
         // var_dump($_POST);
         // die;
 
         $jm = new JourneyManager();
-        $journeyList = $jm->getJourneyList($offset);
+        $journeyList = $jm->getJourneyList($offset, $old);
+        echo json_encode($journeyList);
+        die;
+
+    }
+
+    public function getOldJourneyListAjax(){
+
+        $auth = new AuthenticationController();
+
+        if(!$auth->is_connected()){
+            echo json_encode([
+                'error' => true,
+                'error_code' => 1,
+                'msg' => 'L\'utilisateur n\'est pas connecté'
+            ]);
+            die;
+        }
+
+
+        $offset = 0;
+        if(isset($_POST['offset'])){
+            $offset = $_POST['offset'];
+        }
+
+        // var_dump($_POST);
+        // die;
+
+        $jm = new JourneyManager();
+        $journeyList = $jm->getJourneyList($offset, true);
         echo json_encode($journeyList);
         die;
 

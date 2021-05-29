@@ -5,6 +5,7 @@ import Draggabilly from 'draggabilly'
 import moment from 'moment'
 import uniqid from 'uniqid'
 import { jsPDF } from "jspdf";
+import {root} from './../setup'
 
 export default class Journey extends Component {
 
@@ -34,19 +35,20 @@ export default class Journey extends Component {
       }
       this.id_space_html = 1
       this.iteration = 0
-
     }
 
     getPDF(e){
-      
+
       e.preventDefault()
       const doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "landscape" });
 
       doc.setFont("times", "normal");
-      doc.text("Entreprise de livraison: "+$('#select-delivery-company').text(), 20, 20);
+      doc.text("Entreprise de livraison:", 20, 20);
+      doc.text($('#select-delivery-company').text(), 90, 20);
 
-      doc.setFont("times", "normal");
-      doc.text("Ville de départ: "+this.props.stateParent.departure, 20, 30);
+      // doc.setFont("times", "normal");
+      doc.text("Ville de départ:", 20, 30);
+      doc.text(this.props.stateParent.departure, 90, 30);
       
       let stopovers_str = ''
       if($(".stop-over-input").length > 0){
@@ -57,20 +59,35 @@ export default class Journey extends Component {
       }else{
         stopovers_str = '-'
       }
-      doc.setFont("times", "normal");
-      doc.text("Escales: "+stopovers_str, 20, 40);
+      // doc.setFont("times", "normal");
+      doc.text("Escales:", 20, 40);
+      doc.text(stopovers_str, 90, 40);
 
-      doc.setFont("times", "normal");
-      doc.text("Ville d'arrivée: "+this.props.stateParent.arrival, 20, 50);
+      // doc.setFont("times", "normal");
+      doc.text("Ville d'arrivée: ", 20, 50);
+      doc.text(this.props.stateParent.arrival, 90, 50);
       
-      doc.setFont("times", "normal");
-      doc.text("Date de départ: "+this.props.stateParent.date_departure, 20, 60);
+      // doc.setFont("times", "normal");
+      doc.text("Date de départ: ", 20, 60);
+      let date_formated = moment(this.props.stateParent.date_departure).format("DD/MM/YYYY")
+      doc.text((this.props.stateParent.date_departure == null || date_formated == "Invalid date")? '-' : date_formated, 90, 60);
       
-      doc.setFont("times", "normal");
-      doc.text("Heure de départ: "+this.props.stateParent.time_departure, 20, 70);
+      // doc.setFont("times", "normal");
+      doc.text("Heure de départ:", 20, 70);
+      doc.text(this.props.stateParent.time_departure, 90, 70);
       
-      doc.setFont("times", "normal");
-      doc.text("Date d'arrivée: "+this.props.stateParent.date_arrival, 20, 80);
+      // doc.setFont("times", "normal");
+      doc.text("Date d'arrivée: ", 20, 80);
+      date_formated = moment(this.props.stateParent.date_arrival).format("DD/MM/YYYY")
+      doc.text((this.props.stateParent.date_arrival == null || date_formated == "Invalid date")? '-' : date_formated, 90, 80);
+
+      // doc.setFont("times", "normal");
+      doc.text("Immatriculation du camion:", 20, 90);
+      doc.text(this.props.stateParent.truck_registration, 90, 90);
+
+      // doc.setFont("times", "normal");
+      doc.text("Immatriculation du tracteur: ", 20, 100);
+      doc.text(this.props.stateParent.tractor_registration, 90, 100);
 
       var generateData = () => {
 
@@ -120,7 +137,7 @@ export default class Journey extends Component {
         "Adresse_livraison"
       ]);
 
-      doc.table(10, 100, generateData(), headers, { autoSize: true });
+      doc.table(10, 110, generateData(), headers, { autoSize: true });
       doc.save("a4.pdf");
       
       console.log(this.props.stateParent)
@@ -145,7 +162,7 @@ export default class Journey extends Component {
             data: data
           })
           .then((response) => {
-            
+            console.log(response.data)
             if(response.statusText == 'OK'){
               if(response.data.error == true){
                 this.viewMessageFlash('Erreur lors de la récupération des données', true);
@@ -157,6 +174,8 @@ export default class Journey extends Component {
                   date_departure: moment.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
                   time_departure: moment.unix(parseInt(response.data.date_departure)).format("HH:mm"),
                   date_arrival: moment.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
+                  truck_registration: response.data.truck_registration,
+                  tractor_registration: response.data.tractor_registration,
                   spaces: response.data.spaces,
                   stopovers: response.data.stopovers
                 })
@@ -178,49 +197,6 @@ export default class Journey extends Component {
                     $(this).css('display', 'none')
                   }
                 })
-              
-                // $(".img-space-info").each(function(){
-                //   $(this).click( (e)=>{
-                //     let element = $(e.target).parent().parent().parent()
-                //     self.setState({
-                //       viewSpaceForm: true,
-                //       id_pallet_edit: element.attr('id'),
-                //       id_space_html: element.attr('id'),
-                //       pallet_number: element.attr('data-pallet_number'),
-                //       customer_name: element.attr('data-customer_name'),
-                //       goods_nature: element.attr('data-goods_nature'),
-                //       address: element.attr('data-address'),
-                //       date_delivery: element.attr('data-date_delivery'),
-                //       hour_delivery: element.attr('data-hour_delivery'),
-                //       id_space: element.attr("data-id_space")
-                //     });
-                //   })        
-                // })
-
-                // $(".img-space-trash").each(function(){
-                //   $(document).on('click', $(this), function(){
-                //     self.setState({
-                //       id_space_trash: $(this).parent().parent().parent().attr("id"), 
-                //       viewTrashForm: true
-                //     })
-                //   })
-                // })
-
-                // $(".img-space-rotate").each(function(){
-                //   console.log('rotate')
-                //   $(this).click( function(){
-                //     let width = $(this).parent().parent().parent().css("width")
-                //     let height = $(this).parent().parent().parent().css("height")
-                //     $(this).parent().parent().parent().css("width", height) 
-                //     $(this).parent().parent().parent().css("height", width)
-                //     let pos = $(this).parent().parent().parent().attr("data-position")
-                //     if(pos == 'vertical'){
-                //       $(this).parent().parent().parent().attr("data-position", 'horizontal')
-                //     }else{
-                //       $(this).parent().parent().parent().attr("data-position", 'vertical')
-                //     }
-                //   })                  
-                // })
 
                 document.addEventListener('click', function(){
                   let collision = false;
@@ -484,6 +460,7 @@ export default class Journey extends Component {
       space.attr('data-customer_name', this.state.customer_name)
       space.attr('data-goods_nature', this.state.goods_nature)
       space.attr('data-date_delivery', this.state.date_delivery)
+      // space.attr('data-date_delivery', moment(parseInt(this.state.date_delivery)).format("YYYY-MM-DD"))
       space.attr('data-hour_delivery', this.state.hour_delivery)
       space.attr('data-address', this.state.address)
       space.attr('data-delivery_city', this.state.delivery_city)
@@ -690,7 +667,7 @@ export default class Journey extends Component {
 
                         <iframe 
                         id="iframe-map"
-                          src="http://traffic-center.local/templatemap" 
+                          src={root+"/templatemap"} 
                           data-start={this.state.loading_address +' '+this.state.loading_city}
                           data-end={this.state.address +' '+this.state.delivery_city}
                           style={{width: '100%', height: '400px'}}
@@ -835,7 +812,7 @@ export default class Journey extends Component {
               <div className="display-flex-center height100">
                 <div className="width100 display-flex-center" style={{minHeight: '100px', flexDirection: 'column'}}>
                   <div className="d-sm-block" style={{marginTop: '20px'}}>
-                    <img src="http://traffic-center.local/public/img/front-truck.png" style={{transform: "rotate(270deg)"}}/>
+                    <img src={root+"/public/img/front-truck.png"} style={{transform: "rotate(270deg)"}}/>
                   </div>
                   <div className="block-spaces" id="block-spaces">
                     {spacesBox}

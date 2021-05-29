@@ -344,7 +344,8 @@ var App = /*#__PURE__*/function (_Component) {
     _this = _super.call(this, props);
     _this.state = {
       displayMessageFlash: 'none',
-      menuHidden: false
+      menuHidden: false,
+      navItemActive: 'list-journey'
     };
     return _this;
   }
@@ -385,6 +386,14 @@ var App = /*#__PURE__*/function (_Component) {
       });
     }
   }, {
+    key: "setColorNavItem",
+    value: function setColorNavItem(navItem) {
+      console.log(navItem);
+      this.setState({
+        navItemActive: navItem
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var _this2 = this;
@@ -420,6 +429,8 @@ var App = /*#__PURE__*/function (_Component) {
         data: data,
         render: function render(props) {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_JourneyList_js__WEBPACK_IMPORTED_MODULE_7__["default"], _extends({}, props, {
+            setColorNavItem: _this2.setColorNavItem.bind(_this2),
+            old: "false",
             hideMenu: function hideMenu() {
               _this2.hideMenu();
             }
@@ -430,6 +441,21 @@ var App = /*#__PURE__*/function (_Component) {
         data: data,
         render: function render(props) {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_AddJourney__WEBPACK_IMPORTED_MODULE_5__["default"], _extends({}, props, {
+            setColorNavItem: _this2.setColorNavItem.bind(_this2),
+            hideMenu: function hideMenu() {
+              _this2.hideMenu();
+            },
+            viewMessageFlash: _this2.viewMessageFlash.bind(_this2),
+            hideMessageFlash: _this2.hideMessageFlash.bind(_this2)
+          }));
+        }
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+        path: "/old-journey-list",
+        data: data,
+        render: function render(props) {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_JourneyList_js__WEBPACK_IMPORTED_MODULE_7__["default"], _extends({}, props, {
+            setColorNavItem: _this2.setColorNavItem.bind(_this2),
+            old: "true",
             hideMenu: function hideMenu() {
               _this2.hideMenu();
             },
@@ -442,6 +468,7 @@ var App = /*#__PURE__*/function (_Component) {
         data: data,
         render: function render(props) {
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_journey_EditJourney__WEBPACK_IMPORTED_MODULE_6__["default"], _extends({}, props, {
+            setColorNavItem: _this2.setColorNavItem.bind(_this2),
             hideMenu: function hideMenu() {
               _this2.hideMenu();
             },
@@ -451,7 +478,9 @@ var App = /*#__PURE__*/function (_Component) {
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
         render: function render(props) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_navbar_Navbar__WEBPACK_IMPORTED_MODULE_3__["default"], _extends({}, props, {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_navbar_Navbar__WEBPACK_IMPORTED_MODULE_3__["default"], _extends({
+            navItemActive: _this2.state.navItemActive
+          }, props, {
             menuHidden: _this2.state.menuHidden
           }));
         }
@@ -529,12 +558,17 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       arrival: '',
       date_departure: '',
       date_arrival: '',
+      truck_registration: '',
+      tractor_registration: '',
       time_departure: '',
       spaces: [],
       redirect: null,
       nbStopOver: 0,
       collision: false
     };
+
+    _this.props.setColorNavItem('add-journey');
+
     return _this;
   }
 
@@ -576,6 +610,8 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       formData.append('departure', this.state.departure);
       formData.append('arrival', this.state.arrival);
       formData.append('date_departure', this.state.date_departure);
+      formData.append('truck_registration', this.state.truck_registration);
+      formData.append('tractor_registration', this.state.tractor_registration);
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
       var spaces = [];
@@ -709,7 +745,7 @@ var AddJourney = /*#__PURE__*/function (_Component) {
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
         id: "1"
-      }, "SDY Transport"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Transport Milan"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "departure"
@@ -797,9 +833,38 @@ var AddJourney = /*#__PURE__*/function (_Component) {
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "truck_registration"
+      }, "Immatriculation du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "truck_registration",
+        value: this.state.truck_registration,
+        onChange: function onChange() {
+          _this3.setState({
+            truck_registration: document.querySelector('#truck_registration').value
+          });
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "tractor_registration"
+      }, "Immatriculation du tracteur"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "tractor_registration",
+        value: this.state.tractor_registration,
+        onChange: function onChange() {
+          _this3.setState({
+            tractor_registration: document.querySelector('#tractor_registration').value
+          });
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "avalaible_places"
       }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], {
         setCollision: this.setCollision.bind(this),
+        stateParent: this.state,
         spaces: this.state.spaces,
         page: "add-journey",
         updateSpaces: this.updateSpaces.bind(this),
@@ -893,7 +958,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       date_departure: '',
       date_arrival: '',
       time_departure: ''
-    }, _defineProperty(_this$state, "date_arrival", ''), _defineProperty(_this$state, "spaces", []), _defineProperty(_this$state, "nbStopOver", 0), _defineProperty(_this$state, "collision", false), _this$state);
+    }, _defineProperty(_this$state, "date_arrival", ''), _defineProperty(_this$state, "truck_registration", ''), _defineProperty(_this$state, "tractor_registration", ''), _defineProperty(_this$state, "spaces", []), _defineProperty(_this$state, "nbStopOver", 0), _defineProperty(_this$state, "collision", false), _this$state);
     _this.id_journey = document.location.href.split('/')[5];
     return _this;
   }
@@ -937,6 +1002,8 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       formData.append('date_departure', this.state.date_departure);
       formData.append('date_arrival', this.state.date_arrival);
       formData.append('time_departure', this.state.time_departure);
+      formData.append('truck_registration', this.state.truck_registration);
+      formData.append('tractor_registration', this.state.tractor_registration);
       var spaces = [];
       jQuery__WEBPACK_IMPORTED_MODULE_4___default()(".box-space").each(function () {
         spaces.push({
@@ -1008,6 +1075,8 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         arrival: data.arrival,
         date_departure: data.date_departure,
         date_arrival: data.date_arrival,
+        truck_registration: data.truck_registration,
+        tractor_registration: data.tractor_registration,
         time_departure: data.time_departure,
         spaces: data.spaces
       });
@@ -1166,6 +1235,34 @@ var EditJourney = /*#__PURE__*/function (_Component) {
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "truck_registration"
+      }, "Immatriculation du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "truck_registration",
+        value: this.state.truck_registration,
+        onChange: function onChange() {
+          _this3.setState({
+            truck_registration: document.querySelector('#truck_registration').value
+          });
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+        htmlFor: "tractor_registration"
+      }, "Immatriculation du tracteur"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "text",
+        className: "form-control form-control-sm",
+        id: "tractor_registration",
+        value: this.state.tractor_registration,
+        onChange: function onChange() {
+          _this3.setState({
+            tractor_registration: document.querySelector('#tractor_registration').value
+          });
+        }
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "form-group"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "avalaible_places"
       }, "Emplacements disponibles du camion"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Journey__WEBPACK_IMPORTED_MODULE_1__["default"], (_React$createElement = {
         setCollision: this.setCollision.bind(this),
@@ -1218,6 +1315,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var uniqid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! uniqid */ "./node_modules/uniqid/index.js");
 /* harmony import */ var uniqid__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(uniqid__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var jspdf__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jspdf */ "./node_modules/jspdf/dist/jspdf.min.js");
+/* harmony import */ var _setup__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./../setup */ "./components/setup.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1239,6 +1337,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -1297,9 +1396,11 @@ var Journey = /*#__PURE__*/function (_Component) {
         orientation: "landscape"
       });
       doc.setFont("times", "normal");
-      doc.text("Entreprise de livraison: " + jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#select-delivery-company').text(), 20, 20);
-      doc.setFont("times", "normal");
-      doc.text("Ville de départ: " + this.props.stateParent.departure, 20, 30);
+      doc.text("Entreprise de livraison:", 20, 20);
+      doc.text(jQuery__WEBPACK_IMPORTED_MODULE_1___default()('#select-delivery-company').text(), 90, 20); // doc.setFont("times", "normal");
+
+      doc.text("Ville de départ:", 20, 30);
+      doc.text(this.props.stateParent.departure, 90, 30);
       var stopovers_str = '';
 
       if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".stop-over-input").length > 0) {
@@ -1309,18 +1410,31 @@ var Journey = /*#__PURE__*/function (_Component) {
         stopovers_str = stopovers_str.substring(0, stopovers_str.length - 2);
       } else {
         stopovers_str = '-';
-      }
+      } // doc.setFont("times", "normal");
 
-      doc.setFont("times", "normal");
-      doc.text("Escales: " + stopovers_str, 20, 40);
-      doc.setFont("times", "normal");
-      doc.text("Ville d'arrivée: " + this.props.stateParent.arrival, 20, 50);
-      doc.setFont("times", "normal");
-      doc.text("Date de départ: " + this.props.stateParent.date_departure, 20, 60);
-      doc.setFont("times", "normal");
-      doc.text("Heure de départ: " + this.props.stateParent.time_departure, 20, 70);
-      doc.setFont("times", "normal");
-      doc.text("Date d'arrivée: " + this.props.stateParent.date_arrival, 20, 80);
+
+      doc.text("Escales:", 20, 40);
+      doc.text(stopovers_str, 90, 40); // doc.setFont("times", "normal");
+
+      doc.text("Ville d'arrivée: ", 20, 50);
+      doc.text(this.props.stateParent.arrival, 90, 50); // doc.setFont("times", "normal");
+
+      doc.text("Date de départ: ", 20, 60);
+      var date_formated = moment__WEBPACK_IMPORTED_MODULE_4___default()(this.props.stateParent.date_departure).format("DD/MM/YYYY");
+      doc.text(this.props.stateParent.date_departure == null || date_formated == "Invalid date" ? '-' : date_formated, 90, 60); // doc.setFont("times", "normal");
+
+      doc.text("Heure de départ:", 20, 70);
+      doc.text(this.props.stateParent.time_departure, 90, 70); // doc.setFont("times", "normal");
+
+      doc.text("Date d'arrivée: ", 20, 80);
+      date_formated = moment__WEBPACK_IMPORTED_MODULE_4___default()(this.props.stateParent.date_arrival).format("DD/MM/YYYY");
+      doc.text(this.props.stateParent.date_arrival == null || date_formated == "Invalid date" ? '-' : date_formated, 90, 80); // doc.setFont("times", "normal");
+
+      doc.text("Immatriculation du camion:", 20, 90);
+      doc.text(this.props.stateParent.truck_registration, 90, 90); // doc.setFont("times", "normal");
+
+      doc.text("Immatriculation du tracteur: ", 20, 100);
+      doc.text(this.props.stateParent.tractor_registration, 90, 100);
 
       var generateData = function generateData() {
         var result = [];
@@ -1362,7 +1476,7 @@ var Journey = /*#__PURE__*/function (_Component) {
       };
 
       var headers = createHeaders(["Numero", "client", "Nature", "Date_livraison", "Heure_chargement", "Adresse_chargement", "Adresse_livraison"]);
-      doc.table(10, 100, generateData(), headers, {
+      doc.table(10, 110, generateData(), headers, {
         autoSize: true
       });
       doc.save("a4.pdf");
@@ -1389,6 +1503,8 @@ var Journey = /*#__PURE__*/function (_Component) {
           },
           data: data
         }).then(function (response) {
+          console.log(response.data);
+
           if (response.statusText == 'OK') {
             if (response.data.error == true) {
               _this3.viewMessageFlash('Erreur lors de la récupération des données', true);
@@ -1400,6 +1516,8 @@ var Journey = /*#__PURE__*/function (_Component) {
                 date_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("YYYY-MM-DD"),
                 time_departure: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_departure)).format("HH:mm"),
                 date_arrival: moment__WEBPACK_IMPORTED_MODULE_4___default.a.unix(parseInt(response.data.date_arrival)).format("YYYY-MM-DD"),
+                truck_registration: response.data.truck_registration,
+                tractor_registration: response.data.tractor_registration,
                 spaces: response.data.spaces,
                 stopovers: response.data.stopovers
               });
@@ -1425,47 +1543,7 @@ var Journey = /*#__PURE__*/function (_Component) {
                 if (jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().attr('id') != "block-stop-over-" + (self.state.nbStopOver - 1)) {
                   jQuery__WEBPACK_IMPORTED_MODULE_1___default()(this).css('display', 'none');
                 }
-              }); // $(".img-space-info").each(function(){
-              //   $(this).click( (e)=>{
-              //     let element = $(e.target).parent().parent().parent()
-              //     self.setState({
-              //       viewSpaceForm: true,
-              //       id_pallet_edit: element.attr('id'),
-              //       id_space_html: element.attr('id'),
-              //       pallet_number: element.attr('data-pallet_number'),
-              //       customer_name: element.attr('data-customer_name'),
-              //       goods_nature: element.attr('data-goods_nature'),
-              //       address: element.attr('data-address'),
-              //       date_delivery: element.attr('data-date_delivery'),
-              //       hour_delivery: element.attr('data-hour_delivery'),
-              //       id_space: element.attr("data-id_space")
-              //     });
-              //   })        
-              // })
-              // $(".img-space-trash").each(function(){
-              //   $(document).on('click', $(this), function(){
-              //     self.setState({
-              //       id_space_trash: $(this).parent().parent().parent().attr("id"), 
-              //       viewTrashForm: true
-              //     })
-              //   })
-              // })
-              // $(".img-space-rotate").each(function(){
-              //   console.log('rotate')
-              //   $(this).click( function(){
-              //     let width = $(this).parent().parent().parent().css("width")
-              //     let height = $(this).parent().parent().parent().css("height")
-              //     $(this).parent().parent().parent().css("width", height) 
-              //     $(this).parent().parent().parent().css("height", width)
-              //     let pos = $(this).parent().parent().parent().attr("data-position")
-              //     if(pos == 'vertical'){
-              //       $(this).parent().parent().parent().attr("data-position", 'horizontal')
-              //     }else{
-              //       $(this).parent().parent().parent().attr("data-position", 'vertical')
-              //     }
-              //   })                  
-              // })
-
+              });
               document.addEventListener('click', function () {
                 var collision = false;
                 jQuery__WEBPACK_IMPORTED_MODULE_1___default()(".box-space").each(function () {
@@ -1730,7 +1808,8 @@ var Journey = /*#__PURE__*/function (_Component) {
       space.attr('data-pallet_number', this.state.pallet_number);
       space.attr('data-customer_name', this.state.customer_name);
       space.attr('data-goods_nature', this.state.goods_nature);
-      space.attr('data-date_delivery', this.state.date_delivery);
+      space.attr('data-date_delivery', this.state.date_delivery); // space.attr('data-date_delivery', moment(parseInt(this.state.date_delivery)).format("YYYY-MM-DD"))
+
       space.attr('data-hour_delivery', this.state.hour_delivery);
       space.attr('data-address', this.state.address);
       space.attr('data-delivery_city', this.state.delivery_city);
@@ -2116,7 +2195,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           className: "map-journey"
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("iframe", {
           id: "iframe-map",
-          src: "http://traffic-center.local/templatemap",
+          src: _setup__WEBPACK_IMPORTED_MODULE_7__["root"] + "/templatemap",
           "data-start": this.state.loading_address + ' ' + this.state.loading_city,
           "data-end": this.state.address + ' ' + this.state.delivery_city,
           style: {
@@ -2334,7 +2413,7 @@ var Journey = /*#__PURE__*/function (_Component) {
           marginTop: '20px'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "http://traffic-center.local/public/img/front-truck.png",
+        src: _setup__WEBPACK_IMPORTED_MODULE_7__["root"] + "/public/img/front-truck.png",
         style: {
           transform: "rotate(270deg)"
         }
@@ -2464,6 +2543,13 @@ var JourneyList = /*#__PURE__*/function (_Component) {
     };
     _this.journeys = [];
     _this.offset = 0;
+
+    if (_this.props.old == 'true') {
+      _this.props.setColorNavItem('old-journey-list');
+    } else {
+      _this.props.setColorNavItem('journey-list');
+    }
+
     return _this;
   }
 
@@ -2472,8 +2558,10 @@ var JourneyList = /*#__PURE__*/function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
+      console.log(this.props.old);
       this.props.hideMenu();
-      var data = {};
+      var formData = new FormData();
+      formData.append('old', this.props.old);
       axios__WEBPACK_IMPORTED_MODULE_1___default()({
         method: 'POST',
         url: '/get-journey-list',
@@ -2481,7 +2569,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: data
+        data: formData
       }).then(function (response) {
         if (response.statusText == 'OK') {
           if (response.data.error == true) {
@@ -2522,6 +2610,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
 
       var formData = new FormData();
       formData.append('offset', this.offset);
+      formData.append('old', this.props.old);
       axios__WEBPACK_IMPORTED_MODULE_1___default()({
         method: 'POST',
         url: '/get-journey-list',
@@ -2753,10 +2842,20 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             }, stopovers_str)));
           }
 
+          var style = {};
+
+          if (_this4.props.old == 'true') {
+            style = {
+              backgroundColor: 'rgb(216 228 229)'
+            };
+          }
+
           return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_3__["Link"], {
-            to: link
+            to: link,
+            key: index
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "row line-journey"
+            className: "row line-journey",
+            style: style
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -2837,17 +2936,24 @@ var JourneyList = /*#__PURE__*/function (_Component) {
 
       if (this.state.lastPage == false) {
         nextButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+          className: "btn-pagination",
           onClick: function onClick() {
             _this4.changePage('next');
           }
         }, '>'));
       }
 
+      var title = "Trajets en cours";
+
+      if (this.props.old == 'true') {
+        title = "Trajets archivées";
+      }
+
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container-list-journey-page display-flex-center"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", {
-        className: "mgtop20"
-      }, "Liste des trajets"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "mgtop50"
+      }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group has-search",
         style: {
           width: '96%'
@@ -2948,6 +3054,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           flexDirection: 'row'
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        className: "btn-pagination",
         onClick: function onClick() {
           _this4.changePage('previous');
         }
@@ -3087,11 +3194,13 @@ var NavItem = /*#__PURE__*/function (_Component) {
     key: "render",
     value: function render() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: this.props["class"]
+        className: this.props["class"],
+        style: this.props.style
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
         to: this.props.url
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "display-flex-center"
+        className: "display-flex-center",
+        style: this.props.styleBlock
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: this.props.imgClassName,
         style: {
@@ -3103,7 +3212,13 @@ var NavItem = /*#__PURE__*/function (_Component) {
           fontSize: '16px',
           color: '#fff'
         }
-      }, this.props.namelink))));
+      }, this.props.namelink)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "a1"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "a2"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "a3"
+      }, this.props.nameItem))));
     }
   }]);
 
@@ -3176,7 +3291,8 @@ var NavBar = /*#__PURE__*/function (_Component) {
 
     _this.state = {
       menuHidden: hidden,
-      companyName: ''
+      companyName: '',
+      displayMenuTop: 'none'
     };
     return _this;
   }
@@ -3256,6 +3372,21 @@ var NavBar = /*#__PURE__*/function (_Component) {
       });
     }
   }, {
+    key: "viewMenuTop",
+    value: function viewMenuTop(e) {
+      e.preventDefault();
+
+      if (this.state.displayMenuTop == 'block') {
+        this.setState({
+          displayMenuTop: 'none'
+        });
+      } else {
+        this.setState({
+          displayMenuTop: 'block'
+        });
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       var cssNavbar = '-120px';
@@ -3265,14 +3396,32 @@ var NavBar = /*#__PURE__*/function (_Component) {
       }
 
       var add_journey = '';
+      var old_journey = '';
 
       if (localStorage.getItem('id_company') == 1) {
         add_journey = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NavItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
           url: '/add-journey',
           "class": "display-flex-center navbar-item add-journey",
-          namelink: "Ajouter un trajet",
+          namelink: "",
           text: "",
-          imgClassName: "size50 add-journey-img"
+          imgClassName: "size30 add-journey-img",
+          style: {
+            backgroundColor: this.props.navItemActive == 'add-journey' ? '#76768a' : 'transparent'
+          },
+          nameItem: "Ajouter un trajet",
+          styleBlock: {}
+        });
+        old_journey = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NavItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+          url: '/old-journey-list',
+          "class": "display-flex-center navbar-item list-old-journey",
+          namelink: "",
+          text: "",
+          imgClassName: "size30 list-old-journey-img",
+          style: {
+            backgroundColor: this.props.navItemActive == 'old-journey-list' ? '#76768a' : 'transparent'
+          },
+          nameItem: "Trajets archiv\xE9s",
+          styleBlock: {}
         });
       }
 
@@ -3286,17 +3435,17 @@ var NavBar = /*#__PURE__*/function (_Component) {
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NavItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
         url: '/app',
-        "class": "display-flex-center logo-item vitrine-item",
-        namelink: "",
-        text: this.state.companyName,
-        imgClassName: "size50 logo-img display-flex-center"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_NavItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        url: '/app',
         "class": "display-flex-center navbar-item list-journey",
-        namelink: "Liste des trajets",
+        namelink: "",
         text: "",
-        imgClassName: "size50 list-journey-img"
-      }), add_journey, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        imgClassName: "size30 list-journey-img",
+        style: {
+          marginTop: '75px',
+          backgroundColor: this.props.navItemActive == 'journey-list' ? '#76768a' : 'transparent'
+        },
+        nameItem: "Trajets en cours",
+        styleBlock: {}
+      }), add_journey, old_journey, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center navbar-item logout"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "/logout",
@@ -3304,7 +3453,7 @@ var NavBar = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "size50 logout-img",
+        className: "size30 logout-img",
         style: {
           textAlign: 'center'
         }
@@ -3314,13 +3463,40 @@ var NavBar = /*#__PURE__*/function (_Component) {
           fontSize: '16px',
           color: '#fff'
         }
-      }, "Se d\xE9connecter"))))));
+      }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("nav", {
+        className: "navbar-app-top"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "nav-item-company",
+        onClick: this.viewMenuTop.bind(this)
+      }, this.state.companyName, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "menu-top",
+        style: {
+          display: this.state.displayMenuTop
+        }
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "arrow-menu-top"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Item 1"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Item 2"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Item 3")))));
     }
   }]);
 
   return NavBar;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
+
+
+/***/ }),
+
+/***/ "./components/setup.js":
+/*!*****************************!*\
+  !*** ./components/setup.js ***!
+  \*****************************/
+/*! exports provided: root */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "root", function() { return root; });
+var root = "http://traffic-center.local";
 
 
 /***/ }),
