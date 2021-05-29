@@ -55,6 +55,58 @@ class AppController extends Controller {
 
     }
 
+    public function getJourneyListFilterAjax(){
+
+        $auth = new AuthenticationController();
+
+        if(!$auth->is_connected()){
+            echo json_encode([
+                'error' => true,
+                'error_code' => 1,
+                'msg' => 'L\'utilisateur n\'est pas connecté'
+            ]);
+            die;
+        }
+
+
+        $offset = 0;
+        if(isset($_POST['offset'])){
+            $offset = $_POST['offset'];
+        }
+
+        $old = 'false';
+        if(isset($_POST['old'])){
+            $old = $_POST['old'];
+        }
+
+        $keyword = '';
+        if(isset($_POST['keyword'])){
+            $keyword = $_POST['keyword'];
+        }
+
+        $input = 'general';
+        if(isset($_POST['input'])){
+            $input = $_POST['input'];
+        }
+
+        $fromPaginationBtn = false;
+        if(isset($_POST['input'])){
+            $fromPaginationBtn = $_POST['from-pagination-btn'];
+        }
+
+        $inputs = [];
+        if(isset($_POST['inputs'])){
+            $inputs = $_POST['inputs'];
+        }
+
+// var_dump($_POST);die;
+        $jm = new JourneyManager();
+        $journeyList = $jm->getJourneyListFilter($offset, $keyword, $input, $inputs, $fromPaginationBtn, $old);
+        echo json_encode($journeyList);
+        die;
+
+    }
+
     public function getOldJourneyListAjax(){
 
         $auth = new AuthenticationController();

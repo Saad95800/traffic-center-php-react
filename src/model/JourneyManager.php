@@ -6,12 +6,9 @@ use lib\Model;
 class JourneyManager extends Model {
 
     public function getJourneyList($offset, $old = 'false'){
-        // var_dump($timestamp = strtotime('today midnight'));
-        // die;
+
         $sign = '>';
-        // var_dump($old);
-        // var_dump($offset);
-        // die;
+
         if($old == 'true'){
             $sign = '<';
         }
@@ -23,7 +20,6 @@ class JourneyManager extends Model {
                 ORDER BY a.created_at DESC
                 LIMIT 15 OFFSET ".($offset*15);				
 				
-            // var_dump($sql);
 		$req = $this->dbh->prepare($sql);
         $req->bindValue(':today_midnight', strtotime('today midnight'));
         $req->execute();
@@ -48,9 +44,181 @@ class JourneyManager extends Model {
             $stopovers = $req->fetchAll(\PDO::FETCH_OBJ);
             $res->stopovers = $stopovers;
         }
-// var_dump($result);die;
+
+        $sql = "SELECT COUNT(*) as nb 
+                FROM journey
+                WHERE date_arrival ".$sign." :today_midnight
+                ";
+        $req = $this->dbh->prepare($sql);
+        $req->bindValue(':today_midnight', strtotime('today midnight'));
+        $req->execute();
+        $nbjourneys = $req->fetch(\PDO::FETCH_ASSOC);
+
         if ($result) {
-            return $result;
+            $retour['journeys'] = $result;
+            $retour['nbjourneys'] = intval($nbjourneys['nb']);
+            return $retour;
+        }
+        return false;
+
+    }
+
+    public function getJourneyListFilter($offset, $keyword, $input, $inputs, $fromPaginationBtn = false, $old = 'false'){
+// var_dump($keyword);
+
+        $sign = '>';
+
+        if($old == 'true'){
+            $sign = '<';
+        }
+
+        if($fromPaginationBtn){
+
+            $inputs = explode(',', $inputs);
+            
+            $key_gen = $inputs[0];
+            $key_dep = $inputs[1];
+            $key_arr = $inputs[2];
+            $key_date_dep = $inputs[3];
+            $key_date_arr = $inputs[4];
+
+            $sql = "SELECT *
+            FROM journey as a
+            INNER JOIN company as b
+            ON b.id_company = a.fk_id_company
+            WHERE date_arrival ".$sign." :today_midnight
+            AND (departure LIKE '$key_gen%' OR arrival LIKE '$key_gen%' OR id_journey IN (
+                SELECT fk_id_journey
+                    FROM stopover
+                    WHERE city LIKE '$key_gen%'
+            ) )
+            AND departure LIKE '$key_dep%'
+            AND arrival LIKE '$key_arr%' ";
+
+            if($key_date_dep != ''){
+                $sql.=" AND CAST(FROM_UNIXTIME(date_departure) as date) = '$key_date_dep' ";
+            }
+            if($key_date_arr != ''){
+                $sql.=" AND CAST(FROM_UNIXTIME(date_arrival) as date) = '$key_date_arr'";
+            }
+
+            $sql.="ORDER BY a.created_at DESC
+            LIMIT 15 OFFSET ".($offset*15);				
+
+            // var_dump($sql);die;
+            $req = $this->dbh->prepare($sql);
+            $req->bindValue(':today_midnight', strtotime('today midnight'));
+            $req->execute();
+            $result = $req->fetchAll(\PDO::FETCH_OBJ);
+
+        }else{
+            if($keyword == ''){
+                $sql = "SELECT *
+                FROM journey as a
+                INNER JOIN company as b
+                ON b.id_company = a.fk_id_company
+                WHERE date_arrival ".$sign." :today_midnight
+                ORDER BY a.created_at DESC
+                LIMIT 15 OFFSET ".($offset*15);				
+                
+                $req = $this->dbh->prepare($sql);
+                $req->bindValue(':today_midnight', strtotime('today midnight'));
+                $req->execute();
+                $result = $req->fetchAll(\PDO::FETCH_OBJ);
+            }else{
+                switch($input){
+                    case 'departure':
+                    case 'arrival':
+                        $sql = "SELECT *
+                                FROM journey as a
+                                INNER JOIN company as b
+                                ON b.id_company = a.fk_id_company
+                                WHERE date_arrival ".$sign." :today_midnight
+                                AND $input LIKE '$keyword%'
+                                ORDER BY a.created_at DESC
+                                LIMIT 15 OFFSET ".($offset*15);				
+                                
+                        $req = $this->dbh->prepare($sql);
+                        $req->bindValue(':today_midnight', strtotime('today midnight'));
+                        $req->execute();
+                        $result = $req->fetchAll(\PDO::FETCH_OBJ);
+                        break;
+                    case 'date_departure':
+                    case 'date_arrival':
+                        $sql = "SELECT *
+                        FROM journey as a
+                        INNER JOIN company as b
+                        ON b.id_company = a.fk_id_company
+                        WHERE date_arrival ".$sign." :today_midnight
+                        AND CAST(FROM_UNIXTIME($input) as date) = '$keyword'
+                        ORDER BY a.created_at DESC
+                        LIMIT 15 OFFSET ".($offset*15);				
+
+                        $req = $this->dbh->prepare($sql);
+                        $req->bindValue(':today_midnight', strtotime('today midnight'));
+                        $req->execute();
+                        $result = $req->fetchAll(\PDO::FETCH_OBJ);
+                        break;
+                    case 'general':
+
+                        $sql = "SELECT *
+                        FROM journey as a
+                        INNER JOIN company as b
+                        ON b.id_company = a.fk_id_company
+                        WHERE date_arrival ".$sign." :today_midnight
+                        AND (departure LIKE '$keyword%' OR arrival LIKE '$keyword%' OR id_journey IN (
+                            SELECT fk_id_journey
+                                FROM stopover
+                                WHERE city LIKE '$keyword%'
+                        ) )
+                        ORDER BY a.created_at DESC
+                        LIMIT 15 OFFSET ".($offset*15);				
+
+                        $req = $this->dbh->prepare($sql);
+                        $req->bindValue(':today_midnight', strtotime('today midnight'));
+                        $req->execute();
+                        $result = $req->fetchAll(\PDO::FETCH_OBJ);
+                        break;
+                }            
+            }            
+        }
+
+        
+
+
+        $sql2 = "SELECT *
+                 FROM space 
+                 WHERE fk_id_journey = :id_journey";
+
+        $sql3 = "SELECT * FROM stopover WHERE fk_id_journey = :id_journey";
+
+        foreach($result as $res){
+            $req = $this->dbh->prepare($sql2);
+            $req->bindValue(':id_journey', $res->id_journey);
+            $req->execute();
+            $spaces = $req->fetchAll(\PDO::FETCH_OBJ);
+            $res->spaces = $spaces;
+
+            $req = $this->dbh->prepare($sql3);
+            $req->bindValue(':id_journey', $res->id_journey);
+            $req->execute();
+            $stopovers = $req->fetchAll(\PDO::FETCH_OBJ);
+            $res->stopovers = $stopovers;
+        }
+
+        $sql = "SELECT COUNT(*) as nb 
+                FROM journey
+                WHERE date_arrival ".$sign." :today_midnight
+                ";
+        $req = $this->dbh->prepare($sql);
+        $req->bindValue(':today_midnight', strtotime('today midnight'));
+        $req->execute();
+        $nbjourneys = $req->fetch(\PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $retour['journeys'] = $result ;
+            $retour['nbjourneys'] = $nbjourneys['nb'];
+            return $retour;
         }
         return false;
 

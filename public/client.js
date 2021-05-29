@@ -2486,12 +2486,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jQuery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jQuery__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -2539,10 +2533,11 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       keywordSearchArrival: '',
       keywordSearchDateDeparture: '',
       keywordSearchDateArrival: '',
-      lastPage: false
+      lastPage: false,
+      offset: 0,
+      nbPages: 1
     };
-    _this.journeys = [];
-    _this.offset = 0;
+    _this.journeys = []; // this.state.offset = 0
 
     if (_this.props.old == 'true') {
       _this.props.setColorNavItem('old-journey-list');
@@ -2579,10 +2574,22 @@ var JourneyList = /*#__PURE__*/function (_Component) {
               }
           } else {
             console.log(response.data);
+            var nbJourneys = response.data.nbjourneys;
+            var nbPages = 1;
+
+            if (nbJourneys > 15) {
+              nbPages = Math.trunc(nbJourneys / 15);
+              console.log(nbPages);
+
+              if (nbJourneys % 15 > 0) {
+                nbPages++;
+              }
+            }
 
             _this2.setState({
-              journeys: response.data,
-              journeysList: response.data
+              journeys: response.data.journeys,
+              journeysList: response.data.journeys,
+              nbPages: nbPages
             });
 
             _this2.journeys = response.data;
@@ -2594,26 +2601,117 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         console.log(error);
         return false;
       });
-    }
+    } // changePage(val){
+    //   if(val == 'next'){
+    //     this.state.offset++
+    //   }else{
+    //     if(this.state.offset > 0){
+    //       this.state.offset--
+    //     }
+    //   }
+    //   let formData = new FormData();
+    //   formData.append('offset', this.state.offset);
+    //   formData.append('old', this.props.old);
+    //   axios({
+    //     method: 'POST',
+    //     url: '/get-journey-list',
+    //     responseType: 'json',
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded'
+    //     },
+    //     data: formData
+    //   })
+    //   .then((response) => {
+    //     if(response.statusText == 'OK'){
+    //       if(response.data.error == true){
+    //         if(response.data.error_code == 1){
+    //           // this.viewMessageFlash(response.data.msg, true);
+    //           // document.location.href="/app";
+    //         }else{
+    //           // this.viewMessageFlash(response.data.msg, true);
+    //         }
+    //       }else{
+    //         console.log(response.data)
+    //         this.setState({journeys: response.data, journeysList: response.data})
+    //         this.journeys = response.data
+    //         console.log(response.data.length)
+    //         if(response.data.length < 15){
+    //           this.setState({lastPage: true})
+    //         }else{
+    //           this.setState({lastPage: false})
+    //         }
+    //       }
+    //     }else{
+    //       this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
+    //     }
+    //   })
+    //   .catch( (error) => {
+    //     console.log(error);
+    //     return false
+    //   });
+    // }
+
   }, {
-    key: "changePage",
-    value: function changePage(val) {
+    key: "filter",
+    value: function filter() {
       var _this3 = this;
 
+      var input = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'general';
+      var val = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      var fromPaginationBtn = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
       if (val == 'next') {
-        this.offset++;
-      } else {
-        if (this.offset > 0) {
-          this.offset--;
+        this.state.offset++;
+      } else if (val == 'previous') {
+        if (this.state.offset > 0) {
+          this.state.offset--;
         }
+      } // let newJourneysList1 = []
+      // let newJourneysList2 = []
+      // let newJourneysList3 = []
+      // let newJourneysList4 = []
+      // let newJourneysList5 = []
+
+
+      var keyword_gen = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-bar").val().toLowerCase();
+      var keyword_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-departure").val().toLowerCase();
+      var keyword_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-arrival").val().toLowerCase();
+      var keyword_date_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val();
+      var keyword_date_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-arrival").val();
+      var keyword = '';
+
+      switch (input) {
+        case 'general':
+          keyword = keyword_gen;
+          break;
+
+        case 'departure':
+          keyword = keyword_dep;
+          break;
+
+        case 'arrival':
+          keyword = keyword_arr;
+          break;
+
+        case 'date_departure':
+          keyword = keyword_date_dep;
+          break;
+
+        case 'date_arrival':
+          keyword = keyword_date_arr;
+          break;
       }
 
       var formData = new FormData();
-      formData.append('offset', this.offset);
+      formData.append('offset', this.state.offset);
       formData.append('old', this.props.old);
+      formData.append('keyword', keyword);
+      formData.append('input', input);
+      formData.append('from-pagination-btn', fromPaginationBtn);
+      formData.append('inputs', [keyword_gen, keyword_dep, keyword_arr, keyword_date_dep, keyword_date_arr]);
       axios__WEBPACK_IMPORTED_MODULE_1___default()({
         method: 'POST',
-        url: '/get-journey-list',
+        url: '/get-journey-list-filter',
         responseType: 'json',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -2621,23 +2719,30 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         data: formData
       }).then(function (response) {
         if (response.statusText == 'OK') {
-          if (response.data.error == true) {
-            if (response.data.error_code == 1) {// this.viewMessageFlash(response.data.msg, true);
-              // document.location.href="/app";
-            } else {// this.viewMessageFlash(response.data.msg, true);
-              }
-          } else {
+          if (response.data.error == true) {} else {
             console.log(response.data);
+            var nbJourneys = response.data.nbjourneys;
+            var nbPages = 1;
+
+            if (nbJourneys > 15) {
+              nbPages = Math.trunc(nbJourneys / 15);
+              console.log(nbPages);
+
+              if (nbJourneys % 15 > 0) {
+                nbPages++;
+              }
+            }
 
             _this3.setState({
-              journeys: response.data,
-              journeysList: response.data
+              journeys: response.data.journeys,
+              journeysList: response.data.journeys,
+              nbPages: nbPages
             });
 
-            _this3.journeys = response.data;
+            _this3.journeys = response.data.journeys;
             console.log(response.data.length);
 
-            if (response.data.length < 15) {
+            if (response.data.journeys.length < 15) {
               _this3.setState({
                 lastPage: true
               });
@@ -2653,160 +2758,75 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       })["catch"](function (error) {
         console.log(error);
         return false;
-      });
-    }
-  }, {
-    key: "filter",
-    value: function filter(e) {
-      var newJourneysList1 = [];
-      var newJourneysList2 = [];
-      var newJourneysList3 = [];
-      var newJourneysList4 = [];
-      var newJourneysList5 = [];
-      var keyword_gen = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-bar").val().toLowerCase();
-      var keyword_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-departure").val().toLowerCase();
-      var keyword_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-arrival").val().toLowerCase();
-      var keyword_date_dep = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-departure").val();
-      var keyword_date_arr = jQuery__WEBPACK_IMPORTED_MODULE_4___default()("#search-date-arrival").val(); // Filtre général
-
-      if (keyword_gen == "") {
-        newJourneysList1 = this.state.journeys;
-      } else {
-        var _iterator = _createForOfIteratorHelper(this.state.journeys),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var journey = _step.value;
-
-            if (journey.arrival.toLowerCase().indexOf(keyword_gen) != -1 || journey.departure.toLowerCase().indexOf(keyword_gen) != -1 || journey.name_company.toLowerCase().indexOf(keyword_gen) != -1) {
-              newJourneysList1.push(journey);
-              continue;
-            } else {
-              var _iterator2 = _createForOfIteratorHelper(journey.stopovers),
-                  _step2;
-
-              try {
-                for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                  var stopover = _step2.value;
-
-                  if (stopover.city.toLowerCase().indexOf(keyword_gen) != -1) {
-                    newJourneysList1.push(journey);
-                    break;
-                  }
-                }
-              } catch (err) {
-                _iterator2.e(err);
-              } finally {
-                _iterator2.f();
-              }
-            }
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-      } // Filtre sur la ville de départ
-
-
-      if (keyword_dep == "") {
-        newJourneysList2 = newJourneysList1;
-      } else {
-        var _iterator3 = _createForOfIteratorHelper(newJourneysList1),
-            _step3;
-
-        try {
-          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-            var _journey = _step3.value;
-
-            if (_journey.departure.toLowerCase().indexOf(keyword_dep) != -1) {
-              console.log('found');
-              newJourneysList2.push(_journey);
-              continue;
-            }
-          }
-        } catch (err) {
-          _iterator3.e(err);
-        } finally {
-          _iterator3.f();
-        }
-      } // Filtre sur la ville d'arrivée
-
-
-      if (keyword_arr == "") {
-        newJourneysList3 = newJourneysList2;
-      } else {
-        var _iterator4 = _createForOfIteratorHelper(newJourneysList2),
-            _step4;
-
-        try {
-          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-            var _journey2 = _step4.value;
-            console.log(keyword_arr);
-
-            if (_journey2.arrival.toLowerCase().indexOf(keyword_arr) != -1) {
-              console.log('found');
-              newJourneysList3.push(_journey2);
-              continue;
-            }
-          }
-        } catch (err) {
-          _iterator4.e(err);
-        } finally {
-          _iterator4.f();
-        }
-      } // Filtre sur la ville de départ
-
-
-      if (keyword_date_dep == "") {
-        newJourneysList4 = newJourneysList3;
-      } else {
-        var _iterator5 = _createForOfIteratorHelper(newJourneysList3),
-            _step5;
-
-        try {
-          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
-            var _journey3 = _step5.value;
-
-            if (moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(_journey3.date_departure).format("DD/MM/YYYY") == moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(new Date(keyword_date_dep).getTime() / 1000).format("DD/MM/YYYY")) {
-              newJourneysList4.push(_journey3);
-              continue;
-            }
-          }
-        } catch (err) {
-          _iterator5.e(err);
-        } finally {
-          _iterator5.f();
-        }
-      } // Filtre sur la ville d'arrivée
-
-
-      if (keyword_date_arr == "") {
-        newJourneysList5 = newJourneysList4;
-      } else {
-        var _iterator6 = _createForOfIteratorHelper(newJourneysList4),
-            _step6;
-
-        try {
-          for (_iterator6.s(); !(_step6 = _iterator6.n()).done;) {
-            var _journey4 = _step6.value;
-
-            if (moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(_journey4.date_arrival).format("DD/MM/YYYY") == moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(new Date(keyword_date_arr).getTime() / 1000).format("DD/MM/YYYY")) {
-              newJourneysList5.push(_journey4);
-              continue;
-            }
-          }
-        } catch (err) {
-          _iterator6.e(err);
-        } finally {
-          _iterator6.f();
-        }
-      }
-
-      this.setState({
-        journeysList: newJourneysList5
-      });
+      }); // // Filtre général
+      //     if(keyword_gen == ""){
+      //       newJourneysList1 = this.state.journeys
+      //     }else{
+      //       for(let journey of this.state.journeys){
+      //         if(journey.arrival.toLowerCase().indexOf(keyword_gen) != -1 ||
+      //           journey.departure.toLowerCase().indexOf(keyword_gen) != -1 ||
+      //           journey.name_company.toLowerCase().indexOf(keyword_gen) != -1){
+      //           newJourneysList1.push(journey)
+      //           continue
+      //         }
+      //         else{
+      //           for(let stopover of journey.stopovers){
+      //             if(stopover.city.toLowerCase().indexOf(keyword_gen) != -1){
+      //               newJourneysList1.push(journey)
+      //               break
+      //             }                  
+      //           }              
+      //         }
+      //       }              
+      //     }
+      //     // Filtre sur la ville de départ
+      //     if(keyword_dep == ""){
+      //       newJourneysList2 = newJourneysList1
+      //     }else{
+      //       for(let journey of newJourneysList1){
+      //         if(journey.departure.toLowerCase().indexOf(keyword_dep) != -1){
+      //           console.log('found')
+      //           newJourneysList2.push(journey)
+      //           continue
+      //         }
+      //       }
+      //     }
+      //     // Filtre sur la ville d'arrivée
+      //     if(keyword_arr == ""){
+      //       newJourneysList3 = newJourneysList2
+      //     }else{
+      //       for(let journey of newJourneysList2){
+      //         console.log(keyword_arr)
+      //         if(journey.arrival.toLowerCase().indexOf(keyword_arr) != -1){
+      //           console.log('found')
+      //           newJourneysList3.push(journey)
+      //           continue
+      //         }
+      //       }
+      //     }
+      //     // Filtre sur la ville de départ
+      //     if(keyword_date_dep == ""){
+      //       newJourneysList4 = newJourneysList3
+      //     }else{
+      //       for(let journey of newJourneysList3){
+      //         if( moment.unix(journey.date_departure).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_dep).getTime()/1000).format("DD/MM/YYYY")){
+      //           newJourneysList4.push(journey)
+      //           continue
+      //         }
+      //       }
+      //     }
+      //     // Filtre sur la ville d'arrivée
+      //     if(keyword_date_arr == ""){
+      //       newJourneysList5 = newJourneysList4
+      //     }else{
+      //       for(let journey of newJourneysList4){
+      //         if( moment.unix(journey.date_arrival).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_arr).getTime()/1000).format("DD/MM/YYYY")){
+      //           newJourneysList5.push(journey)
+      //           continue
+      //         }
+      //       }
+      //     }
+      // this.setState({journeysList: newJourneysList5})
     }
   }, {
     key: "render",
@@ -2938,7 +2958,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
         nextButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
           className: "btn-pagination",
           onClick: function onClick() {
-            _this4.changePage('next');
+            _this4.filter('', 'next', true);
           }
         }, '>'));
       }
@@ -2976,7 +2996,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             keywordSearch: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-bar').val()
           });
 
-          _this4.filter();
+          _this4.filter('general');
         }
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
@@ -2995,7 +3015,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             keywordSearchDeparture: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-departure').val()
           });
 
-          _this4.filter();
+          _this4.filter('departure');
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-sm-3"
@@ -3012,7 +3032,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             keywordSearchArrival: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-arrival').val()
           });
 
-          _this4.filter();
+          _this4.filter('arrival');
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-sm-3"
@@ -3029,7 +3049,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             keywordSearchDateDeparture: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-date-departure').val()
           });
 
-          _this4.filter();
+          _this4.filter('date_departure');
         }
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-sm-3"
@@ -3046,7 +3066,7 @@ var JourneyList = /*#__PURE__*/function (_Component) {
             keywordSearchDateArrival: jQuery__WEBPACK_IMPORTED_MODULE_4___default()('#search-date-arrival').val()
           });
 
-          _this4.filter();
+          _this4.filter('date_arrival', '', false);
         }
       })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center",
@@ -3056,9 +3076,9 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btn-pagination",
         onClick: function onClick() {
-          _this4.changePage('previous');
+          _this4.filter('', 'previous', true);
         }
-      }, '<')), nextButton), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.offset + 1), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, '<')), nextButton), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, this.state.offset + 1, "/", this.state.nbPages), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "container-list-journey",
         style: {
           fontSize: '0.7rem'

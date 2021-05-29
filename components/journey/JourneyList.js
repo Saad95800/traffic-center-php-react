@@ -19,11 +19,13 @@ export default class JourneyList extends Component {
           keywordSearchArrival: '',
           keywordSearchDateDeparture: '',
           keywordSearchDateArrival: '',
-          lastPage: false
+          lastPage: false,
+          offset: 0,
+          nbPages: 1
       }
 
       this.journeys = []
-      this.offset = 0
+      // this.state.offset = 0
       if(this.props.old == 'true'){
         this.props.setColorNavItem('old-journey-list')
       }else{
@@ -58,7 +60,17 @@ export default class JourneyList extends Component {
             }
           }else{
             console.log(response.data)
-            this.setState({journeys: response.data, journeysList: response.data})
+            let nbJourneys = response.data.nbjourneys
+            let nbPages = 1
+
+            if(nbJourneys > 15){
+              nbPages = Math.trunc(nbJourneys / 15)
+              console.log(nbPages)
+              if(nbJourneys % 15 > 0){
+                nbPages++
+              }
+            }
+            this.setState({journeys: response.data.journeys, journeysList: response.data.journeys, nbPages: nbPages})
             this.journeys = response.data
           }
         }else{
@@ -73,149 +85,236 @@ export default class JourneyList extends Component {
  
     }
 
-    changePage(val){
+    // changePage(val){
+
+    //   if(val == 'next'){
+    //     this.state.offset++
+    //   }else{
+    //     if(this.state.offset > 0){
+    //       this.state.offset--
+    //     }
+    //   }
+
+    //   let formData = new FormData();
+    //   formData.append('offset', this.state.offset);
+    //   formData.append('old', this.props.old);
+
+    //   axios({
+    //     method: 'POST',
+    //     url: '/get-journey-list',
+    //     responseType: 'json',
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded'
+    //     },
+    //     data: formData
+    //   })
+    //   .then((response) => {
+
+    //     if(response.statusText == 'OK'){
+    //       if(response.data.error == true){
+    //         if(response.data.error_code == 1){
+    //           // this.viewMessageFlash(response.data.msg, true);
+    //           // document.location.href="/app";
+    //         }else{
+    //           // this.viewMessageFlash(response.data.msg, true);
+    //         }
+    //       }else{
+    //         console.log(response.data)
+    //         this.setState({journeys: response.data, journeysList: response.data})
+    //         this.journeys = response.data
+    //         console.log(response.data.length)
+    //         if(response.data.length < 15){
+    //           this.setState({lastPage: true})
+    //         }else{
+    //           this.setState({lastPage: false})
+    //         }
+    //       }
+    //     }else{
+    //       this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
+    //     }
+
+    //   })
+    //   .catch( (error) => {
+    //     console.log(error);
+    //     return false
+    //   });
+
+    // }
+
+    filter(input = 'general', val = '', fromPaginationBtn = false) {
 
       if(val == 'next'){
-        this.offset++
-      }else{
-        if(this.offset > 0){
-          this.offset--
+        this.state.offset++
+      }else if(val == 'previous'){
+        if(this.state.offset > 0){
+          this.state.offset--
         }
       }
 
-      let formData = new FormData();
-      formData.append('offset', this.offset);
-      formData.append('old', this.props.old);
-
-      axios({
-        method: 'POST',
-        url: '/get-journey-list',
-        responseType: 'json',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: formData
-      })
-      .then((response) => {
-
-        if(response.statusText == 'OK'){
-          if(response.data.error == true){
-            if(response.data.error_code == 1){
-              // this.viewMessageFlash(response.data.msg, true);
-              // document.location.href="/app";
-            }else{
-              // this.viewMessageFlash(response.data.msg, true);
-            }
-          }else{
-            console.log(response.data)
-            this.setState({journeys: response.data, journeysList: response.data})
-            this.journeys = response.data
-            console.log(response.data.length)
-            if(response.data.length < 15){
-              this.setState({lastPage: true})
-            }else{
-              this.setState({lastPage: false})
-            }
-          }
-        }else{
-          this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
-        }
-
-      })
-      .catch( (error) => {
-        console.log(error);
-        return false
-      });
-
-    }
-
-    filter(e) {
-        let newJourneysList1 = []
-        let newJourneysList2 = []
-        let newJourneysList3 = []
-        let newJourneysList4 = []
-        let newJourneysList5 = []
+        // let newJourneysList1 = []
+        // let newJourneysList2 = []
+        // let newJourneysList3 = []
+        // let newJourneysList4 = []
+        // let newJourneysList5 = []
 
         let keyword_gen = $("#search-bar").val().toLowerCase()
         let keyword_dep = $("#search-departure").val().toLowerCase()
         let keyword_arr = $("#search-arrival").val().toLowerCase()
         let keyword_date_dep = $("#search-date-departure").val()
         let keyword_date_arr = $("#search-date-arrival").val()
+        let keyword = ''
 
-        // Filtre général
-            if(keyword_gen == ""){
-              newJourneysList1 = this.state.journeys
-            }else{
-              for(let journey of this.state.journeys){
-                if(journey.arrival.toLowerCase().indexOf(keyword_gen) != -1 ||
-                  journey.departure.toLowerCase().indexOf(keyword_gen) != -1 ||
-                  journey.name_company.toLowerCase().indexOf(keyword_gen) != -1){
-                  newJourneysList1.push(journey)
-                  continue
-                }
-                else{
-                  for(let stopover of journey.stopovers){
-                    if(stopover.city.toLowerCase().indexOf(keyword_gen) != -1){
-                      newJourneysList1.push(journey)
-                      break
-                    }                  
-                  }              
-                }
-              }              
-            }
+        switch(input){
+          case 'general':
+            keyword = keyword_gen
+            break;
+          case 'departure':
+            keyword = keyword_dep
+            break;
+          case 'arrival':
+            keyword = keyword_arr
+            break;
+          case 'date_departure':
+            keyword = keyword_date_dep
+            break;
+          case 'date_arrival':
+            keyword = keyword_date_arr
+            break;
+        }
 
-            // Filtre sur la ville de départ
-            if(keyword_dep == ""){
-              newJourneysList2 = newJourneysList1
+        let formData = new FormData();
+        formData.append('offset', this.state.offset);
+        formData.append('old', this.props.old);
+        formData.append('keyword', keyword);
+        formData.append('input', input);
+        formData.append('from-pagination-btn', fromPaginationBtn);
+        formData.append('inputs', [
+          keyword_gen,
+          keyword_dep,
+          keyword_arr,
+          keyword_date_dep,
+          keyword_date_arr
+        ]);
+        
+
+        axios({
+          method: 'POST',
+          url: '/get-journey-list-filter',
+          responseType: 'json',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          data: formData
+        })
+        .then((response) => {
+
+          if(response.statusText == 'OK'){
+            if(response.data.error == true){
             }else{
-              for(let journey of newJourneysList1){
-                if(journey.departure.toLowerCase().indexOf(keyword_dep) != -1){
-                  console.log('found')
-                  newJourneysList2.push(journey)
-                  continue
+              console.log(response.data)
+              let nbJourneys = response.data.nbjourneys
+              let nbPages = 1
+              
+              if(nbJourneys > 15){
+                nbPages = Math.trunc(nbJourneys / 15)
+                console.log(nbPages)
+                if(nbJourneys % 15 > 0){
+                  nbPages++
                 }
               }
-            }
-
-            // Filtre sur la ville d'arrivée
-            if(keyword_arr == ""){
-              newJourneysList3 = newJourneysList2
-            }else{
-              for(let journey of newJourneysList2){
-                console.log(keyword_arr)
-                if(journey.arrival.toLowerCase().indexOf(keyword_arr) != -1){
-                  console.log('found')
-                  newJourneysList3.push(journey)
-                  continue
-                }
+              this.setState({journeys: response.data.journeys, journeysList: response.data.journeys, nbPages: nbPages})
+              this.journeys = response.data.journeys
+              console.log(response.data.length)
+              if(response.data.journeys.length < 15){
+                this.setState({lastPage: true})
+              }else{
+                this.setState({lastPage: false})
               }
             }
+          }else{
+            this.viewMessageFlash('Erreur lors de la tentative de connexion', true);
+          }
+
+        })
+        .catch( (error) => {
+          console.log(error);
+          return false
+        });
+
+        // // Filtre général
+        //     if(keyword_gen == ""){
+        //       newJourneysList1 = this.state.journeys
+        //     }else{
+        //       for(let journey of this.state.journeys){
+        //         if(journey.arrival.toLowerCase().indexOf(keyword_gen) != -1 ||
+        //           journey.departure.toLowerCase().indexOf(keyword_gen) != -1 ||
+        //           journey.name_company.toLowerCase().indexOf(keyword_gen) != -1){
+        //           newJourneysList1.push(journey)
+        //           continue
+        //         }
+        //         else{
+        //           for(let stopover of journey.stopovers){
+        //             if(stopover.city.toLowerCase().indexOf(keyword_gen) != -1){
+        //               newJourneysList1.push(journey)
+        //               break
+        //             }                  
+        //           }              
+        //         }
+        //       }              
+        //     }
+
+        //     // Filtre sur la ville de départ
+        //     if(keyword_dep == ""){
+        //       newJourneysList2 = newJourneysList1
+        //     }else{
+        //       for(let journey of newJourneysList1){
+        //         if(journey.departure.toLowerCase().indexOf(keyword_dep) != -1){
+        //           console.log('found')
+        //           newJourneysList2.push(journey)
+        //           continue
+        //         }
+        //       }
+        //     }
+
+        //     // Filtre sur la ville d'arrivée
+        //     if(keyword_arr == ""){
+        //       newJourneysList3 = newJourneysList2
+        //     }else{
+        //       for(let journey of newJourneysList2){
+        //         console.log(keyword_arr)
+        //         if(journey.arrival.toLowerCase().indexOf(keyword_arr) != -1){
+        //           console.log('found')
+        //           newJourneysList3.push(journey)
+        //           continue
+        //         }
+        //       }
+        //     }
             
-            // Filtre sur la ville de départ
-            if(keyword_date_dep == ""){
-              newJourneysList4 = newJourneysList3
-            }else{
-              for(let journey of newJourneysList3){
-                if( moment.unix(journey.date_departure).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_dep).getTime()/1000).format("DD/MM/YYYY")){
-                  newJourneysList4.push(journey)
-                  continue
-                }
-              }
-            }
+        //     // Filtre sur la ville de départ
+        //     if(keyword_date_dep == ""){
+        //       newJourneysList4 = newJourneysList3
+        //     }else{
+        //       for(let journey of newJourneysList3){
+        //         if( moment.unix(journey.date_departure).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_dep).getTime()/1000).format("DD/MM/YYYY")){
+        //           newJourneysList4.push(journey)
+        //           continue
+        //         }
+        //       }
+        //     }
 
-            // Filtre sur la ville d'arrivée
-            if(keyword_date_arr == ""){
-              newJourneysList5 = newJourneysList4
-            }else{
-              for(let journey of newJourneysList4){
-                if( moment.unix(journey.date_arrival).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_arr).getTime()/1000).format("DD/MM/YYYY")){
-                  newJourneysList5.push(journey)
-                  continue
-                }
-              }
-            }
+        //     // Filtre sur la ville d'arrivée
+        //     if(keyword_date_arr == ""){
+        //       newJourneysList5 = newJourneysList4
+        //     }else{
+        //       for(let journey of newJourneysList4){
+        //         if( moment.unix(journey.date_arrival).format("DD/MM/YYYY") == moment.unix(new Date(keyword_date_arr).getTime()/1000).format("DD/MM/YYYY")){
+        //           newJourneysList5.push(journey)
+        //           continue
+        //         }
+        //       }
+        //     }
 
-        this.setState({journeysList: newJourneysList5})
+        // this.setState({journeysList: newJourneysList5})
 
     }
 
@@ -296,7 +395,7 @@ export default class JourneyList extends Component {
 
           let nextButton = ''
           if(this.state.lastPage == false){
-            nextButton = <div><button className="btn-pagination"onClick={() => { this.changePage('next') }}>{'>'}</button></div>
+            nextButton = <div><button className="btn-pagination"onClick={() => { this.filter('', 'next', true) }}>{'>'}</button></div>
           }
 
           let title = "Trajets en cours"
@@ -310,44 +409,44 @@ export default class JourneyList extends Component {
                   <span className="fa fa-search form-control-feedback"></span>
                   <input type="text" className="form-control form-control-sm" id="search-bar" style={{marginBottom: '10px'}} placeholder="Recherche" value={this.state.keywordSearch} /*onKeyPress={this.filter.bind(this)}*/ onChange={()=>{
                     this.setState({keywordSearch: $('#search-bar').val()})
-                    this.filter()
+                    this.filter('general')
                     }}/>
                     <div className="row">
                       <div className="col-sm-3">
                         <label htmlFor="search-departure">Ville de départ</label>
                         <input type="text" className="form-control form-control-sm" id="search-departure" value={this.state.keywordSearchDeparture} placeholder="Départ" onChange={()=>{
                     this.setState({keywordSearchDeparture: $('#search-departure').val()})
-                    this.filter()
+                    this.filter('departure')
                     }}/>
                       </div>
                       <div className="col-sm-3">
                         <label htmlFor="search-arrival">Ville d'arrivée</label>
                         <input type="text" className="form-control form-control-sm" id="search-arrival" value={this.state.keywordSearchArrival} placeholder="Arrivée" onChange={()=>{
                     this.setState({keywordSearchArrival: $('#search-arrival').val()})
-                    this.filter()
+                    this.filter('arrival')
                     }}/>
                       </div>
                       <div className="col-sm-3">
                         <label htmlFor="search-date-departure">Date de départ</label>
                         <input type="date" className="form-control form-control-sm" id="search-date-departure" value={this.state.keywordSearchDateDeparture} placeholder="Date départ" onChange={()=>{
                     this.setState({keywordSearchDateDeparture: $('#search-date-departure').val()})
-                    this.filter()
+                    this.filter('date_departure')
                     }}/>
                       </div>
                       <div className="col-sm-3">
                         <label htmlFor="search-date-arrival">Date d'arrivée</label>
                         <input type="date" className="form-control form-control-sm" id="search-date-arrival" value={this.state.keywordSearchDateArrival} placeholder="Date arrivée" onChange={()=>{
                     this.setState({keywordSearchDateArrival: $('#search-date-arrival').val()})
-                    this.filter()
+                    this.filter('date_arrival', '', false)
                     }}/>
                       </div>
                     </div>
                 </div>
                 <div className="display-flex-center" style={{flexDirection: 'row'}}>
-                    <div><button className="btn-pagination" onClick={() => { this.changePage('previous') }}>{'<'}</button></div>
+                    <div><button className="btn-pagination" onClick={() => { this.filter('','previous', true) }}>{'<'}</button></div>
                     {nextButton}
                 </div>
-                <div>{this.offset+1}</div>
+                <div>{this.state.offset+1}/{this.state.nbPages}</div>
                 <div className="container-list-journey" style={{fontSize: '0.7rem'}}>
                   {journeys}
                 </div>
