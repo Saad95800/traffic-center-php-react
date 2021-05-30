@@ -320,8 +320,13 @@ export default class JourneyList extends Component {
 
     render() {
 
-          let journeys = '';
-          if(this.state.journeys.length != 0 && this.state.journeys.length != undefined){
+          let journeys = ''
+          let displayBtnArrow = 'none'
+          console.log(this.state.journeys)
+          if(this.state.journeys.length != 0 && this.state.journeys != undefined){
+            if(this.state.nbPages > 1){
+              displayBtnArrow = 'flex'
+            }
 
             journeys = this.state.journeysList.map((journey, index) => {
               
@@ -355,33 +360,33 @@ export default class JourneyList extends Component {
                     <div className="row line-journey" style={style}>
                       <div className="col-md-4">
                         <div className="height33p row">
-                          <div className="col-2 logo-green-point"></div>
-                          <div className="col-10"><span className="fontwb">Ville de départ: </span><span className="colorblue">{journey.departure}</span></div>
+                          <div className="col-1 logo-green-point"></div>
+                          <div className="col-11"><span className="fontwb label-data-list">Départ: </span><span className="colorblue" style={{fontWeight: 'bolder'}}>{journey.departure}</span></div>
                         </div>
-                        {stopovers}
+                        {/* {stopovers} */}
                         <div className="height33p row" style={{marginTop: '5px', marginBottom: '5px'}}>
-                          <div className="col-2 logo-green-arrow"></div>
-                          <div className="col-10"><span className="fontwb">Ville d'arrivée: </span><span className="colorblue">{journey.arrival}</span></div>
+                          <div className="col-1 logo-green-arrow"></div>
+                          <div className="col-11"><span className="fontwb label-data-list">Destination: </span><span className="colorblue" style={{fontWeight: 'bolder'}}>{journey.arrival}</span></div>
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="height33p row">
-                          <div className="col-2 logo-date"></div>
-                          <div className="col-10"><span className="fontwb">Date de départ: </span><span className="colorblue">{date_departure}</span></div>
+                          <div className="col-1 logo-date"></div>
+                          <div className="col-11"><span className="fontwb label-data-list">Date départ: </span><span className="colorblue" style={{fontWeight: 'bolder'}}>{date_departure}</span></div>
                         </div>
                         <div className="height33p row">
-                          <div className="col-2 logo-clock"></div>
-                          <div className="col-10"><span className="fontwb">Heure de départ: </span><span className="colorblue">{time_departure}</span></div>
+                          <div className="col-1 logo-clock"></div>
+                          <div className="col-11"><span className="fontwb label-data-list">Heure départ: </span><span className="colorblue" style={{fontWeight: 'bolder'}}>{time_departure}</span></div>
                         </div>
                         <div className="height33p row">
-                          <div className="col-2 logo-date"></div>
-                          <div className="col-10"><span className="fontwb">Date d'arrivée: </span><span className="colorblue">{date_arrival}</span></div>
+                          <div className="col-1 logo-date"></div>
+                          <div className="col-11"><span className="fontwb label-data-list">Date d'arrivée: </span><span className="colorblue" style={{fontWeight: 'bolder'}}>{date_arrival}</span></div>
                         </div>
                       </div>
                       <div className="col-md-4">
                         <div className="height33p row">
-                          <div className="col-2 logo-mini-truck"></div>
-                          <div className="col-10"><span className="fontwb">Transporteur: </span><span className="colorblue">{journey.name_company}</span></div>
+                          <div className="col-1 logo-mini-truck"></div>
+                          <div className="col-11"><span className="fontwb label-data-list">Société: </span><span className="colorblue"   style={{fontWeight: 'bolder'}}>{journey.name_company}</span></div>
                         </div>
                       </div>
                       {/* <Journey key={index} id_journey={journey.id_journey} spaces={journey.spaces} page="list-journey"/> */}
@@ -442,7 +447,7 @@ export default class JourneyList extends Component {
                       </div>
                     </div>
                 </div>
-                <div className="display-flex-center" style={{flexDirection: 'row'}}>
+                <div className="display-flex-center" style={{flexDirection: 'row', display: displayBtnArrow}}>
                     <div><button className="btn-pagination" onClick={() => { this.filter('','previous', true) }}>{'<'}</button></div>
                     {nextButton}
                 </div>

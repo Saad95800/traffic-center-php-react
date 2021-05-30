@@ -1142,7 +1142,7 @@ var EditJourney = /*#__PURE__*/function (_Component) {
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
         id: "1"
-      }, "SDY Transport"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Transport Milan"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "form-group"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
         htmlFor: "departure"
@@ -2834,8 +2834,14 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       var _this4 = this;
 
       var journeys = '';
+      var displayBtnArrow = 'none';
+      console.log(this.state.journeys);
 
-      if (this.state.journeys.length != 0 && this.state.journeys.length != undefined) {
+      if (this.state.journeys.length != 0 && this.state.journeys != undefined) {
+        if (this.state.nbPages > 1) {
+          displayBtnArrow = 'flex';
+        }
+
         journeys = this.state.journeysList.map(function (journey, index) {
           var date_departure = moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(journey.date_departure).format("DD/MM/YYYY");
           var date_arrival = moment__WEBPACK_IMPORTED_MODULE_2___default.a.unix(journey.date_arrival).format("DD/MM/YYYY");
@@ -2881,71 +2887,89 @@ var JourneyList = /*#__PURE__*/function (_Component) {
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-2 logo-green-point"
+            className: "col-1 logo-green-point"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-10"
+            className: "col-11"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb"
-          }, "Ville de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "colorblue"
-          }, journey.departure))), stopovers, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+            className: "fontwb label-data-list"
+          }, "D\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "colorblue",
+            style: {
+              fontWeight: 'bolder'
+            }
+          }, journey.departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row",
             style: {
               marginTop: '5px',
               marginBottom: '5px'
             }
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-2 logo-green-arrow"
+            className: "col-1 logo-green-arrow"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-10"
+            className: "col-11"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb"
-          }, "Ville d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "colorblue"
+            className: "fontwb label-data-list"
+          }, "Destination: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "colorblue",
+            style: {
+              fontWeight: 'bolder'
+            }
           }, journey.arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-2 logo-date"
+            className: "col-1 logo-date"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-10"
+            className: "col-11"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb"
-          }, "Date de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "colorblue"
+            className: "fontwb label-data-list"
+          }, "Date d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "colorblue",
+            style: {
+              fontWeight: 'bolder'
+            }
           }, date_departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-2 logo-clock"
+            className: "col-1 logo-clock"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-10"
+            className: "col-11"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb"
-          }, "Heure de d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "colorblue"
+            className: "fontwb label-data-list"
+          }, "Heure d\xE9part: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "colorblue",
+            style: {
+              fontWeight: 'bolder'
+            }
           }, time_departure))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-2 logo-date"
+            className: "col-1 logo-date"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-10"
+            className: "col-11"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb"
+            className: "fontwb label-data-list"
           }, "Date d'arriv\xE9e: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "colorblue"
+            className: "colorblue",
+            style: {
+              fontWeight: 'bolder'
+            }
           }, date_arrival)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "col-md-4"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
             className: "height33p row"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-2 logo-mini-truck"
+            className: "col-1 logo-mini-truck"
           }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-            className: "col-10"
+            className: "col-11"
           }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "fontwb"
-          }, "Transporteur: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-            className: "colorblue"
+            className: "fontwb label-data-list"
+          }, "Soci\xE9t\xE9: "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+            className: "colorblue",
+            style: {
+              fontWeight: 'bolder'
+            }
           }, journey.name_company))))));
         });
       } else {
@@ -3071,7 +3095,8 @@ var JourneyList = /*#__PURE__*/function (_Component) {
       })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "display-flex-center",
         style: {
-          flexDirection: 'row'
+          flexDirection: 'row',
+          display: displayBtnArrow
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
         className: "btn-pagination",

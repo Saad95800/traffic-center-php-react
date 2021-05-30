@@ -114,6 +114,7 @@ a:hover{
     padding: 5px 5px 10px 5px;
     background-color: #e8f0ff;
     cursor: pointer;
+    font-size: 15px;
 }
 .line-journey:hover{
     background-color: #dae7ff;
@@ -444,6 +445,10 @@ a:hover{
 }
 .nav-item-company:active .menu-top{
     display:block;
+}
+.label-data-list{
+    display: inline-block;
+    width: 135px;
 }
 @media screen and (max-width: 450px) {
     .nav-mobile{

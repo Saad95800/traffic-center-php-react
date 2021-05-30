@@ -54,9 +54,14 @@ class JourneyManager extends Model {
         $req->execute();
         $nbjourneys = $req->fetch(\PDO::FETCH_ASSOC);
 
+        // var_dump(count($result));die;
         if ($result) {
             $retour['journeys'] = $result;
             $retour['nbjourneys'] = intval($nbjourneys['nb']);
+            return $retour;
+        }else if(count($result) == 0){
+            $retour['journeys'] = [];
+            $retour['nbjourneys'] = 0;
             return $retour;
         }
         return false;
@@ -218,6 +223,10 @@ class JourneyManager extends Model {
         if ($result) {
             $retour['journeys'] = $result ;
             $retour['nbjourneys'] = $nbjourneys['nb'];
+            return $retour;
+        }elseif(count($result) == 0){
+            $retour['journeys'] = [];
+            $retour['nbjourneys'] = 0;
             return $retour;
         }
         return false;

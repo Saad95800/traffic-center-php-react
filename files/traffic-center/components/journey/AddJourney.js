@@ -120,7 +120,7 @@ export default class AddJourney extends Component {
                 <div className="form-group">
                   <label htmlFor="select-delivery-company">Entreprise de livraison</label>
                   <select className="form-control" id="select-delivery-company" onChange={() => {this.setState({delivery_company: document.querySelector('#select-delivery-company').value})}} >
-                    <option id="1">SDY Transport</option>
+                    <option id="1">Transport Milan</option>
                   </select>
                 </div>
                 <div className="form-group">
