@@ -357,7 +357,7 @@ a:hover{
     width: 50%;
     min-width: 300px;
     margin: auto;
-    margin-top: 5%;
+    margin-top: 50%;
     padding: 10px 20px 10px 20px;
     background-color: #fff;
     border: 5px solid #d0d0d0;
@@ -383,9 +383,7 @@ a:hover{
     margin-left: 8px;
 }
 .navbar-item:hover .a1{
-    
-        display:flex;
-    
+    display:flex;
 }
 .a1{
     margin-left: 49px;

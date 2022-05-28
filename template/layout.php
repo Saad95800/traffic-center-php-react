@@ -5,7 +5,7 @@
     <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Grayscale - Start Bootstrap Theme</title>
+    <title>BE TRUCK</title>
     <link rel="icon" type="image/x-icon" href="<?= URLROOT ?>/public/assets/img/favicon.ico" />
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>

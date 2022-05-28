@@ -56,12 +56,10 @@ export default class App extends Component {
   }
 
   hideMenu(){
-    console.log('click hide menu')
     this.setState({menuHidden: true})
   }
 
   setColorNavItem(navItem){
-    console.log(navItem)
     this.setState({navItemActive: navItem})
   }
 
